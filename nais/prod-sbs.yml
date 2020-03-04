@@ -59,7 +59,7 @@ spec:
     - name: K9_OPPSLAG_REGISTER_URL
       value: https://api-gw.oera.no/helse-reverse-proxy/k9-selvbetjening-oppslag
     - name: OMSORGSPENGESOKNAD_MOTTAK_BASE_URL
-      value: https://api-gw.oera.no/helse-reverse-proxy/omsorgspenger-mottak
+      value: https://api-gw.oera.no/helse-reverse-proxy/omsorgspenger-mottak # TODO: Peke til riktig tjeneste
     - name: K9_DOKUMENT_BASE_URL
       value: https://k9-dokument.nais.oera.no
     - name: AZURE_V2_DISCOVERY_ENDPOINT
