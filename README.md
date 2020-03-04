@@ -18,7 +18,7 @@
 API - tjeneste for omsorgspengerutbetaling
 
 # 2. Funksjonelle Krav
-Denne tjenesten understøtter søknadsprosessen, samt eksponerer endepunkt for innsending av søknad om utvidet rett til omsorgspenger.
+Denne tjenesten understøtter søknadsprosessen, samt eksponerer endepunkt for innsending av søknad om utvidet rett til omsorgspengerutbetaling.
 
 
 
@@ -36,7 +36,7 @@ Denne tjenesten understøtter søknadsprosessen, samt eksponerer endepunkt for i
 
 # 9. Distribusjon av tjenesten (deployment)
 Distribusjon av tjenesten er gjort med bruk av Github Actions.
-[Omsorgspengesoknad-API CI / CD](https://github.com/navikt/omsorgspengesoknadutbetaling-api/actions)
+[Omsorgspengerutbetaling-API CI / CD](https://github.com/navikt/omsorgspengesoknadutbetaling-api/actions)
 
 Push til dev-* brancher vil teste, bygge og deploye til dev/staging miljø.
 Push/merge til master branche vil teste, bygge og deploye til produksjonsmiljø.

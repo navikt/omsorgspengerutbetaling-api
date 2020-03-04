@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val dusseldorfKtorVersion = "1.3.0.b7013ab"
 val ktorVersion = ext.get("ktorVersion").toString()
-val mainClass = "no.nav.omsorgspenger.AppKt"
+val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
 
 plugins {
     kotlin("jvm") version "1.3.50"

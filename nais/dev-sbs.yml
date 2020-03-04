@@ -47,7 +47,7 @@ spec:
   webproxy: true
   env:
     - name: REDIS_HOST
-      value: omsorgspenger-api-redis.default.svc.nais.local
+      value: omsorgspengerutbetaling-api-redis.default.svc.nais.local
     - name: CORS_ADDRESSES
       value: https://www-q0.nav.no
     - name: ISSUER

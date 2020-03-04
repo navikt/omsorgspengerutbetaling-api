@@ -39,11 +39,11 @@ spec:
     enabled: true
     paths:  # Optional. If specified, will override default values with custom Vault configuration.
       - mountPath: /var/run/secrets/nais.io/vault  # Filesystem path inside the pod where secrets will appear.
-        kvPath: /kv/prod/sbs/omsorgspenger-api/default  # Vault KV path to fetch secrets from.
+        kvPath: /kv/prod/sbs/omsorgspengerutbetaling-api/default  # Vault KV path to fetch secrets from.
       - mountPath: /var/run/secrets/nais.io/azuread
-        kvPath: /azuread/data/prod/creds/omsorgspenger-api
+        kvPath: /azuread/data/prod/creds/omsorgspengerutbetaling-api
       - mountPath: /var/run/secrets/nais.io/apigw
-        kvPath: /apikey/apigw/prod/helse-reverse-proxy/omsorgspenger-api
+        kvPath: /apikey/apigw/prod/helse-reverse-proxy/omsorgspengerutbetaling-api
   webproxy: true
   env:
     - name: REDIS_HOST
