@@ -27,7 +27,7 @@ dependencies {
     // Client
     compile ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-oauth2-client:$dusseldorfKtorVersion")
-    compile ("io.lettuce:lettuce-core:5.2.1.RELEASE")
+    compile ("io.lettuce:lettuce-core:5.2.2.RELEASE")
     implementation("com.github.fppt:jedis-mock:0.1.16")
 
     // Test
