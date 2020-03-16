@@ -12,7 +12,7 @@ plugins {
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/b7013abce578447fb79186175b728e26e1537c27/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/master/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
