@@ -1,5 +1,6 @@
 package no.nav.omsorgspengerutbetaling
 
+import com.github.fppt.jedismock.RedisServer
 import com.github.kittinunf.fuel.httpGet
 import com.github.tomakehurst.wiremock.WireMockServer
 import no.nav.helse.dusseldorf.testsupport.jws.ClientCredentials
@@ -18,7 +19,8 @@ object TestConfiguration {
         k9OppslagUrl: String? = wireMockServer?.getK9OppslagUrl(),
         omsorgpengesoknadMottakUrl : String? = wireMockServer?.getOmsorgpengesoknadMottakUrl(),
         k9DokumentUrl : String? = wireMockServer?.getK9DokumentUrl(),
-        corsAdresses : String = "http://localhost:8080"
+        corsAdresses : String = "http://localhost:8080",
+        redisServer: RedisServer
     ) : Map<String, String> {
 
         val loginServiceWellKnownJson = wireMockServer?.getLoginServiceV1WellKnownUrl()?.getAsJson()
@@ -45,8 +47,8 @@ object TestConfiguration {
             map["nav.auth.scopes.sende-soknad-til-prosessering"] = "omsorgspengesoknad-mottak/.default"
         }
 
-        map["nav.redis.host"] = "localhost"
-        map["nav.redis.port"] = "6379"
+        map["nav.redis.host"] = redisServer.host
+        map["nav.redis.port"] = "${redisServer.bindPort}"
         map["nav.storage.passphrase"] = "verySecret"
 
         return map.toMap()

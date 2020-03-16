@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val dusseldorfKtorVersion = "1.3.2.e71617b"
 val ktorVersion = ext.get("ktorVersion").toString()
 val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
+val lettuceVersion = "5.2.2.RELEASE"
 
 plugins {
     kotlin("jvm") version "1.3.70"
@@ -22,15 +23,17 @@ dependencies {
     compile ( "no.nav.helse:dusseldorf-ktor-metrics:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-ktor-health:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-ktor-auth:$dusseldorfKtorVersion")
-    compile("io.ktor:ktor-locations:$ktorVersion")
+    compile ("io.ktor:ktor-locations:$ktorVersion")
 
     // Client
     compile ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-oauth2-client:$dusseldorfKtorVersion")
-    compile ("io.lettuce:lettuce-core:5.2.2.RELEASE")
-    implementation("com.github.fppt:jedis-mock:0.1.16")
+
+    // Redis
+    compile ("io.lettuce:lettuce-core:$lettuceVersion")
 
     // Test
+    testImplementation("com.github.fppt:jedis-mock:0.1.16")
     testCompile("no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testCompile("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
