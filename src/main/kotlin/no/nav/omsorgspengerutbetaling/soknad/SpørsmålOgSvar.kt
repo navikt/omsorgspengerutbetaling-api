@@ -10,6 +10,12 @@ data class SpørsmålOgSvar(
     val fritekst: Fritekst? = null
 )
 
+/**
+ * Trenger bare lage ID'er på ting vi eksplisitt
+ * må gjøre noen sjekker på eller vi trenger å ha
+ * Et eksplisitt forhold til senere i prosesseringen.
+ * Default bør være at det ikke er noen ID.
+ */
 enum class SpørsmålId {
     HarBekreftetOpplysninger,
     HarForståttRettigheterOgPlikter
