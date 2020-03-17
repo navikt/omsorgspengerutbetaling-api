@@ -30,7 +30,6 @@ class ApplicationWithMocks {
                 .stubLeggSoknadTilProsessering()
                 .stubK9Dokument()
                 .stubK9OppslagSoker()
-                .stubK9OppslagBarn()
 
             val redisServer: RedisServer = RedisServer
                 .newRedisServer(6379)

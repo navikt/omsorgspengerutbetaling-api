@@ -1,4 +1,4 @@
-package no.nav.helse
+package no.nav.omsorgspengerutbetaling
 
 import com.auth0.jwt.JWT
 import com.github.tomakehurst.wiremock.http.Request

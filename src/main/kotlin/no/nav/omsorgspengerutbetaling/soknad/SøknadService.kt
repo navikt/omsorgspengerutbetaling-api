@@ -53,7 +53,11 @@ internal class SøknadService(
 
         logger.trace("Legeærkleringer hentet. Validerer dem.")
 
-        utbetalingsperioder.valider()
+        val alleVedleggReferanser = søknad.utbetalingsperioder
+            .map { it.legeærklæringer }
+            .flatten()
+
+        utbetalingsperioder.valider(alleVedleggReferanser = alleVedleggReferanser)
 
         logger.info("Legger søknad til prosessering")
 
@@ -76,12 +80,8 @@ internal class SøknadService(
         logger.trace("Søknad lagt til prosessering. Sletter vedlegg.")
 
 
-        val alleVedlegg = søknad.utbetalingsperioder
-            .map { it.legeærklæringer }
-            .flatten()
-
         vedleggService.slettVedleg(
-            vedleggUrls = alleVedlegg,
+            vedleggUrls = alleVedleggReferanser,
             callId = callId,
             idToken = idToken
         )

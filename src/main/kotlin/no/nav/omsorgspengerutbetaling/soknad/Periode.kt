@@ -9,6 +9,7 @@ internal data class Periode (
     internal val tilOgMed: LocalDate
 )
 
+// TODO: Godta overlapp?
 internal fun List<Periode>.valider(jsonPath: String) : Set<Violation> {
     val violations = mutableSetOf<Violation>()
     mapIndexed { index, periode ->

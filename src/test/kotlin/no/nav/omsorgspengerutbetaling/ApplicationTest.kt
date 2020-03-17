@@ -13,14 +13,17 @@ import io.ktor.server.testing.setBody
 import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
-import no.nav.helse.getAuthCookie
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
+import no.nav.omsorgspengerutbetaling.soknad.UtbetalingsperiodeUri
 import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.net.URI
+import java.time.Duration
+import java.time.LocalDate
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -50,7 +53,6 @@ class ApplicationTest {
             .stubOppslagHealth()
             .stubLeggSoknadTilProsessering()
             .stubK9OppslagSoker()
-            .stubK9OppslagBarn()
             .stubK9Dokument()
 
         val redisServer: RedisServer = RedisServer
@@ -110,84 +112,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `Henting av barn`() {
-        requestAndAssert(
-            httpMethod = HttpMethod.Get,
-            path = "/barn",
-            expectedCode = HttpStatusCode.OK,
-            //language=JSON
-            expectedResponse = """
-            {
-                "barn": [{
-                    "fødselsdato": "2000-08-27",
-                    "fornavn": "BARN",
-                    "mellomnavn": "EN",
-                    "etternavn": "BARNESEN",
-                    "aktørId": "1000000000001"
-                }, 
-                {
-                    "fødselsdato": "2001-04-10",
-                    "fornavn": "BARN",
-                    "mellomnavn": "TO",
-                    "etternavn": "BARNESEN",
-                    "aktørId": "1000000000002"
-                }]
-            }
-            """.trimIndent(),
-            cookie = getAuthCookie(fnr)
-        )
-    }
-
-    @Test
-    fun `Har ingen registrerte barn`() {
-        requestAndAssert(
-            httpMethod = HttpMethod.Get,
-            path = "/barn",
-            expectedCode = HttpStatusCode.OK,
-            expectedResponse = """
-            {
-                "barn": []
-            }
-            """.trimIndent(),
-            cookie = getAuthCookie("07077712345")
-        )
-    }
-
-    @Test
-    fun `Feil ved henting av barn skal returnere tom liste`() {
-        wireMockServer.stubK9OppslagBarn(simulerFeil = true)
-        requestAndAssert(
-            httpMethod = HttpMethod.Get,
-            path = "/barn",
-            expectedCode = HttpStatusCode.OK,
-            expectedResponse = """
-            {
-                "barn": []
-            }
-            """.trimIndent(),
-            cookie = getAuthCookie(fnr)
-        )
-        wireMockServer.stubK9OppslagBarn()
-    }
-
-    fun expectedGetSokerJson(
-        fodselsnummer: String,
-        fodselsdato: String = "1997-05-25",
-        myndig: Boolean = true
-    ) = """
-    {
-        "etternavn": "MORSEN",
-        "fornavn": "MOR",
-        "mellomnavn": "HEISANN",
-        "fødselsnummer": "$fodselsnummer",
-        "aktørId": "12345",
-        "fødselsdato": "$fodselsdato",
-        "myndig": $myndig
-    }
-""".trimIndent()
-
-    @Test
-    fun `Hente soeker`() {
+    fun `Hente søker`() {
         requestAndAssert(
             httpMethod = HttpMethod.Get,
             path = "/soker",
@@ -223,19 +148,39 @@ class ApplicationTest {
             expectedResponse = null,
             expectedCode = HttpStatusCode.Accepted,
             cookie = cookie,
-            requestEntity = SoknadUtils.bodyMedFodselsnummerPaaBarn(
-                fodselsnummer = gyldigFodselsnummerA,
-                legeerklæringUrl = jpegUrl,
-                samværsavtaleUrl = pdfUrl
-            )
+            requestEntity = SøknadUtils.defaultSøknad.copy(
+                utbetalingsperioder = listOf(
+                    UtbetalingsperiodeUri(
+                        fraOgMed = LocalDate.now(),
+                        tilOgMed = LocalDate.now(),
+                        lengde = Duration.ofHours(6),
+                        legeærklæringer = listOf(URI(jpegUrl), URI(pdfUrl))
+                    ),
+                    UtbetalingsperiodeUri(
+                        fraOgMed = LocalDate.now().plusDays(10),
+                        tilOgMed = LocalDate.now().plusDays(15),
+                        legeærklæringer = listOf()
+                    )
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
+    fun `Sende søknad ikke innlogget`() {
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedCode = HttpStatusCode.Unauthorized,
+            expectedResponse = null,
+            requestEntity = SøknadUtils.defaultSøknad.somJson(),
+            leggTilCookie = false
         )
     }
 
     @Test
     fun `Sende soknad ikke myndig`() {
         val cookie = getAuthCookie(ikkeMyndigFnr)
-        val jpegUrl = engine.jpegUrl(cookie)
-        val pdfUrl = engine.pdUrl(cookie)
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
@@ -251,51 +196,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.Forbidden,
             cookie = cookie,
-            requestEntity = SoknadUtils.bodyMedFodselsnummerPaaBarn(
-                fodselsnummer = gyldigFodselsnummerA,
-                legeerklæringUrl = jpegUrl,
-                samværsavtaleUrl = pdfUrl
-            )
-        )
-    }
-
-    @Test //Denne testen fanger ikke opp om barnets navn blir satt eller ikke. Må undersøke loggen.
-    fun `Sende soknad med AktørID som ID på barnet`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-        val jpegUrl = engine.jpegUrl(cookie)
-        val pdfUrl = engine.pdUrl(cookie)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = "/soknad",
-            expectedResponse = null,
-            expectedCode = HttpStatusCode.Accepted,
-            cookie = cookie,
-            requestEntity = SoknadUtils.bodyMedAktoerIdPaaBarn(
-                aktoerId = "10000000001",
-                legeerklæringUrl = jpegUrl,
-                samværsavtaleUrl = pdfUrl,
-                barnetsNorskIdentifikator = null
-            )
-        )
-    }
-
-    @Test
-    fun `Sende soknad uten ID på barnet`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-        val jpegUrl = engine.jpegUrl(cookie)
-        val pdfUrl = engine.pdUrl(cookie)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = "/soknad",
-            expectedResponse = null,
-            expectedCode = HttpStatusCode.Accepted,
-            cookie = cookie,
-            requestEntity = SoknadUtils.bodyUtenIdPaaBarn(
-                legeerklæringUrl = jpegUrl,
-                samværsavtaleUrl = pdfUrl
-            )
+            requestEntity = SøknadUtils.defaultSøknad.somJson()
         )
     }
 
@@ -317,135 +218,66 @@ class ApplicationTest {
                 "instance": "about:blank",
                 "invalid_parameters": [{
                     "type": "entity",
-                    "name": "samværsavtale",
-                    "reason": "Mottok referanse til 1 vedlegg, men fant kun 0 vedlegg.",
-                    "invalid_value": ["$finnesIkkeUrl"]
+                    "name": "utbetalingsperioder",
+                    "reason": "Mottok referanse til 2 vedlegg, men fant kun 1 vedlegg.",
+                    "invalid_value": ["$jpegUrl", "$finnesIkkeUrl"]
                 }]
             }
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SoknadUtils.bodyMedFodselsnummerPaaBarn(
-                fodselsnummer = gyldigFodselsnummerA,
-                legeerklæringUrl = jpegUrl,
-                samværsavtaleUrl = finnesIkkeUrl
-            )
+            requestEntity= SøknadUtils.defaultSøknad.copy(
+                utbetalingsperioder = listOf(
+                    UtbetalingsperiodeUri(
+                        fraOgMed = LocalDate.now().plusDays(10),
+                        tilOgMed = LocalDate.now().plusDays(15),
+                        legeærklæringer = listOf(
+                            URI(jpegUrl),
+                            URI(finnesIkkeUrl)
+                        )
+                    )
+                )
+            ).somJson()
         )
     }
 
     @Test
     fun `Sende soknad med ugylidge parametre gir feil`() {
-        val forlangtNavn = SoknadUtils.forLangtNavn()
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",
             expectedCode = HttpStatusCode.BadRequest,
-            requestEntity =
-            //language=JSON
-            """{
-                  "nyVersjon": true,
-                  "språk": "nb",
-                  "arbeidssituasjon": [],
-                  "kroniskEllerFunksjonshemming": true,
-                  "barn": {
-                    "navn": "$forlangtNavn",
-                    "fødselsdato": "1990-09-26",
-                    "norskIdentifikator": "29099012345",
-                    "aktørId": "123456"
-                  },
-                  "sammeAddresse": true,
-                  "relasjonTilBarnet": "mor",
-                  "legeerklæring": [
-                    "http://localhost:8080/ikke-vedlegg/1"
-                  ],
-                  "samværsavtale": [
-                   "http://localhost:8080/vedlegg/2",
-                   null
-                  ],
-                  "medlemskap": {
-                    "harBoddIUtlandetSiste12Mnd": null,
-                    "skalBoIUtlandetNeste12Mnd": null,
-                    "utenlandsoppholdNeste12Mnd": [
-                      {
-                        "fraOgMed": "2020-01-31",
-                        "tilOgMed": "2020-01-31",
-                        "landkode": "dk",
-                        "landnavn": "danmark"
-                      }
-                    ]
-                  },
-                  "harForståttRettigheterOgPlikter": false,
-                  "harBekreftetOpplysninger": false
-                }
-                """.trimIndent(),
+            requestEntity = SøknadUtils.defaultSøknad.copy(
+                jaNei = listOf(),
+                utbetalingsperioder = listOf()
+            ).somJson(),
             expectedResponse = """
-                {
-                  "type": "/problem-details/invalid-request-parameters",
-                  "title": "invalid-request-parameters",
-                  "status": 400,
-                  "detail": "Requesten inneholder ugyldige paramtere.",
-                  "instance": "about:blank",
-                  "invalid_parameters": [
-                    {
-                      "type": "entity",
-                      "name": "barn.norskIdentifikator",
-                      "reason": "Ikke gyldig norskIdentifikator.",
-                      "invalid_value": "29099012345"
-                    },
-                    {
-                      "type": "entity",
-                      "name": "barn",
-                      "reason": "Kan kun sette 'aktørId' eller 'norskIdentifikator' på barnet.",
-                      "invalid_value": null
-                    },
-                    {
-                      "type": "entity",
-                      "name": "barn",
-                      "reason": "Ikke tillatt med barn som har både fødselsdato og norskIdentifikator.",
-                      "invalid_value": "29099012345"
-                    },
-                    {
-                      "type": "entity",
-                      "name": "barn.navn",
-                      "reason": "Navn på barnet kan ikke være tomt, og kan maks være 100 tegn.",
-                      "invalid_value": "DetteNavnetErForLangtDetteNavnetErForLangtDetteNavnetErForLangtDetteNavnetErForLangtDetteNavnetErForLangt"
-                    },
-                    {
-                      "type": "entity",
-                      "name": "arbeidssituasjon",
-                      "reason": "List over arbeidssituasjon kan ikke være tomt. Må inneholde minst 1 verdi.",
-                      "invalid_value": []
-                    },
-                    {
-                      "type": "entity",
-                      "name": "legeerklæring[0]",
-                      "reason": "Ikke gyldig vedlegg URL.",
-                      "invalid_value": "http://localhost:8080/ikke-vedlegg/1"
-                    },
-                    {
-                      "type": "entity",
-                      "name": "samværsavtale[1]",
-                      "reason": "Ikke gyldig vedlegg URL.",
-                      "invalid_value": null
-                    },
-                    {
-                      "type": "entity",
-                      "name": "harBekreftetOpplysninger",
-                      "reason": "Opplysningene må bekreftes for å sende inn søknad.",
-                      "invalid_value": false
-                    },
-                    {
-                      "type": "entity",
-                      "name": "harForståttRettigheterOgPlikter",
-                      "reason": "Må ha forstått rettigheter og plikter for å sende inn søknad.",
-                      "invalid_value": false
-                    }
-                  ]
-                }
+            {
+                "type": "/problem-details/invalid-request-parameters",
+                "title": "invalid-request-parameters",
+                "status": 400,
+                "detail": "Requesten inneholder ugyldige paramtere.",
+                "instance": "about:blank",
+                "invalid_parameters": [{
+                    "type": "entity",
+                    "name": "utbetalingsperioder",
+                    "reason": "Må settes minst en utbetalingsperiode.",
+                    "invalid_value": []
+                }, {
+                    "type": "entity",
+                    "name": "jaNei",
+                    "reason": "Spørsmål med id HarBekreftetOpplysninger må besvares for å sende inn søknaden.",
+                    "invalid_value": null
+                }, {
+                    "type": "entity",
+                    "name": "jaNei",
+                    "reason": "Spørsmål med id HarForståttRettigheterOgPlikter må besvares for å sende inn søknaden.",
+                    "invalid_value": null
+                }]
+            }
             """.trimIndent()
         )
     }
-
 
     @Test
     fun `Test haandtering av vedlegg`() {
@@ -482,7 +314,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `Test opplasting av ikke stottet vedleggformat`() {
+    fun `Test opplasting av ikke støttet vedleggformat`() {
         engine.handleRequestUploadImage(
             cookie = getAuthCookie(gyldigFodselsnummerA),
             vedlegg = "jwkset.json".fromResources().readBytes(),
@@ -531,4 +363,20 @@ class ApplicationTest {
             }
         }
     }
+
+    private fun expectedGetSokerJson(
+        fodselsnummer: String,
+        fodselsdato: String = "1997-05-25",
+        myndig: Boolean = true
+    ) = """
+    {
+        "etternavn": "MORSEN",
+        "fornavn": "MOR",
+        "mellomnavn": "HEISANN",
+        "fødselsnummer": "$fodselsnummer",
+        "aktørId": "12345",
+        "fødselsdato": "$fodselsdato",
+        "myndig": $myndig
+    }
+    """.trimIndent()
 }

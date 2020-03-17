@@ -4,7 +4,7 @@ import no.nav.helse.dusseldorf.ktor.core.ParameterType
 import no.nav.helse.dusseldorf.ktor.core.Violation
 
 data class JaNei(
-    val id: JaNeiId?,
+    val id: JaNeiId? = null,
     val spørsmål: String,
     val svar: JaNeiSvar
 )
@@ -27,7 +27,7 @@ internal fun List<JaNei>.valider() : Set<Violation> {
     filter { it.spørsmål.isBlank() }.forEachIndexed { index, jaNei ->
         violations.add(
             Violation(
-                parameterName = "ja_nei[$index].spørsmål",
+                parameterName = "jaNei[$index].spørsmål",
                 parameterType = ParameterType.ENTITY,
                 reason = "Spørsmål må være satt",
                 invalidValue = jaNei.spørsmål
@@ -39,7 +39,7 @@ internal fun List<JaNei>.valider() : Set<Violation> {
         if (find { id == it.id } == null) {
             violations.add(
                 Violation(
-                    parameterName = "ja_nei",
+                    parameterName = "jaNei",
                     parameterType = ParameterType.ENTITY,
                     reason = "Spørsmål med id $id må besvares for å sende inn søknaden.",
                     invalidValue = null
@@ -52,7 +52,7 @@ internal fun List<JaNei>.valider() : Set<Violation> {
     filter { it.id != null }.filter { it.svar == JaNeiSvar.Nei }.forEachIndexed { index, jaNei ->
         violations.add(
             Violation(
-                parameterName = "ja_nei[$index].svar",
+                parameterName = "jaNei[$index].svar",
                 parameterType = ParameterType.ENTITY,
                 reason = "Spørsmål med id ${jaNei.id} må besvares Ja for å sende inn søknad.",
                 invalidValue = JaNeiSvar.Nei

@@ -1,4 +1,4 @@
-package no.nav.helse
+package no.nav.omsorgspengerutbetaling
 
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import java.time.LocalDate
