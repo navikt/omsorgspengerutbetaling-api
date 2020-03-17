@@ -69,13 +69,13 @@ internal class SerDesTest {
                 UtbetalingsperiodeUri(
                     fraOgMed = start,
                     tilOgMed = start.plusDays(10),
-                    legeærklæringer = listOf(URI("http://localhost:8080/vedlegg/1"))
+                    legeerklæringer = listOf(URI("http://localhost:8080/vedlegg/1"))
                 ),
                 UtbetalingsperiodeUri(
                     fraOgMed = start.plusDays(20),
                     tilOgMed = start.plusDays(20),
                     lengde = Duration.ofHours(5).plusMinutes(30),
-                    legeærklæringer = listOf(URI("http://localhost:8080/vedlegg/2"), URI("http://localhost:8080/vedlegg/3"))
+                    legeerklæringer = listOf(URI("http://localhost:8080/vedlegg/2"), URI("http://localhost:8080/vedlegg/3"))
                 ),
                 UtbetalingsperiodeUri(
                     fraOgMed = start.plusDays(30),
@@ -125,17 +125,17 @@ internal class SerDesTest {
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
                 "lengde": null,
-                "legeærklæringer": ["http://localhost:8080/vedlegg/1"]
+                "legeerklæringer": ["http://localhost:8080/vedlegg/1"]
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
                 "lengde": "PT5H30M",
-                "legeærklæringer": ["http://localhost:8080/vedlegg/2", "http://localhost:8080/vedlegg/3"]
+                "legeerklæringer": ["http://localhost:8080/vedlegg/2", "http://localhost:8080/vedlegg/3"]
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
                 "lengde": null,
-                "legeærklæringer": []
+                "legeerklæringer": []
             }]
         }
         """.trimIndent()

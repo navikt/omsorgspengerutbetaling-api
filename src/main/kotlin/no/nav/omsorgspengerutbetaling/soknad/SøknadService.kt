@@ -38,14 +38,14 @@ internal class SøknadService(
         logger.trace("Henter legeerklæringer for ${søknad.utbetalingsperioder.size} utbetalingsperioder.")
 
         val utbetalingsperioder = søknad.utbetalingsperioder.map {
-            logger.trace("Henter ${it.legeærklæringer} legeerklæringer.")
+            logger.trace("Henter ${it.legeerklæringer} legeerklæringer.")
             UtbetalingsperiodeVedlegg(
                 fraOgMed = it.fraOgMed,
                 tilOgMed = it.tilOgMed,
                 lengde = it.lengde,
-                legeærklæringer = vedleggService.hentVedlegg(
+                legeerklæringer = vedleggService.hentVedlegg(
                     idToken = idToken,
-                    vedleggUrls = it.legeærklæringer,
+                    vedleggUrls = it.legeerklæringer,
                     callId = callId
                 )
             )
@@ -54,7 +54,7 @@ internal class SøknadService(
         logger.trace("Legeærkleringer hentet. Validerer dem.")
 
         val alleVedleggReferanser = søknad.utbetalingsperioder
-            .map { it.legeærklæringer }
+            .map { it.legeerklæringer }
             .flatten()
 
         utbetalingsperioder.valider(alleVedleggReferanser = alleVedleggReferanser)

@@ -25,7 +25,7 @@ data class Utbetalingsperiode<VedleggType>(
     @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
     val lengde: Duration? = null,
-    val legeærklæringer: List<VedleggType> = listOf()
+    val legeerklæringer: List<VedleggType> = listOf()
 )
 
 typealias UtbetalingsperiodeUri = Utbetalingsperiode<URI>
@@ -50,12 +50,12 @@ internal fun List<UtbetalingsperiodeUri>.valider() : Set<Violation> {
     violations.addAll(perioder.valider(Verktøy.JsonPath))
 
     mapIndexed { utbetalingsperiodeIndex, utbetalingsperiode ->
-        utbetalingsperiode.legeærklæringer.mapIndexed { legeærklæringIndex, uri ->
+        utbetalingsperiode.legeerklæringer.mapIndexed { legeærklæringIndex, uri ->
             // Kan oppstå uri = null etter Jackson deserialisering
             if (uri == null || !uri.path.matches(Verktøy.VedleggUrlRegex)) {
                 violations.add(
                     Violation(
-                        parameterName = "${Verktøy.JsonPath}[$utbetalingsperiodeIndex].legerklæringer[$legeærklæringIndex]",
+                        parameterName = "${Verktøy.JsonPath}[$utbetalingsperiodeIndex].legeerklæringer[$legeærklæringIndex]",
                         parameterType = ParameterType.ENTITY,
                         reason = "Ikke gyldig vedlegg URL.",
                         invalidValue = uri
@@ -68,7 +68,7 @@ internal fun List<UtbetalingsperiodeUri>.valider() : Set<Violation> {
 }
 
 internal fun List<UtbetalingsperiodeVedlegg>.valider(alleVedleggReferanser: List<URI>) {
-    val totaltAntallLastedeVedlegg = map { it.legeærklæringer}.flatten().size
+    val totaltAntallLastedeVedlegg = map { it.legeerklæringer}.flatten().size
 
     if (alleVedleggReferanser.size != totaltAntallLastedeVedlegg) {
         throw Throwblem(
@@ -86,7 +86,7 @@ internal fun List<UtbetalingsperiodeVedlegg>.valider(alleVedleggReferanser: List
     }
 
     val totalSize = map { periode ->
-        periode.legeærklæringer.sumBy { legeærklæring ->
+        periode.legeerklæringer.sumBy { legeærklæring ->
             legeærklæring.content.size
         }
     }.sum()

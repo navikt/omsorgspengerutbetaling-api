@@ -1,13 +1,5 @@
 package no.nav.omsorgspengerutbetaling
 
-import no.nav.helse.dusseldorf.ktor.core.Throwblem
-import no.nav.omsorgspengerutbetaling.soknad.*
-import org.junit.Test
-import java.net.URL
-import java.time.LocalDate
-import kotlin.test.assertTrue
-
-
 internal class SøknadValideringsTest {
 
     companion object {
@@ -17,7 +9,7 @@ internal class SøknadValideringsTest {
         private val dNummerA = "55125314561"
     }
 
-    // Test for lange navn..
+    // TODO: Legge til valideringstester fremfor flere tester i ApplicationTest
 
     fun forLangtNavn() =
         "DetteNavnetErForLangtDetteNavnetErForLangtDetteNavnetErForLangtDetteNavnetErForLangtDetteNavnetErForLangt"

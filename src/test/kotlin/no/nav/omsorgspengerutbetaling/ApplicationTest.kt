@@ -154,12 +154,12 @@ class ApplicationTest {
                         fraOgMed = LocalDate.now(),
                         tilOgMed = LocalDate.now(),
                         lengde = Duration.ofHours(6),
-                        legeærklæringer = listOf(URI(jpegUrl), URI(pdfUrl))
+                        legeerklæringer = listOf(URI(jpegUrl), URI(pdfUrl))
                     ),
                     UtbetalingsperiodeUri(
                         fraOgMed = LocalDate.now().plusDays(10),
                         tilOgMed = LocalDate.now().plusDays(15),
-                        legeærklæringer = listOf()
+                        legeerklæringer = listOf()
                     )
                 )
             ).somJson()
@@ -231,7 +231,7 @@ class ApplicationTest {
                     UtbetalingsperiodeUri(
                         fraOgMed = LocalDate.now().plusDays(10),
                         tilOgMed = LocalDate.now().plusDays(15),
-                        legeærklæringer = listOf(
+                        legeerklæringer = listOf(
                             URI(jpegUrl),
                             URI(finnesIkkeUrl)
                         )
