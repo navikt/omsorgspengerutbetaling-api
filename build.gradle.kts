@@ -1,18 +1,19 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "1.3.0.b7013ab"
+val dusseldorfKtorVersion = "1.3.2.e71617b"
 val ktorVersion = ext.get("ktorVersion").toString()
 val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
+val lettuceVersion = "5.2.2.RELEASE"
 
 plugins {
-    kotlin("jvm") version "1.3.50"
-    id("com.github.johnrengelman.shadow") version "5.1.0"
+    kotlin("jvm") version "1.3.70"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/master/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/e71617ba8509178ddf18e79b9f9ddac0ac9dcb4e/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -22,15 +23,17 @@ dependencies {
     compile ( "no.nav.helse:dusseldorf-ktor-metrics:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-ktor-health:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-ktor-auth:$dusseldorfKtorVersion")
-    compile("io.ktor:ktor-locations:$ktorVersion")
+    compile ("io.ktor:ktor-locations:$ktorVersion")
 
     // Client
     compile ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-oauth2-client:$dusseldorfKtorVersion")
-    compile ("io.lettuce:lettuce-core:5.2.1.RELEASE")
-    implementation("com.github.fppt:jedis-mock:0.1.16")
+
+    // Redis
+    compile ("io.lettuce:lettuce-core:$lettuceVersion")
 
     // Test
+    testImplementation("com.github.fppt:jedis-mock:0.1.16")
     testCompile("no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testCompile("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
@@ -86,5 +89,5 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "5.6.2"
+    gradleVersion = "6.2.2"
 }

@@ -3,7 +3,6 @@ package no.nav.omsorgspengerutbetaling
 import io.ktor.config.ApplicationConfig
 import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.ktor.core.getOptionalList
-import no.nav.helse.dusseldorf.ktor.core.getOptionalString
 import no.nav.helse.dusseldorf.ktor.core.getRequiredList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredString
 import no.nav.omsorgspengerutbetaling.general.auth.ApiGatewayApiKey
@@ -44,8 +43,8 @@ data class Configuration(val config : ApplicationConfig) {
 
     private fun getScopesFor(operation: String) = config.getRequiredList("nav.auth.scopes.$operation", secret = false, builder = { it }).toSet()
     internal fun getSendSoknadTilProsesseringScopes() = getScopesFor("sende-soknad-til-prosessering")
-    internal fun getRedisPort() = config.getOptionalString("nav.redis.port", secret = false)
-    internal fun getRedisHost() = config.getOptionalString("nav.redis.host", secret = false)
+    internal fun getRedisPort() = config.getRequiredString("nav.redis.port", secret = false).toInt()
+    internal fun getRedisHost() = config.getRequiredString("nav.redis.host", secret = false)
 
     internal fun getStoragePassphrase() : String {
         return config.getRequiredString("nav.storage.passphrase", secret = true)

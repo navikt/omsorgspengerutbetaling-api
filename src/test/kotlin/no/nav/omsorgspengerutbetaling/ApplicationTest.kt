@@ -1,5 +1,6 @@
 package no.nav.omsorgspengerutbetaling
 
+import com.github.fppt.jedismock.RedisServer
 import com.github.tomakehurst.wiremock.http.Cookie
 import com.typesafe.config.ConfigFactory
 import io.ktor.config.ApplicationConfig
@@ -13,14 +14,13 @@ import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.getAuthCookie
-import no.nav.omsorgspengerutbetaling.redis.RedisMockUtil
+import no.nav.omsorgspengerutbetaling.mellomlagring.started
 import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.time.Duration
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -28,7 +28,6 @@ import kotlin.test.assertTrue
 
 private const val fnr = "290990123456"
 private const val ikkeMyndigFnr = "12125012345"
-private val oneMinuteInMillis = Duration.ofMinutes(1).toMillis()
 // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
 private val gyldigFodselsnummerA = "02119970078"
 private val ikkeMyndigDato = "2050-12-12"
@@ -54,10 +53,17 @@ class ApplicationTest {
             .stubK9OppslagBarn()
             .stubK9Dokument()
 
+        val redisServer: RedisServer = RedisServer
+            .newRedisServer(6379)
+            .started()
+
         fun getConfig(): ApplicationConfig {
 
             val fileConfig = ConfigFactory.load()
-            val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer))
+            val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(
+                wireMockServer = wireMockServer,
+                redisServer = redisServer
+            ))
             val mergedConfig = testConfig.withFallback(fileConfig)
 
             return HoconApplicationConfig(mergedConfig)
@@ -80,7 +86,7 @@ class ApplicationTest {
         fun tearDown() {
             logger.info("Tearing down")
             wireMockServer.stop()
-            RedisMockUtil.stopRedisMocked()
+            redisServer.stop()
             logger.info("Tear down complete")
         }
     }
