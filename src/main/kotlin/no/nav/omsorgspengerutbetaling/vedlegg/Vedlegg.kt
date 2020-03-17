@@ -3,7 +3,7 @@ package no.nav.omsorgspengerutbetaling.vedlegg
 data class Vedlegg(
     val content: ByteArray,
     val contentType: String,
-    val title: String
+    var title: String
 
 ) {
     override fun equals(other: Any?): Boolean {

@@ -71,18 +71,18 @@ internal class SerDesTest {
                 )
             ),
             utbetalingsperioder = listOf(
-                UtbetalingsperiodeUri(
+                UtbetalingsperiodeMedVedlegg(
                     fraOgMed = start,
                     tilOgMed = start.plusDays(10),
                     legeerklæringer = listOf(URI("http://localhost:8080/vedlegg/1"))
                 ),
-                UtbetalingsperiodeUri(
+                UtbetalingsperiodeMedVedlegg(
                     fraOgMed = start.plusDays(20),
                     tilOgMed = start.plusDays(20),
                     lengde = Duration.ofHours(5).plusMinutes(30),
                     legeerklæringer = listOf(URI("http://localhost:8080/vedlegg/2"), URI("http://localhost:8080/vedlegg/3"))
                 ),
-                UtbetalingsperiodeUri(
+                UtbetalingsperiodeMedVedlegg(
                     fraOgMed = start.plusDays(30),
                     tilOgMed = start.plusDays(35)
                 )

@@ -16,7 +16,7 @@ internal object SøknadUtils {
             SpørsmålOgSvar(id = SpørsmålId.HarForståttRettigheterOgPlikter, spørsmål = "HarForståttRettigheterOgPlikter?", svar = Svar.Ja)
         ),
         utbetalingsperioder = listOf(
-            Utbetalingsperiode(
+            UtbetalingsperiodeMedVedlegg(
                 fraOgMed = LocalDate.now(),
                 tilOgMed = LocalDate.now().plusDays(5)
             )

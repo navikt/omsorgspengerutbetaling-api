@@ -21,18 +21,25 @@ private object Verktøy{
     )
 }
 
-data class Utbetalingsperiode<VedleggType>(
+data class UtbetalingsperiodeMedVedlegg(
     @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
     val lengde: Duration? = null,
-    val legeerklæringer: List<VedleggType> = listOf()
+    val legeerklæringer: List<URI> = listOf()
 )
 
-typealias UtbetalingsperiodeUri = Utbetalingsperiode<URI>
-typealias UtbetalingsperiodeVedlegg = Utbetalingsperiode<Vedlegg>
+internal fun UtbetalingsperiodeMedVedlegg.somPeriode() = Periode(
+    fraOgMed = fraOgMed,
+    tilOgMed = tilOgMed
+)
 
+data class UtbetalingsperiodeUtenVedlegg(
+    @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
+    val lengde: Duration?
+)
 
-internal fun List<UtbetalingsperiodeUri>.valider() : Set<Violation> {
+internal fun List<UtbetalingsperiodeMedVedlegg>.valider() : Set<Violation> {
     val violations = mutableSetOf<Violation>()
 
     if (isEmpty()) {
@@ -46,7 +53,7 @@ internal fun List<UtbetalingsperiodeUri>.valider() : Set<Violation> {
         )
     }
 
-    val perioder = map { Periode(fraOgMed = it.fraOgMed, tilOgMed = it.tilOgMed) }
+    val perioder = map { it.somPeriode() }
     violations.addAll(perioder.valider(Verktøy.JsonPath))
 
     mapIndexed { utbetalingsperiodeIndex, utbetalingsperiode ->
@@ -67,17 +74,16 @@ internal fun List<UtbetalingsperiodeUri>.valider() : Set<Violation> {
     return violations
 }
 
-internal fun List<UtbetalingsperiodeVedlegg>.valider(alleVedleggReferanser: List<URI>) {
-    val totaltAntallLastedeVedlegg = map { it.legeerklæringer}.flatten().size
+internal fun List<Vedlegg>.valider(alleVedleggReferanser: List<URI>) {
 
-    if (alleVedleggReferanser.size != totaltAntallLastedeVedlegg) {
+    if (alleVedleggReferanser.size != size) {
         throw Throwblem(
             ValidationProblemDetails(
                 violations = setOf(
                     Violation(
                         parameterName = Verktøy.JsonPath,
                         parameterType = ParameterType.ENTITY,
-                        reason = "Mottok referanse til ${alleVedleggReferanser.size} vedlegg, men fant kun $totaltAntallLastedeVedlegg vedlegg.",
+                        reason = "Mottok referanse til ${alleVedleggReferanser.size} vedlegg, men fant kun $size vedlegg.",
                         invalidValue = alleVedleggReferanser
                     )
                 )
@@ -85,11 +91,7 @@ internal fun List<UtbetalingsperiodeVedlegg>.valider(alleVedleggReferanser: List
         )
     }
 
-    val totalSize = map { periode ->
-        periode.legeerklæringer.sumBy { legeærklæring ->
-            legeærklæring.content.size
-        }
-    }.sum()
+    val totalSize = sumBy { it.content.size }
 
     if (totalSize > Verktøy.MAX_VEDLEGG_SIZE) {
         throw Throwblem(Verktøy.VedleggTooLargeProblemDetails)

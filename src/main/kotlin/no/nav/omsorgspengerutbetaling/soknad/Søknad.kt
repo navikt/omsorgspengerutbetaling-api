@@ -7,7 +7,7 @@ data class Søknad(
     val bosteder: List<Bosted>,
     val opphold: List<Opphold>,
     val spørsmål: List<SpørsmålOgSvar>,
-    val utbetalingsperioder: List<UtbetalingsperiodeUri>
+    val utbetalingsperioder: List<UtbetalingsperiodeMedVedlegg>
 )
 
 enum class Språk(@JsonValue val språk: String) {

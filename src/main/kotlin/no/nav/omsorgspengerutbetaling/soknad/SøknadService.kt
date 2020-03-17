@@ -38,18 +38,22 @@ internal class SøknadService(
         logger.trace("Henter legeerklæringer for ${søknad.utbetalingsperioder.size} utbetalingsperioder.")
 
         val utbetalingsperioder = søknad.utbetalingsperioder.map {
-            logger.trace("Henter ${it.legeerklæringer} legeerklæringer.")
-            UtbetalingsperiodeVedlegg(
+            UtbetalingsperiodeUtenVedlegg(
                 fraOgMed = it.fraOgMed,
                 tilOgMed = it.tilOgMed,
-                lengde = it.lengde,
-                legeerklæringer = vedleggService.hentVedlegg(
-                    idToken = idToken,
-                    vedleggUrls = it.legeerklæringer,
-                    callId = callId
-                )
+                lengde = it.lengde
             )
         }
+
+        val vedlegg = søknad.utbetalingsperioder.map { utbetalingsperioder ->
+            logger.trace("Henter ${utbetalingsperioder.legeerklæringer} legeerklæringer.")
+            val periode = utbetalingsperioder.somPeriode()
+            vedleggService.hentVedlegg(
+                idToken = idToken,
+                callId = callId,
+                vedleggUrls = utbetalingsperioder.legeerklæringer
+            ).onEach { vedlegg -> vedlegg.title = "$periode: Legeerklæring" }
+        }.flatten()
 
         logger.trace("Legeærkleringer hentet. Validerer dem.")
 
@@ -57,7 +61,7 @@ internal class SøknadService(
             .map { it.legeerklæringer }
             .flatten()
 
-        utbetalingsperioder.valider(alleVedleggReferanser = alleVedleggReferanser)
+        vedlegg.valider(alleVedleggReferanser = alleVedleggReferanser)
 
         logger.info("Legger søknad til prosessering")
 
@@ -68,7 +72,8 @@ internal class SøknadService(
             bosteder = søknad.bosteder,
             opphold = søknad.opphold,
             spørsmål = søknad.spørsmål,
-            utbetalingsperioder = utbetalingsperioder
+            utbetalingsperioder = utbetalingsperioder,
+            vedlegg = vedlegg
         )
 
         omsorgpengesøknadMottakGateway.leggTilProsessering(

@@ -14,7 +14,7 @@ import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
-import no.nav.omsorgspengerutbetaling.soknad.UtbetalingsperiodeUri
+import no.nav.omsorgspengerutbetaling.soknad.UtbetalingsperiodeMedVedlegg
 import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -150,13 +150,13 @@ class ApplicationTest {
             cookie = cookie,
             requestEntity = SøknadUtils.defaultSøknad.copy(
                 utbetalingsperioder = listOf(
-                    UtbetalingsperiodeUri(
+                    UtbetalingsperiodeMedVedlegg(
                         fraOgMed = LocalDate.now(),
                         tilOgMed = LocalDate.now(),
                         lengde = Duration.ofHours(6),
                         legeerklæringer = listOf(URI(jpegUrl), URI(pdfUrl))
                     ),
-                    UtbetalingsperiodeUri(
+                    UtbetalingsperiodeMedVedlegg(
                         fraOgMed = LocalDate.now().plusDays(10),
                         tilOgMed = LocalDate.now().plusDays(15),
                         legeerklæringer = listOf()
@@ -228,7 +228,7 @@ class ApplicationTest {
             cookie = cookie,
             requestEntity= SøknadUtils.defaultSøknad.copy(
                 utbetalingsperioder = listOf(
-                    UtbetalingsperiodeUri(
+                    UtbetalingsperiodeMedVedlegg(
                         fraOgMed = LocalDate.now().plusDays(10),
                         tilOgMed = LocalDate.now().plusDays(15),
                         legeerklæringer = listOf(
