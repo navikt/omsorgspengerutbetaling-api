@@ -11,9 +11,9 @@ internal object SøknadUtils {
         språk = Språk.BOKMÅL,
         bosteder = listOf(),
         opphold = listOf(),
-        jaNei = listOf(
-            JaNei(id = JaNeiId.HarBekreftetOpplysninger, spørsmål = "HarBekreftetOpplysninger?", svar = JaNeiSvar.Ja),
-            JaNei(id = JaNeiId.HarForståttRettigheterOgPlikter, spørsmål = "HarForståttRettigheterOgPlikter?", svar = JaNeiSvar.Ja)
+        spørsmål = listOf(
+            SpørsmålOgSvar(id = SpørsmålId.HarBekreftetOpplysninger, spørsmål = "HarBekreftetOpplysninger?", svar = Svar.Ja),
+            SpørsmålOgSvar(id = SpørsmålId.HarForståttRettigheterOgPlikter, spørsmål = "HarForståttRettigheterOgPlikter?", svar = Svar.Ja)
         ),
         utbetalingsperioder = listOf(
             Utbetalingsperiode(

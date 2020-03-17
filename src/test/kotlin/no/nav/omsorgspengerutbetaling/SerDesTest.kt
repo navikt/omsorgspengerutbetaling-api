@@ -49,20 +49,25 @@ internal class SerDesTest {
                     landkode = "CRO"
                 )
             ),
-            jaNei = listOf(
-                JaNei(
-                    id = JaNeiId.HarForståttRettigheterOgPlikter,
+            spørsmål = listOf(
+                SpørsmålOgSvar(
+                    id = SpørsmålId.HarForståttRettigheterOgPlikter,
                     spørsmål = "HarForståttRettigheterOgPlikter?",
-                    svar = JaNeiSvar.Ja
+                    svar = Svar.Ja
                 ),
-                JaNei(
-                    id = JaNeiId.HarBekreftetOpplysninger,
+                SpørsmålOgSvar(
+                    id = SpørsmålId.HarBekreftetOpplysninger,
                     spørsmål = "HarBekreftetOpplysninger?",
-                    svar = JaNeiSvar.Ja
+                    svar = Svar.Ja
                 ),
-                JaNei(
+                SpørsmålOgSvar(
                     spørsmål = "Har du vært hjemme?",
-                    svar = JaNeiSvar.Nei
+                    svar = Svar.Nei
+                ),
+                SpørsmålOgSvar(
+                    spørsmål = "Skal du være hjemme?",
+                    svar = Svar.VetIkke,
+                    fritekst = "Umulig å si"
                 )
             ),
             utbetalingsperioder = listOf(
@@ -108,18 +113,26 @@ internal class SerDesTest {
                 "landkode": "CRO",
                 "landnavn": "Kroatia"
             }],
-            "jaNei": [{
+            "spørsmål": [{
                 "id": "HarForståttRettigheterOgPlikter",
                 "spørsmål": "HarForståttRettigheterOgPlikter?",
-                "svar": "Ja"
+                "svar": "Ja",
+                "fritekst": null
             }, {
                 "id": "HarBekreftetOpplysninger",
                 "spørsmål": "HarBekreftetOpplysninger?",
-                "svar": "Ja"
+                "svar": "Ja",
+                "fritekst": null
             }, {
                 "id": null,
                 "spørsmål": "Har du vært hjemme?",
-                "svar": "Nei"
+                "svar": "Nei",
+                "fritekst": null
+            }, {
+                "id": null,
+                "spørsmål": "Skal du være hjemme?",
+                "svar": "VetIkke",
+                "fritekst": "Umulig å si"
             }],
             "utbetalingsperioder": [{
                 "fraOgMed": "2020-01-01",

@@ -9,6 +9,6 @@ data class KomplettSoknad(
     val språk: Språk,
     val bosteder: List<Bosted>,
     val opphold: List<Opphold>,
-    val jaNei: List<JaNei>,
+    val spørsmål: List<SpørsmålOgSvar>,
     val utbetalingsperioder: List<UtbetalingsperiodeVedlegg>
 )

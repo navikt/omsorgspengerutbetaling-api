@@ -248,7 +248,7 @@ class ApplicationTest {
             path = "/soknad",
             expectedCode = HttpStatusCode.BadRequest,
             requestEntity = SøknadUtils.defaultSøknad.copy(
-                jaNei = listOf(),
+                spørsmål = listOf(),
                 utbetalingsperioder = listOf()
             ).somJson(),
             expectedResponse = """
@@ -265,12 +265,12 @@ class ApplicationTest {
                     "invalid_value": []
                 }, {
                     "type": "entity",
-                    "name": "jaNei",
+                    "name": "spørsmål",
                     "reason": "Spørsmål med id HarBekreftetOpplysninger må besvares for å sende inn søknaden.",
                     "invalid_value": null
                 }, {
                     "type": "entity",
-                    "name": "jaNei",
+                    "name": "spørsmål",
                     "reason": "Spørsmål med id HarForståttRettigheterOgPlikter må besvares for å sende inn søknaden.",
                     "invalid_value": null
                 }]

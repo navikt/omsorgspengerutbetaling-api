@@ -67,9 +67,8 @@ internal class SøknadService(
             søker = søker,
             bosteder = søknad.bosteder,
             opphold = søknad.opphold,
-            jaNei = søknad.jaNei,
+            spørsmål = søknad.spørsmål,
             utbetalingsperioder = utbetalingsperioder
-
         )
 
         omsorgpengesøknadMottakGateway.leggTilProsessering(
