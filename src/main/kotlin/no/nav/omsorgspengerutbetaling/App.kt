@@ -1,6 +1,7 @@
 package no.nav.omsorgspengerutbetaling
 
 import com.auth0.jwk.JwkProviderBuilder
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.*
@@ -31,9 +32,6 @@ import no.nav.helse.dusseldorf.ktor.jackson.JacksonStatusPages
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.dusseldorf.ktor.metrics.init
-import no.nav.omsorgspengerutbetaling.barn.BarnGateway
-import no.nav.omsorgspengerutbetaling.barn.BarnService
-import no.nav.omsorgspengerutbetaling.barn.barnApis
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.auth.authorizationStatusPages
 import no.nav.omsorgspengerutbetaling.general.systemauth.AccessTokenClientResolver
@@ -72,9 +70,7 @@ fun Application.omsorgpengesoknadapi() {
 
     install(ContentNegotiation) {
         jackson {
-            dusseldorfConfigured()
-                .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
-                .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
+            omsorgspengerKonfiguert()
         }
     }
 
@@ -145,10 +141,6 @@ fun Application.omsorgpengesoknadapi() {
             apiGatewayApiKey = apiGatewayApiKey
         )
 
-        val barnGateway = BarnGateway(
-            baseUrl = configuration.getK9OppslagUrl(),
-            apiGatewayApiKey = apiGatewayApiKey
-        )
 
         val søkerService = SøkerService(
             søkerGateway = sokerGateway
@@ -158,13 +150,6 @@ fun Application.omsorgpengesoknadapi() {
 
             søkerApis(
                 søkerService = søkerService,
-                idTokenProvider = idTokenProvider
-            )
-
-            barnApis(
-                barnService = BarnService(
-                    barnGateway = barnGateway
-                ),
                 idTokenProvider = idTokenProvider
             )
 
@@ -241,3 +226,7 @@ fun Application.omsorgpengesoknadapi() {
         }
     }
 }
+
+internal fun ObjectMapper.omsorgspengerKonfiguert() = dusseldorfConfigured()
+    .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
+    .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)

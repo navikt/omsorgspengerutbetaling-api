@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.extension.Parameters
 import com.github.tomakehurst.wiremock.extension.ResponseTransformer
 import com.github.tomakehurst.wiremock.http.Request
 import com.github.tomakehurst.wiremock.http.Response
-import no.nav.helse.TestUtils
+import no.nav.omsorgspengerutbetaling.TestUtils
 
 class SokerResponseTransformer : ResponseTransformer() {
     override fun transform(

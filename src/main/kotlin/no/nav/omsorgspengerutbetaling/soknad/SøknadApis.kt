@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory
 private val logger: Logger = LoggerFactory.getLogger("nav.soknadApis")
 
 @KtorExperimentalLocationsAPI
-fun Route.søknadApis(
+internal fun Route.søknadApis(
     søknadService: SøknadService,
     idTokenProvider: IdTokenProvider
 ) {

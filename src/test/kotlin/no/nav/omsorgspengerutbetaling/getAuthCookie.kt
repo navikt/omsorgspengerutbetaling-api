@@ -1,4 +1,4 @@
-package no.nav.helse
+package no.nav.omsorgspengerutbetaling
 
 import com.github.tomakehurst.wiremock.http.Cookie
 import no.nav.helse.dusseldorf.testsupport.jws.LoginService

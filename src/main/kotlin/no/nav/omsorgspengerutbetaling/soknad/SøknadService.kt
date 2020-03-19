@@ -11,8 +11,7 @@ import org.slf4j.LoggerFactory
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
-
-class SøknadService(
+internal class SøknadService(
     private val omsorgpengesøknadMottakGateway: OmsorgpengesøknadMottakGateway,
     private val søkerService: SøkerService,
     private val vedleggService: VedleggService
@@ -22,44 +21,47 @@ class SøknadService(
         private val logger: Logger = LoggerFactory.getLogger(SøknadService::class.java)
     }
 
-    suspend fun registrer(
+    internal suspend fun registrer(
         søknad: Søknad,
         idToken: IdToken,
-        callId: CallId
-    ) {
-        logger.info("Registrerer søknad. Henter søker")
+        callId: CallId) {
+        logger.trace("Registrerer søknad. Henter søker")
+
         val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
 
-        logger.info("Søker hentet. Validerer søker.")
+        logger.trace("Søker hentet. Validerer søker.")
+
         søker.validate()
 
-        logger.info("Søker Validert.")
-        logger.info("Henter ${søknad.legeerklæring.size} legeerklæringsvedlegg.")
-        val legeerklæring = vedleggService.hentVedlegg(
-            idToken = idToken,
-            vedleggUrls = søknad.legeerklæring,
-            callId = callId
-        )
+        logger.trace("Søker Validert.")
 
-        søknad.samværsavtale?.let { logger.info("Henter ${søknad.samværsavtale.size} samværsavtalevedlegg.") }
-        val samværsavtale = when {
-            !søknad.samværsavtale.isNullOrEmpty() -> {
-                val samværsavtalevedlegg = vedleggService.hentVedlegg(
-                    idToken = idToken,
-                    vedleggUrls = søknad.samværsavtale,
-                    callId = callId
-                )
-                logger.info("Hentet ${samværsavtalevedlegg.size} samværsavtalevedlegg.")
-                samværsavtalevedlegg
-            }
-            else -> listOf()
+        logger.trace("Henter legeerklæringer for ${søknad.utbetalingsperioder.size} utbetalingsperioder.")
+
+        val utbetalingsperioder = søknad.utbetalingsperioder.map {
+            UtbetalingsperiodeUtenVedlegg(
+                fraOgMed = it.fraOgMed,
+                tilOgMed = it.tilOgMed,
+                lengde = it.lengde
+            )
         }
 
-        logger.info("Vedlegg hentet. Validerer vedleggene.")
-        legeerklæring.validerLegeerklæring(søknad.legeerklæring)
-        søknad.samværsavtale?.let { samværsavtale.validerSamværsavtale(it) }
-        val alleVedlegg = listOf(*legeerklæring.toTypedArray(), *samværsavtale.toTypedArray())
-        alleVedlegg.validerTotalStørresle()
+        val vedlegg = søknad.utbetalingsperioder.map { utbetalingsperioder ->
+            logger.trace("Henter ${utbetalingsperioder.legeerklæringer} legeerklæringer.")
+            val periode = utbetalingsperioder.somPeriode()
+            vedleggService.hentVedlegg(
+                idToken = idToken,
+                callId = callId,
+                vedleggUrls = utbetalingsperioder.legeerklæringer
+            ).onEach { vedlegg -> vedlegg.title = "$periode: Legeerklæring" }
+        }.flatten()
+
+        logger.trace("Legeærkleringer hentet. Validerer dem.")
+
+        val alleVedleggReferanser = søknad.utbetalingsperioder
+            .map { it.legeerklæringer }
+            .flatten()
+
+        vedlegg.valider(alleVedleggReferanser = alleVedleggReferanser)
 
         logger.info("Legger søknad til prosessering")
 
@@ -67,22 +69,11 @@ class SøknadService(
             språk = søknad.språk,
             mottatt = ZonedDateTime.now(ZoneOffset.UTC),
             søker = søker,
-            barn = BarnDetaljer(
-                fødselsdato = søknad.barn.fødselsdato,
-                aktørId = søknad.barn.aktørId,
-                navn = søknad.barn.navn,
-                norskIdentifikator = søknad.barn.norskIdentifikator
-            ),
-            legeerklæring = legeerklæring,
-            samværsavtale = samværsavtale,
-            medlemskap = søknad.medlemskap,
-            relasjonTilBarnet = søknad.relasjonTilBarnet,
-            harBekreftetOpplysninger = søknad.harBekreftetOpplysninger,
-            harForståttRettigheterOgPlikter = søknad.harForståttRettigheterOgPlikter,
-            arbeidssituasjon = søknad.arbeidssituasjon,
-            kroniskEllerFunksjonshemming = søknad.kroniskEllerFunksjonshemming,
-            nyVersjon = søknad.nyVersjon,
-            sammeAdresse = søknad.sammeAdresse
+            bosteder = søknad.bosteder,
+            opphold = søknad.opphold,
+            spørsmål = søknad.spørsmål,
+            utbetalingsperioder = utbetalingsperioder,
+            vedlegg = vedlegg
         )
 
         omsorgpengesøknadMottakGateway.leggTilProsessering(
@@ -92,16 +83,9 @@ class SøknadService(
 
         logger.trace("Søknad lagt til prosessering. Sletter vedlegg.")
 
-        søknad.samværsavtale?.let {
-            vedleggService.slettVedleg(
-                vedleggUrls = it,
-                callId = callId,
-                idToken = idToken
-            )
-        }
 
         vedleggService.slettVedleg(
-            vedleggUrls = søknad.legeerklæring,
+            vedleggUrls = alleVedleggReferanser,
             callId = callId,
             idToken = idToken
         )
