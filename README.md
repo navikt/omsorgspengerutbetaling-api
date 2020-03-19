@@ -31,6 +31,181 @@ Denne tjenesten understøtter søknadsprosessen, samt eksponerer endepunkt for i
 # 6. Kode
 
 # 7. Data
+## Full Søknad - Innkommende
+````json
+{
+  "språk": "nb",
+  "bosteder": [
+    {
+      "fraOgMed": "2020-02-28",
+      "tilOgMed": "2020-03-09",
+      "landkode": "GB",
+      "landnavn": "Great Britain"
+    }
+  ],
+  "opphold": [
+    {
+      "fraOgMed": "2020-02-28",
+      "tilOgMed": "2020-03-09",
+      "landkode": "GB",
+      "landnavn": "Great Britain"
+    }
+  ],
+  "spørsmål": [
+    {
+      "id": "HarBekreftetOpplysninger",
+      "spørsmål": "HarBekreftetOpplysninger?",
+      "svar": "Ja",
+      "fritekst": null
+    },
+    {
+      "id": "HarForståttRettigheterOgPlikter",
+      "spørsmål": "HarForståttRettigheterOgPlikter?",
+      "svar": "Ja",
+      "fritekst": null
+    }
+  ],
+  "utbetalingsperioder": [
+    {
+      "fraOgMed": "2020-03-19",
+      "tilOgMed": "2020-03-24",
+      "lengde": null,
+      "legeerklæringer": ["http://localhost:8080/vedlegg/1","http://localhost:8080/vedlegg/2"]
+    }
+  ],
+  "harHattInntektSomFrilanser": true,
+  "frilans": {
+    "startdato": "2020-03-19",
+    "jobberFortsattSomFrilans": true
+  },
+  "harHattInntektSomSelvstendigNaringsdrivende": true,
+  "selvstendigVirksomheter": [
+    {
+      "naringstype": [
+        "JORDBRUK_SKOGBRUK"
+      ],
+      "fiskerErPåBladB": null,
+      "fraOgMed": "2020-03-18",
+      "tilOgMed": "2020-03-19",
+      "erPagaende": false,
+      "naringsinntekt": 123123,
+      "navnPaVirksomheten": "TullOgTøys",
+      "organisasjonsnummer": "101010",
+      "registrertINorge": true,
+      "registrertILand": null,
+      "harBlittYrkesaktivSisteTreFerdigliknendeArene": null,
+      "yrkesaktivSisteTreFerdigliknedeArene": {
+        "oppstartsdato": "2020-03-19"
+      },
+      "harVarigEndringAvInntektSiste4Kalenderar": false,
+      "varigEndring": null,
+      "harRegnskapsforer": true,
+      "regnskapsforer": {
+        "navn": "Kjell",
+        "telefon": "84554",
+        "erNarVennFamilie": false
+      },
+      "harRevisor": false,
+      "revisor": null
+    }
+  ]
+}
+````
+
+## Full Søknad - Utgående
+````json
+{
+  "mottatt": "2020-03-19T16:08:37.549739+01:00",
+  "språk": "nb",
+  "søker": {
+    "aktørId": "123456",
+    "fødselsdato": "1999-11-02",
+    "fødselsnummer": "02119970078",
+    "fornavn": "Ola",
+    "mellomnavn": null,
+    "etternavn": "Nordmann",
+    "myndig": true
+  },
+  "bosteder": [
+    {
+      "fraOgMed": "2020-02-28",
+      "tilOgMed": "2020-03-09",
+      "landkode": "GB",
+      "landnavn": "Great Britain"
+    }
+  ],
+  "opphold": [
+    {
+      "fraOgMed": "2020-02-28",
+      "tilOgMed": "2020-03-09",
+      "landkode": "GB",
+      "landnavn": "Great Britain"
+    }
+  ],
+  "spørsmål": [
+    {
+      "id": "HarBekreftetOpplysninger",
+      "spørsmål": "HarBekreftetOpplysninger?",
+      "svar": "Ja",
+      "fritekst": null
+    },
+    {
+      "id": "HarForståttRettigheterOgPlikter",
+      "spørsmål": "HarForståttRettigheterOgPlikter?",
+      "svar": "Ja",
+      "fritekst": null
+    }
+  ],
+  "utbetalingsperioder": [
+    {
+      "fraOgMed": "2020-03-19",
+      "tilOgMed": "2020-03-24",
+      "lengde": "PT7H30M"
+    }
+  ],
+  "vedlegg": [
+    {
+      "content": "ZGV0dGUgZXIgZXQgYmlsZGUgOnA=",
+      "contentType": "img/pdf",
+      "title": "Navn på fil"
+    }
+  ],
+  "frilans": {
+    "startdato": "2020-03-19",
+    "jobberFortsattSomFrilans": true
+  },
+  "selvstendigVirksomheter": [
+    {
+      "naringstype": [
+        "JORDBRUK_SKOGBRUK"
+      ],
+      "fiskerErPåBladB": null,
+      "fraOgMed": "2020-03-18",
+      "tilOgMed": "2020-03-19",
+      "erPagaende": false,
+      "naringsinntekt": 123123,
+      "navnPaVirksomheten": "TullOgTøys",
+      "organisasjonsnummer": "101010",
+      "registrertINorge": true,
+      "registrertILand": null,
+      "harBlittYrkesaktivSisteTreFerdigliknendeArene": null,
+      "yrkesaktivSisteTreFerdigliknedeArene": {
+        "oppstartsdato": "2020-03-19"
+      },
+      "harVarigEndringAvInntektSiste4Kalenderar": false,
+      "varigEndring": null,
+      "harRegnskapsforer": true,
+      "regnskapsforer": {
+        "navn": "Kjell",
+        "telefon": "84554",
+        "erNarVennFamilie": false
+      },
+      "harRevisor": false,
+      "revisor": null
+    }
+  ]
+}
+````
 
 # 8. Infrastrukturarkitektur
 

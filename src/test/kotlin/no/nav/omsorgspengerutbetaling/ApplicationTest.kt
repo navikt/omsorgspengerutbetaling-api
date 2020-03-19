@@ -14,7 +14,7 @@ import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
-import no.nav.omsorgspengerutbetaling.soknad.UtbetalingsperiodeMedVedlegg
+import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -31,6 +31,7 @@ import kotlin.test.assertTrue
 
 private const val fnr = "290990123456"
 private const val ikkeMyndigFnr = "12125012345"
+
 // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
 private val gyldigFodselsnummerA = "02119970078"
 private val ikkeMyndigDato = "2050-12-12"
@@ -62,10 +63,12 @@ class ApplicationTest {
         fun getConfig(): ApplicationConfig {
 
             val fileConfig = ConfigFactory.load()
-            val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(
-                wireMockServer = wireMockServer,
-                redisServer = redisServer
-            ))
+            val testConfig = ConfigFactory.parseMap(
+                TestConfiguration.asMap(
+                    wireMockServer = wireMockServer,
+                    redisServer = redisServer
+                )
+            )
             val mergedConfig = testConfig.withFallback(fileConfig)
 
             return HoconApplicationConfig(mergedConfig)
@@ -134,6 +137,11 @@ class ApplicationTest {
             ),
             cookie = getAuthCookie(ikkeMyndigFnr)
         )
+    }
+
+    @Test
+    fun print() {
+        println(SøknadUtils.defaultKomplettSøknad.somJson())
     }
 
     @Test
@@ -226,7 +234,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity= SøknadUtils.defaultSøknad.copy(
+            requestEntity = SøknadUtils.defaultSøknad.copy(
                 utbetalingsperioder = listOf(
                     UtbetalingsperiodeMedVedlegg(
                         fraOgMed = LocalDate.now().plusDays(10),
@@ -362,6 +370,90 @@ class ApplicationTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun `Sende søknad med selvstendig næringsvirksomhet som ikke er gyldig, mangler registrertILand`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse = """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "registrertILand",
+                      "reason": "Hvis registrertINorge er false så må registrertILand være satt til noe",
+                      "invalid_value": null
+                    }
+                  ]
+                }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = SøknadUtils.bodyMedSelvstendigVirksomheterSomListe(
+                virksomheter = listOf(
+                    Virksomhet(
+                        naringstype = listOf(Naringstype.JORDBRUK),
+                        fraOgMed = LocalDate.now().minusDays(1),
+                        tilOgMed = LocalDate.now(),
+                        erPagaende = false,
+                        naringsinntekt = 1233123,
+                        navnPaVirksomheten = "TullOgTøys",
+                        registrertINorge = false,
+                        organisasjonsnummer = "101010",
+                        yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                        harVarigEndringAvInntektSiste4Kalenderar = false,
+                        harRegnskapsforer = true,
+                        regnskapsforer = Regnskapsforer(
+                            navn = "Kjell",
+                            telefon = "84554",
+                            erNarVennFamilie = false
+                        ),
+                        harRevisor = false
+                    )
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
+    fun `Sende soknad som har harHattInntektSomSelvstendigNaringsdrivende true men listen over virksomheter er tom, skal feile`(){
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse = """
+            {
+              "type": "/problem-details/invalid-request-parameters",
+              "title": "invalid-request-parameters",
+              "status": 400,
+              "detail": "Requesten inneholder ugyldige paramtere.",
+              "instance": "about:blank",
+              "invalid_parameters": [
+                {
+                  "type": "entity",
+                  "name": "harHattInntektSomSelvstendigNaringsdrivende",
+                  "reason": "Hvis harHattInntektSomSelvstendigNaringsdrivende er true så kan ikke listen over virksomehter være tom",
+                  "invalid_value": true
+                }
+              ]
+            }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = SøknadUtils.bodyMedSelvstendigVirksomheterSomListe(
+                virksomheter = listOf()
+            ).somJson()
+        )
     }
 
     private fun expectedGetSokerJson(

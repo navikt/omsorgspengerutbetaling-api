@@ -149,9 +149,12 @@ internal class SerDesTest {
                 "tilOgMed": "2020-02-05",
                 "lengde": null,
                 "legeerklæringer": []
-            }]
+            }],
+            "harHattInntektSomFrilanser": false,
+            "frilans": null,
+            "harHattInntektSomSelvstendigNaringsdrivende": false,
+            "selvstendigVirksomheter": null
         }
         """.trimIndent()
     }
-
 }

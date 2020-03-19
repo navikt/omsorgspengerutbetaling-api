@@ -12,5 +12,7 @@ data class KomplettSoknad(
     val opphold: List<Opphold>,
     val spørsmål: List<SpørsmålOgSvar>,
     val utbetalingsperioder: List<UtbetalingsperiodeUtenVedlegg>,
-    val vedlegg: List<Vedlegg>
+    val vedlegg: List<Vedlegg>,
+    val frilans: Frilans? = null,
+    val selvstendigVirksomheter: List<Virksomhet>? = null
 )
