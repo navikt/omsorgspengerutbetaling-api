@@ -11,60 +11,62 @@ import java.time.ZonedDateTime
 
 internal object SøknadUtils {
     internal val objectMapper = jacksonObjectMapper().omsorgspengerKonfiguert()
+    private val start = LocalDate.parse("2020-01-01")
 
     internal val defaultSøknad = Søknad(
         språk = Språk.BOKMÅL,
         bosteder = listOf(
             Bosted(
-                fraOgMed = LocalDate.now().minusDays(20),
-                tilOgMed = LocalDate.now().minusDays(10),
+                fraOgMed = start.minusDays(20),
+                tilOgMed = start.minusDays(10),
                 landkode = "GB",
                 landnavn = "Great Britain"
             )
         ),
         opphold = listOf(
             Opphold(
-                fraOgMed = LocalDate.now().minusDays(20),
-                tilOgMed = LocalDate.now().minusDays(10),
+                fraOgMed = start.minusDays(20),
+                tilOgMed = start.minusDays(10),
                 landkode = "GB",
                 landnavn = "Great Britain"
             )
         ),
         spørsmål = listOf(
-            SpørsmålOgSvar(id = SpørsmålId.HarBekreftetOpplysninger, spørsmål = "HarBekreftetOpplysninger?", svar = Svar.Ja),
-            SpørsmålOgSvar(id = SpørsmålId.HarForståttRettigheterOgPlikter, spørsmål = "HarForståttRettigheterOgPlikter?", svar = Svar.Ja)
+            SpørsmålOgSvar(
+                spørsmål = "Et spørsmål",
+                svar = JaNei.Nei
+            )
+        ),
+        bekreftelser = Bekreftelser(
+            harForståttRettigheterOgPlikter = JaNei.Ja,
+            harBekreftetOpplysninger = JaNei.Ja
         ),
         utbetalingsperioder = listOf(
             UtbetalingsperiodeMedVedlegg(
-                fraOgMed = LocalDate.now(),
-                tilOgMed = LocalDate.now().plusDays(5)
+                fraOgMed = start,
+                tilOgMed = start.plusDays(5)
             )
         ),
-        harHattInntektSomFrilanser = true,
         frilans = Frilans(
-            startdato = LocalDate.now(),
-            jobberFortsattSomFrilans = true
+            startdato = start,
+            jobberFortsattSomFrilans = JaNei.Ja
         ),
-        harHattInntektSomSelvstendigNaringsdrivende = true,
         selvstendigVirksomheter = listOf(
             Virksomhet(
-                naringstype = listOf(Naringstype.JORDBRUK),
-                fraOgMed = LocalDate.now().minusDays(1),
-                tilOgMed = LocalDate.now(),
-                erPagaende = false,
-                naringsinntekt = 123123,
+                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                fraOgMed = start.minusDays(1),
+                tilOgMed = start,
+                næringsinntekt = 123123,
                 navnPaVirksomheten = "TullOgTøys",
-                registrertINorge = true,
+                registrertINorge = JaNei.Ja,
                 organisasjonsnummer = "101010",
-                yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                harVarigEndringAvInntektSiste4Kalenderar = false,
-                harRegnskapsforer = true,
+                yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
                 regnskapsforer = Regnskapsforer(
                     navn = "Kjell",
                     telefon = "84554",
-                    erNarVennFamilie = false
+                    erNærVennFamilie = JaNei.Nei
                 ),
-                harRevisor = false
+                fiskerErPåBladB = JaNei.Nei
             )
         )
     )
@@ -82,54 +84,48 @@ internal object SøknadUtils {
         ),
         bosteder = listOf(
             Bosted(
-                fraOgMed = LocalDate.now().minusDays(20),
-                tilOgMed = LocalDate.now().minusDays(10),
+                fraOgMed = start.minusDays(20),
+                tilOgMed = start.minusDays(10),
                 landkode = "GB",
                 landnavn = "Great Britain"
             )
         ),
         opphold = listOf(
             Opphold(
-                fraOgMed = LocalDate.now().minusDays(20),
-                tilOgMed = LocalDate.now().minusDays(10),
+                fraOgMed = start.minusDays(20),
+                tilOgMed = start.minusDays(10),
                 landkode = "GB",
                 landnavn = "Great Britain"
             )
         ),
-        spørsmål = listOf(
-            SpørsmålOgSvar(id = SpørsmålId.HarBekreftetOpplysninger, spørsmål = "HarBekreftetOpplysninger?", svar = Svar.Ja),
-            SpørsmålOgSvar(id = SpørsmålId.HarForståttRettigheterOgPlikter, spørsmål = "HarForståttRettigheterOgPlikter?", svar = Svar.Ja)
-        ),
+        spørsmål = listOf(),
         utbetalingsperioder = listOf(
             UtbetalingsperiodeUtenVedlegg(
-                fraOgMed = LocalDate.now(),
-                tilOgMed = LocalDate.now().plusDays(5),
+                fraOgMed = start,
+                tilOgMed = start.plusDays(5),
                 lengde = Duration.ofHours(7).plusMinutes(30)
             )
         ),
         frilans = Frilans(
-            startdato = LocalDate.now(),
-            jobberFortsattSomFrilans = true
+            startdato = start,
+            jobberFortsattSomFrilans = JaNei.Ja
         ),
         selvstendigVirksomheter = listOf(
             Virksomhet(
-                naringstype = listOf(Naringstype.JORDBRUK),
-                fraOgMed = LocalDate.now().minusDays(1),
-                tilOgMed = LocalDate.now(),
-                erPagaende = false,
-                naringsinntekt = 123123,
+                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                fraOgMed = start.minusDays(1),
+                tilOgMed = start,
+                næringsinntekt = 123123,
                 navnPaVirksomheten = "TullOgTøys",
-                registrertINorge = true,
+                registrertINorge = JaNei.Ja,
                 organisasjonsnummer = "101010",
-                yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                harVarigEndringAvInntektSiste4Kalenderar = false,
-                harRegnskapsforer = true,
+                yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
                 regnskapsforer = Regnskapsforer(
                     navn = "Kjell",
                     telefon = "84554",
-                    erNarVennFamilie = false
+                    erNærVennFamilie = JaNei.Nei
                 ),
-                harRevisor = false
+                fiskerErPåBladB = JaNei.Nei
             )
         ),
         vedlegg = listOf(
@@ -140,39 +136,6 @@ internal object SøknadUtils {
             )
         )
     )
-
-    fun bodyMedSelvstendigVirksomheterSomListe(virksomheter: List<Virksomhet>): Søknad {
-        return Søknad(
-            språk = Språk.BOKMÅL,
-            bosteder = listOf(),
-            opphold = listOf(),
-            spørsmål = listOf(
-                SpørsmålOgSvar(
-                    id = SpørsmålId.HarBekreftetOpplysninger,
-                    spørsmål = "HarBekreftetOpplysninger?",
-                    svar = Svar.Ja
-                ),
-                SpørsmålOgSvar(
-                    id = SpørsmålId.HarForståttRettigheterOgPlikter,
-                    spørsmål = "HarForståttRettigheterOgPlikter?",
-                    svar = Svar.Ja
-                )
-            ),
-            utbetalingsperioder = listOf(
-                UtbetalingsperiodeMedVedlegg(
-                    fraOgMed = LocalDate.now(),
-                    tilOgMed = LocalDate.now().plusDays(5)
-                )
-            ),
-            harHattInntektSomFrilanser = true,
-            frilans = Frilans(
-                startdato = LocalDate.now(),
-                jobberFortsattSomFrilans = true
-            ),
-            harHattInntektSomSelvstendigNaringsdrivende = true,
-            selvstendigVirksomheter = virksomheter
-        )
-    }
 }
 
 internal fun Søknad.somJson() = SøknadUtils.objectMapper.writeValueAsString(this)

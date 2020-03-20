@@ -1,87 +1,65 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonProperty
 import no.nav.helse.dusseldorf.ktor.core.ParameterType
 import no.nav.helse.dusseldorf.ktor.core.Violation
 import java.time.LocalDate
 
 data class Virksomhet(
-    val naringstype: List<Naringstype>,
-    val fiskerErPåBladB: Boolean? = null,
+    val næringstyper: List<Næringstyper> = listOf(),
+    val fiskerErPåBladB: JaNei?,
     @JsonFormat(pattern = "yyyy-MM-dd")
     val fraOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd")
     val tilOgMed: LocalDate? = null,
-    val erPagaende: Boolean,
-    val naringsinntekt: Int? = null,
+    val næringsinntekt: Int? = null,
     val navnPaVirksomheten: String,
     val organisasjonsnummer: String? = null,
-    val registrertINorge: Boolean,
+    val registrertINorge: JaNei,
     val registrertILand: String? = null,
-    val harBlittYrkesaktivSisteTreFerdigliknendeArene: Boolean? = null,
-    val yrkesaktivSisteTreFerdigliknedeArene: YrkesaktivSisteTreFerdigliknedeArene? = null,
-    val harVarigEndringAvInntektSiste4Kalenderar: Boolean? = null,
+    val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeArene? = null,
     val varigEndring: VarigEndring? = null,
-    val harRegnskapsforer: Boolean,
     val regnskapsforer: Regnskapsforer? = null,
-    val harRevisor: Boolean? = null,
     val revisor: Revisor? = null
 )
 
 data class YrkesaktivSisteTreFerdigliknedeArene(
-    val oppstartsdato: LocalDate?
+    val oppstartsdato: LocalDate
 )
 
-enum class Naringstype(val detaljert: String) {
-    @JsonProperty("FISKE") FISKER("FISKE"),
-    @JsonProperty("JORDBRUK_SKOGBRUK") JORDBRUK("JORDBRUK_SKOGBRUK"),
-    @JsonProperty("ANNEN") ANNET("ANNEN"),
-    DAGMAMMA("DAGMAMMA")
+enum class Næringstyper {
+    FISKE,
+    JORDBRUK_SKOGBRUK,
+    DAGMAMMA,
+    ANNEN
 }
 
 data class VarigEndring(
-    val dato: LocalDate? = null,
-    val inntektEtterEndring: Int? = null,
-    val forklaring: String? = null
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    val dato: LocalDate,
+    val inntektEtterEndring: Int,
+    val forklaring: String
 )
 
 data class Revisor(
     val navn: String,
     val telefon: String,
-    val erNarVennFamilie: Boolean,
-    val kanInnhenteOpplysninger: Boolean?
+    val erNærVennFamilie: JaNei,
+    val kanInnhenteOpplysninger: JaNei
 )
 
 data class Regnskapsforer(
     val navn: String,
     val telefon: String,
-    val erNarVennFamilie: Boolean
+    val erNærVennFamilie: JaNei
 )
 
 
 internal fun Virksomhet.validate(): MutableSet<Violation>{
     val violations = mutableSetOf<Violation>()
 
-    if(!harGyldigPeriode()){
-        violations.add(
-            Violation(
-                parameterName = "virksomhet.tilogmed og virksomhet.fraogmed",
-                parameterType = ParameterType.ENTITY,
-                reason = "Har ikke gyldig periode. Fraogmed kan ikke være nyere enn tilogmed",
-                invalidValue = tilOgMed
-            )
-        )
-    }
-
-    if(!erErPaagaendeGyldigSatt()){
-        violations.add(
-            Violation(
-                parameterName = "erPagaende",
-                parameterType = ParameterType.ENTITY,
-                reason = "erPagaende er ikke gyldig satt. Hvis pågående så kan ikke tilogmed være satt",
-                invalidValue = erPagaende
-            )
-        )
+    tilOgMed?.apply {
+        violations.addAll(Periode(fraOgMed, tilOgMed).valider())
     }
 
     if(!erRegistrertINorgeGyldigSatt()){
@@ -106,29 +84,7 @@ internal fun Virksomhet.validate(): MutableSet<Violation>{
         )
     }
 
-    if(!erRegnskapsførerSattGyldig()){
-        violations.add(
-            Violation(
-                parameterName = "regnskapsforer",
-                parameterType = ParameterType.ENTITY,
-                reason = "Hvis man har satt harRegnskapsforer til true så må regnskapsforer være satt til et regnskapsforer objekt",
-                invalidValue = regnskapsforer
-            )
-        )
-    }
-
-    if(!erRevisorSattGyldig()){
-        violations.add(
-            Violation(
-                parameterName = "revisor",
-                parameterType = ParameterType.ENTITY,
-                reason = "Hvis man har satt harRevisor til true så må revisor være satt til et revisor objekt",
-                invalidValue = revisor
-            )
-        )
-    }
-
-    if(!erFiskerSattGyldig()){
+    if(!erFiskerGyldigSatt()){
         violations.add(
             Violation(
                 parameterName = "fiskerErPåBladB",
@@ -141,40 +97,18 @@ internal fun Virksomhet.validate(): MutableSet<Violation>{
     return violations
 }
 
-internal fun Virksomhet.harGyldigPeriode(): Boolean {
-    val now = LocalDate.now();
 
-    if (erPagaende) return now >= fraOgMed
-    return fraOgMed <= tilOgMed
-}
-
-internal fun Virksomhet.erRevisorSattGyldig(): Boolean{
-    if(harRevisor != null && harRevisor) return revisor != null
+private fun Virksomhet.erRegistrertINorgeGyldigSatt(): Boolean{
+    if (registrertINorge == JaNei.Ja) return !organisasjonsnummer.isNullOrEmpty()
     return true
 }
 
-internal fun Virksomhet.erErPaagaendeGyldigSatt(): Boolean{
-    if (erPagaende) return tilOgMed == null
-    return tilOgMed != null
-}
+private fun Virksomhet.erRegistrertILandGyldigSatt() =
+    registrertINorge == JaNei.Ja || registrertILand != null && registrertILand.isNotBlank()
 
-internal fun Virksomhet.erRegistrertINorgeGyldigSatt(): Boolean{
-    if(registrertINorge) return !organisasjonsnummer.isNullOrEmpty()
-    return true
-}
 
-internal fun Virksomhet.erRegistrertILandGyldigSatt(): Boolean{
-    if(!registrertINorge) return registrertILand != null && registrertILand.isNotEmpty()
-    return true
-}
-
-internal fun Virksomhet.erRegnskapsførerSattGyldig() : Boolean{
-    if(harRegnskapsforer) return regnskapsforer != null
-    return true
-}
-
-internal fun Virksomhet.erFiskerSattGyldig(): Boolean{
-    if(naringstype.contains(Naringstype.FISKER)){
+private fun Virksomhet.erFiskerGyldigSatt(): Boolean{
+    if (næringstyper.contains(Næringstyper.FISKE)){
         return fiskerErPåBladB != null
     }
     return true

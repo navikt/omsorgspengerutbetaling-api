@@ -251,8 +251,14 @@ class ApplicationTest {
             path = "/soknad",
             expectedCode = HttpStatusCode.BadRequest,
             requestEntity = SøknadUtils.defaultSøknad.copy(
+                bekreftelser = Bekreftelser(
+                    harForståttRettigheterOgPlikter = JaNei.Nei,
+                    harBekreftetOpplysninger = JaNei.Nei
+                ),
                 spørsmål = listOf(),
-                utbetalingsperioder = listOf()
+                utbetalingsperioder = listOf(),
+                selvstendigVirksomheter = listOf(),
+                frilans = null
             ).somJson(),
             expectedResponse = """
             {
@@ -268,13 +274,19 @@ class ApplicationTest {
                     "invalid_value": []
                 }, {
                     "type": "entity",
-                    "name": "spørsmål",
-                    "reason": "Spørsmål med id HarBekreftetOpplysninger må besvares for å sende inn søknaden.",
-                    "invalid_value": null
+                    "name": "bekreftlser.harBekreftetOpplysninger",
+                    "reason": "Må besvars Ja.",
+                    "invalid_value": false
                 }, {
                     "type": "entity",
-                    "name": "spørsmål",
-                    "reason": "Spørsmål med id HarForståttRettigheterOgPlikter må besvares for å sende inn søknaden.",
+                    "name": "bekreftelser.harForståttRettigheterOgPlikter",
+                    "reason": "Må besvars Ja.",
+                    "invalid_value": false
+                },
+                {
+                    "type": "entity",
+                    "name": "frilans/selvstendigVirksomheter",
+                    "reason": "Må settes 'frilans' eller minst en 'selvstendigVirksomheter'",
                     "invalid_value": null
                 }]
             }
@@ -393,63 +405,29 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.bodyMedSelvstendigVirksomheterSomListe(
-                virksomheter = listOf(
+            requestEntity = SøknadUtils.defaultSøknad.copy(
+                selvstendigVirksomheter = listOf(
                     Virksomhet(
-                        naringstype = listOf(Naringstype.JORDBRUK),
+                        næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
                         fraOgMed = LocalDate.now().minusDays(1),
                         tilOgMed = LocalDate.now(),
-                        erPagaende = false,
-                        naringsinntekt = 1233123,
+                        næringsinntekt = 1233123,
                         navnPaVirksomheten = "TullOgTøys",
-                        registrertINorge = false,
+                        registrertINorge = JaNei.Nei,
                         organisasjonsnummer = "101010",
-                        yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                        harVarigEndringAvInntektSiste4Kalenderar = false,
-                        harRegnskapsforer = true,
+                        yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
                         regnskapsforer = Regnskapsforer(
                             navn = "Kjell",
                             telefon = "84554",
-                            erNarVennFamilie = false
+                            erNærVennFamilie = JaNei.Nei
                         ),
-                        harRevisor = false
+                        fiskerErPåBladB = JaNei.Nei
                     )
                 )
             ).somJson()
         )
     }
 
-    @Test
-    fun `Sende soknad som har harHattInntektSomSelvstendigNaringsdrivende true men listen over virksomheter er tom, skal feile`(){
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = "/soknad",
-            expectedResponse = """
-            {
-              "type": "/problem-details/invalid-request-parameters",
-              "title": "invalid-request-parameters",
-              "status": 400,
-              "detail": "Requesten inneholder ugyldige paramtere.",
-              "instance": "about:blank",
-              "invalid_parameters": [
-                {
-                  "type": "entity",
-                  "name": "harHattInntektSomSelvstendigNaringsdrivende",
-                  "reason": "Hvis harHattInntektSomSelvstendigNaringsdrivende er true så kan ikke listen over virksomehter være tom",
-                  "invalid_value": true
-                }
-              ]
-            }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = SøknadUtils.bodyMedSelvstendigVirksomheterSomListe(
-                virksomheter = listOf()
-            ).somJson()
-        )
-    }
 
     private fun expectedGetSokerJson(
         fodselsnummer: String,

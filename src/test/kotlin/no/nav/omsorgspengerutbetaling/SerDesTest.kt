@@ -13,63 +13,13 @@ internal class SerDesTest {
 
     @Test
     internal fun `Test reserialisering av request`() {
-        JSONAssert.assertEquals(kompletSøknadJson, komplettSøknad.somJson(), true)
-        assertEquals(komplettSøknad, SøknadUtils.objectMapper.readValue(kompletSøknadJson))
+        JSONAssert.assertEquals(komplettSøknadJson, komplettSøknad.somJson(), true)
+        assertEquals(komplettSøknad, SøknadUtils.objectMapper.readValue(komplettSøknadJson))
     }
 
     private companion object {
         internal val start = LocalDate.parse("2020-01-01")
-        internal val komplettSøknad = Søknad(
-            språk = Språk.NYNORSK,
-            bosteder = listOf(
-                Bosted(
-                    fraOgMed = start,
-                    tilOgMed = start.plusDays(5),
-                    landnavn = "Sverige",
-                    landkode = "SWE"
-                ),
-                Bosted(
-                    fraOgMed = start.plusDays(10),
-                    tilOgMed = start.plusDays(10),
-                    landnavn = "Norge",
-                    landkode = "NOR"
-                )
-            ),
-            opphold = listOf(
-                Bosted(
-                    fraOgMed = start.plusDays(15),
-                    tilOgMed = start.plusDays(20),
-                    landnavn = "England",
-                    landkode = "Eng"
-                ),
-                Bosted(
-                    fraOgMed = start.minusDays(10),
-                    tilOgMed = start.minusDays(5),
-                    landnavn = "Kroatia",
-                    landkode = "CRO"
-                )
-            ),
-            spørsmål = listOf(
-                SpørsmålOgSvar(
-                    id = SpørsmålId.HarForståttRettigheterOgPlikter,
-                    spørsmål = "HarForståttRettigheterOgPlikter?",
-                    svar = Svar.Ja
-                ),
-                SpørsmålOgSvar(
-                    id = SpørsmålId.HarBekreftetOpplysninger,
-                    spørsmål = "HarBekreftetOpplysninger?",
-                    svar = Svar.Ja
-                ),
-                SpørsmålOgSvar(
-                    spørsmål = "Har du vært hjemme?",
-                    svar = Svar.Nei
-                ),
-                SpørsmålOgSvar(
-                    spørsmål = "Skal du være hjemme?",
-                    svar = Svar.VetIkke,
-                    fritekst = "Umulig å si"
-                )
-            ),
+        internal val komplettSøknad = SøknadUtils.defaultSøknad.copy(
             utbetalingsperioder = listOf(
                 UtbetalingsperiodeMedVedlegg(
                     fraOgMed = start,
@@ -86,54 +36,73 @@ internal class SerDesTest {
                     fraOgMed = start.plusDays(30),
                     tilOgMed = start.plusDays(35)
                 )
+            ),
+            frilans = Frilans(
+                startdato = start,
+                jobberFortsattSomFrilans = JaNei.Ja
+            ),
+            selvstendigVirksomheter = listOf(
+                Virksomhet(
+                    næringstyper = listOf(
+                        Næringstyper.JORDBRUK_SKOGBRUK,
+                        Næringstyper.FISKE,
+                        Næringstyper.DAGMAMMA,
+                        Næringstyper.ANNEN
+                    ),
+                    fiskerErPåBladB = null,
+                    fraOgMed = start,
+                    tilOgMed = start.plusDays(10),
+                    næringsinntekt = 100000,
+                    navnPaVirksomheten = "Test",
+                    organisasjonsnummer = "111",
+                    registrertINorge = JaNei.Nei,
+                    registrertILand = "Tyskland",
+                    yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(
+                        oppstartsdato = start.minusYears(2)
+                    ),
+                    varigEndring = VarigEndring(
+                        dato = start.minusYears(1),
+                        inntektEtterEndring = 1337,
+                        forklaring = "Fordi"
+                    ),
+                    regnskapsforer = Regnskapsforer(
+                        navn = "Regn",
+                        telefon = "555-FILK",
+                        erNærVennFamilie = JaNei.Nei
+                    ),
+                    revisor = Revisor(
+                        navn ="Rev",
+                        telefon = "555-FILM",
+                        erNærVennFamilie = JaNei.Ja,
+                        kanInnhenteOpplysninger = JaNei.Nei
+                    )
+                )
             )
         )
-        internal val kompletSøknadJson = """
+
+        internal val komplettSøknadJson = """
         {
-            "språk": "nn",
+            "språk": "nb",
             "bosteder": [{
-                "fraOgMed": "2020-01-01",
-                "tilOgMed": "2020-01-06",
-                "landkode": "SWE",
-                "landnavn": "Sverige"
-            }, {
-                "fraOgMed": "2020-01-11",
-                "tilOgMed": "2020-01-11",
-                "landkode": "NOR",
-                "landnavn": "Norge"
+                "fraOgMed": "2019-12-12",
+                "tilOgMed": "2019-12-22",
+                "landkode": "GB",
+                "landnavn": "Great Britain"
             }],
             "opphold": [{
-                "fraOgMed": "2020-01-16",
-                "tilOgMed": "2020-01-21",
-                "landkode": "Eng",
-                "landnavn": "England"
-            }, {
-                "fraOgMed": "2019-12-22",
-                "tilOgMed": "2019-12-27",
-                "landkode": "CRO",
-                "landnavn": "Kroatia"
+                "fraOgMed": "2019-12-12",
+                "tilOgMed": "2019-12-22",
+                "landkode": "GB",
+                "landnavn": "Great Britain"
             }],
             "spørsmål": [{
-                "id": "HarForståttRettigheterOgPlikter",
-                "spørsmål": "HarForståttRettigheterOgPlikter?",
-                "svar": "Ja",
-                "fritekst": null
-            }, {
-                "id": "HarBekreftetOpplysninger",
-                "spørsmål": "HarBekreftetOpplysninger?",
-                "svar": "Ja",
-                "fritekst": null
-            }, {
-                "id": null,
-                "spørsmål": "Har du vært hjemme?",
-                "svar": "Nei",
-                "fritekst": null
-            }, {
-                "id": null,
-                "spørsmål": "Skal du være hjemme?",
-                "svar": "VetIkke",
-                "fritekst": "Umulig å si"
+                "spørsmål": "Et spørsmål",
+                "svar": false
             }],
+            "bekreftelser": {
+                "harBekreftetOpplysninger": true,
+                "harForståttRettigheterOgPlikter": true
+            },
             "utbetalingsperioder": [{
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
@@ -150,10 +119,40 @@ internal class SerDesTest {
                 "lengde": null,
                 "legeerklæringer": []
             }],
-            "harHattInntektSomFrilanser": false,
-            "frilans": null,
-            "harHattInntektSomSelvstendigNaringsdrivende": false,
-            "selvstendigVirksomheter": null
+            "frilans": {
+                "startdato": "2020-01-01",
+                "jobberFortsattSomFrilans": true
+            },
+            "selvstendigVirksomheter": [{
+                "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
+                "fiskerErPåBladB": null,
+                "fraOgMed": "2020-01-01",
+                "tilOgMed": "2020-01-11",
+                "næringsinntekt": 100000,
+                "navnPaVirksomheten": "Test",
+                "organisasjonsnummer": "111",
+                "registrertINorge": false,
+                "registrertILand": "Tyskland",
+                "yrkesaktivSisteTreFerdigliknedeÅrene": {
+                    "oppstartsdato": "2018-01-01"
+                },
+                "varigEndring": {
+                    "dato": "2019-01-01",
+                    "inntektEtterEndring": 1337,
+                    "forklaring": "Fordi"
+                },
+                "regnskapsforer": {
+                    "navn": "Regn",
+                    "telefon": "555-FILK",
+                    "erNærVennFamilie": false
+                },
+                "revisor": {
+                    "navn": "Rev",
+                    "telefon": "555-FILM",
+                    "erNærVennFamilie": true,
+                    "kanInnhenteOpplysninger": false
+                }
+            }]
         }
         """.trimIndent()
     }

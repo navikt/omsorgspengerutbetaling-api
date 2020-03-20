@@ -23,16 +23,20 @@ internal data class Periode (
 internal fun List<Periode>.valider(jsonPath: String) : Set<Violation> {
     val violations = mutableSetOf<Violation>()
     mapIndexed { index, periode ->
-        if (periode.fraOgMed.isAfter(periode.tilOgMed)) {
-            violations.add(
-                Violation(
-                    parameterName = "$jsonPath[$index]",
-                    parameterType = ParameterType.ENTITY,
-                    reason = "Til og med må være etter eller lik fra og med",
-                    invalidValue = periode.tilOgMed
-                )
-            )
-        }
+        violations.addAll(periode.valider("$jsonPath[$index]"))
     }
     return violations
+}
+
+internal fun Periode.valider(jsonPath: String = "tilOgMed") = mutableSetOf<Violation>().apply {
+    if (fraOgMed.isAfter(tilOgMed)) {
+        add(
+            Violation(
+                parameterName = jsonPath,
+                parameterType = ParameterType.ENTITY,
+                reason = "Til og med må være etter eller lik fra og med",
+                invalidValue = tilOgMed
+            )
+        )
+    }
 }
