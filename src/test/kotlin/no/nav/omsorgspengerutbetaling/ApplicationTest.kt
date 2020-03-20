@@ -50,7 +50,7 @@ class ApplicationTest {
             .omsorgspengesoknadApiConfig()
             .build()
             .stubK9DokumentHealth()
-            .stubOmsorgsoknadMottakHealth()
+            .stubOmsorgspengerutbetalingsoknadMottakHealth()
             .stubOppslagHealth()
             .stubLeggSoknadTilProsessering()
             .stubK9OppslagSoker()

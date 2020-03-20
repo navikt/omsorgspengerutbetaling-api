@@ -8,7 +8,7 @@ import no.nav.helse.dusseldorf.testsupport.wiremock.getAzureV2WellKnownUrl
 import no.nav.helse.dusseldorf.testsupport.wiremock.getLoginServiceV1WellKnownUrl
 import no.nav.omsorgspengerutbetaling.wiremock.getK9DokumentUrl
 import no.nav.omsorgspengerutbetaling.wiremock.getK9OppslagUrl
-import no.nav.omsorgspengerutbetaling.wiremock.getOmsorgpengesoknadMottakUrl
+import no.nav.omsorgspengerutbetaling.wiremock.getOmsorgpengerutbetalingsoknadMottakUrl
 import org.json.JSONObject
 
 object TestConfiguration {
@@ -17,7 +17,7 @@ object TestConfiguration {
         wireMockServer: WireMockServer? = null,
         port : Int = 8080,
         k9OppslagUrl: String? = wireMockServer?.getK9OppslagUrl(),
-        omsorgpengesoknadMottakUrl : String? = wireMockServer?.getOmsorgpengesoknadMottakUrl(),
+        omsorgpengerutbetalingsoknadMottakUrl : String? = wireMockServer?.getOmsorgpengerutbetalingsoknadMottakUrl(),
         k9DokumentUrl : String? = wireMockServer?.getK9DokumentUrl(),
         corsAdresses : String = "http://localhost:8080",
         redisServer: RedisServer
@@ -31,7 +31,7 @@ object TestConfiguration {
             Pair("nav.authorization.cookie_name", "localhost-idtoken"),
             Pair("nav.authorization.jwks_uri","${loginServiceWellKnownJson?.getString("jwks_uri")}"),
             Pair("nav.gateways.k9_oppslag_url","$k9OppslagUrl"),
-            Pair("nav.gateways.omsorgpengesoknad_mottak_base_url", "$omsorgpengesoknadMottakUrl"),
+            Pair("nav.gateways.omsorgpengesoknad_mottak_base_url", "$omsorgpengerutbetalingsoknadMottakUrl"),
             Pair("nav.gateways.k9_dokument_url", "$k9DokumentUrl"),
             Pair("nav.cors.addresses", corsAdresses),
             Pair("nav.authorization.api_gateway.api_key", "verysecret")
@@ -44,7 +44,7 @@ object TestConfiguration {
             map["nav.auth.clients.0.private_key_jwk"] = ClientCredentials.ClientC.privateKeyJwk
             map["nav.auth.clients.0.certificate_hex_thumbprint"] = "The keyId of Azure JWK"
             map["nav.auth.clients.0.discovery_endpoint"] = wireMockServer.getAzureV2WellKnownUrl()
-            map["nav.auth.scopes.sende-soknad-til-prosessering"] = "omsorgspengesoknad-mottak/.default"
+            map["nav.auth.scopes.sende-soknad-til-prosessering"] = "omsorgspengerutbetalingsoknad-mottak/.default"
         }
 
         map["nav.redis.host"] = redisServer.host
