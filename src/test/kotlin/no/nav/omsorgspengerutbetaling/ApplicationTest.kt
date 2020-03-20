@@ -140,11 +140,6 @@ class ApplicationTest {
     }
 
     @Test
-    fun print() {
-        println(SøknadUtils.defaultKomplettSøknad.somJson())
-    }
-
-    @Test
     fun `Sende soknad`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
         val jpegUrl = engine.jpegUrl(cookie)
