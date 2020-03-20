@@ -45,13 +45,13 @@ internal class SøknadService(
             )
         }
 
-        val vedlegg = søknad.utbetalingsperioder.map { utbetalingsperioder ->
-            logger.trace("Henter ${utbetalingsperioder.legeerklæringer} legeerklæringer.")
-            val periode = utbetalingsperioder.somPeriode()
+        val vedlegg = søknad.utbetalingsperioder.map { perioder ->
+            logger.trace("Henter ${perioder.legeerklæringer} legeerklæringer.")
+            val periode = perioder.somPeriode()
             vedleggService.hentVedlegg(
                 idToken = idToken,
                 callId = callId,
-                vedleggUrls = utbetalingsperioder.legeerklæringer
+                vedleggUrls = perioder.legeerklæringer
             ).onEach { vedlegg -> vedlegg.title = "$periode: Legeerklæring" }
         }.flatten()
 
