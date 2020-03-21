@@ -514,8 +514,7 @@ class ApplicationTest {
                         yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
                         regnskapsfører = Regnskapsfører(
                             navn = "Kjell",
-                            telefon = "84554",
-                            erNærVennFamilie = JaNei.Nei
+                            telefon = "84554"
                         ),
                         fiskerErPåBladB = JaNei.Nei
                     )

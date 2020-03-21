@@ -67,8 +67,7 @@ internal object SøknadUtils {
                 yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
                 regnskapsfører = Regnskapsfører(
                     navn = "Kjell",
-                    telefon = "84554",
-                    erNærVennFamilie = JaNei.Nei
+                    telefon = "84554"
                 ),
                 fiskerErPåBladB = JaNei.Nei
             )
@@ -145,13 +144,11 @@ internal object SøknadUtils {
                 yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
                 regnskapsfører = Regnskapsfører(
                     navn = "Kjell",
-                    telefon = "84554",
-                    erNærVennFamilie = JaNei.Nei
+                    telefon = "84554"
                 ),
                 revisor = Revisor(
                     navn = "Kjell",
                     telefon = "12345678",
-                    erNærVennFamilie = JaNei.Nei,
                     kanInnhenteOpplysninger = JaNei.Ja
                 ),
                 varigEndring = VarigEndring(

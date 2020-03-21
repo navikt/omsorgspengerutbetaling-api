@@ -80,13 +80,11 @@ internal class SerDesTest {
                     ),
                     regnskapsfører = Regnskapsfører(
                         navn = "Regn",
-                        telefon = "555-FILK",
-                        erNærVennFamilie = JaNei.Nei
+                        telefon = "555-FILK"
                     ),
                     revisor = Revisor(
                         navn = "Rev",
                         telefon = "555-FILM",
-                        erNærVennFamilie = JaNei.Ja,
                         kanInnhenteOpplysninger = JaNei.Nei
                     )
                 )
@@ -161,13 +159,11 @@ internal class SerDesTest {
                 },
                 "regnskapsfører": {
                     "navn": "Regn",
-                    "telefon": "555-FILK",
-                    "erNærVennFamilie": false
+                    "telefon": "555-FILK"
                 },
                 "revisor": {
                     "navn": "Rev",
                     "telefon": "555-FILM",
-                    "erNærVennFamilie": true,
                     "kanInnhenteOpplysninger": false
                 }
             }]
@@ -246,13 +242,11 @@ internal class SerDesTest {
                 },
                 "regnskapsfører": {
                     "navn": "Kjell",
-                    "telefon": "84554",
-                    "erNærVennFamilie": false
+                    "telefon": "84554"
                 },
                 "revisor": {
                     "navn": "Kjell",
                     "telefon": "12345678",
-                    "erNærVennFamilie": false,
                     "kanInnhenteOpplysninger": true
                 }
             }],
