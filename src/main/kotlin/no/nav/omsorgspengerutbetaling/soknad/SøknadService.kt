@@ -75,7 +75,8 @@ internal class SøknadService(
             utbetalingsperioder = utbetalingsperioder,
             vedlegg = vedlegg,
             frilans = søknad.frilans,
-            selvstendigVirksomheter = søknad.selvstendigVirksomheter
+            selvstendigVirksomheter = søknad.selvstendigVirksomheter,
+            bekreftelser = søknad.bekreftelser
         )
 
         omsorgpengesøknadMottakGateway.leggTilProsessering(

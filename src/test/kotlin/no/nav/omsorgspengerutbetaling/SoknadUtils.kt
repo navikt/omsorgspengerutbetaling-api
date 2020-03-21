@@ -3,6 +3,7 @@ package no.nav.omsorgspengerutbetaling
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soknad.*
+import no.nav.omsorgspengerutbetaling.soknad.Næringstyper.*
 import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import java.nio.charset.Charset
 import java.time.Duration
@@ -53,15 +54,16 @@ internal object SøknadUtils {
         ),
         selvstendigVirksomheter = listOf(
             Virksomhet(
-                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                næringstyper = listOf(JORDBRUK_SKOGBRUK, FISKE, DAGMAMMA, ANNEN),
                 fraOgMed = start.minusDays(1),
                 tilOgMed = start,
                 næringsinntekt = 123123,
-                navnPaVirksomheten = "TullOgTøys",
+                navnPåVirksomheten = "TullOgTøys",
                 registrertINorge = JaNei.Ja,
+                registrertILand = "Tyskland",
                 organisasjonsnummer = "101010",
                 yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
-                regnskapsforer = Regnskapsforer(
+                regnskapsfører = Regnskapsfører(
                     navn = "Kjell",
                     telefon = "84554",
                     erNærVennFamilie = JaNei.Nei
@@ -80,7 +82,8 @@ internal object SøknadUtils {
             fødselsdato = LocalDate.parse("1999-11-02"),
             etternavn = "Nordmann",
             mellomnavn = null,
-            fornavn = "Ola"
+            fornavn = "Ola",
+            myndig = true
         ),
         bosteder = listOf(
             Bosted(
@@ -98,11 +101,26 @@ internal object SøknadUtils {
                 landnavn = "Great Britain"
             )
         ),
-        spørsmål = listOf(),
+        spørsmål = listOf(
+            SpørsmålOgSvar(
+                spørsmål = "Et spørsmål",
+                svar = JaNei.Nei
+            )
+        ),
         utbetalingsperioder = listOf(
             UtbetalingsperiodeUtenVedlegg(
                 fraOgMed = start,
-                tilOgMed = start.plusDays(5),
+                tilOgMed = start.plusDays(10),
+                lengde = null
+            ),
+            UtbetalingsperiodeUtenVedlegg(
+                fraOgMed = start.plusDays(20),
+                tilOgMed = start.plusDays(20),
+                lengde = Duration.ofHours(5).plusMinutes(30)
+            ),
+            UtbetalingsperiodeUtenVedlegg(
+                fraOgMed = start.plusDays(30),
+                tilOgMed = start.plusMonths(1).plusDays(4),
                 lengde = Duration.ofHours(7).plusMinutes(30)
             )
         ),
@@ -112,28 +130,38 @@ internal object SøknadUtils {
         ),
         selvstendigVirksomheter = listOf(
             Virksomhet(
-                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                næringstyper = listOf(JORDBRUK_SKOGBRUK, FISKE, DAGMAMMA, ANNEN),
                 fraOgMed = start.minusDays(1),
                 tilOgMed = start,
                 næringsinntekt = 123123,
-                navnPaVirksomheten = "TullOgTøys",
-                registrertINorge = JaNei.Ja,
+                navnPåVirksomheten = "TullOgTøys",
+                registrertINorge = JaNei.Nei,
+                registrertILand = "Tyskland",
                 organisasjonsnummer = "101010",
                 yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
-                regnskapsforer = Regnskapsforer(
+                regnskapsfører = Regnskapsfører(
                     navn = "Kjell",
                     telefon = "84554",
                     erNærVennFamilie = JaNei.Nei
                 ),
+                revisor = Revisor(
+                    navn = "Kjell",
+                    telefon = "12345678",
+                    erNærVennFamilie = JaNei.Nei,
+                    kanInnhenteOpplysninger = JaNei.Ja
+                ),
+                varigEndring = VarigEndring(
+                    dato = start,
+                    inntektEtterEndring = 1337,
+                    forklaring = "Fordi"
+                ),
                 fiskerErPåBladB = JaNei.Nei
             )
         ),
-        vedlegg = listOf(
-            Vedlegg(
-                content = "dette er et bilde :p".toByteArray(Charset.defaultCharset()),
-                contentType = "img/pdf",
-                title = "Navn på fil"
-            )
+        vedlegg = listOf(),
+        bekreftelser = Bekreftelser(
+            harForståttRettigheterOgPlikter = JaNei.Ja,
+            harBekreftetOpplysninger = JaNei.Ja
         )
     )
 }

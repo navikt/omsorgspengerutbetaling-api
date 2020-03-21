@@ -13,13 +13,13 @@ data class Virksomhet(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val tilOgMed: LocalDate? = null,
     val næringsinntekt: Int? = null,
-    val navnPaVirksomheten: String,
+    val navnPåVirksomheten: String,
     val organisasjonsnummer: String? = null,
     val registrertINorge: JaNei,
     val registrertILand: String? = null,
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeArene? = null,
     val varigEndring: VarigEndring? = null,
-    val regnskapsforer: Regnskapsforer? = null,
+    val regnskapsfører: Regnskapsfører? = null,
     val revisor: Revisor? = null
 )
 
@@ -48,7 +48,7 @@ data class Revisor(
     val kanInnhenteOpplysninger: JaNei
 )
 
-data class Regnskapsforer(
+data class Regnskapsfører(
     val navn: String,
     val telefon: String,
     val erNærVennFamilie: JaNei

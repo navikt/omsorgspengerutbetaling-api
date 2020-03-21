@@ -412,11 +412,11 @@ class ApplicationTest {
                         fraOgMed = LocalDate.now().minusDays(1),
                         tilOgMed = LocalDate.now(),
                         næringsinntekt = 1233123,
-                        navnPaVirksomheten = "TullOgTøys",
+                        navnPåVirksomheten = "TullOgTøys",
                         registrertINorge = JaNei.Nei,
                         organisasjonsnummer = "101010",
                         yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                        regnskapsforer = Regnskapsforer(
+                        regnskapsfører = Regnskapsfører(
                             navn = "Kjell",
                             telefon = "84554",
                             erNærVennFamilie = JaNei.Nei

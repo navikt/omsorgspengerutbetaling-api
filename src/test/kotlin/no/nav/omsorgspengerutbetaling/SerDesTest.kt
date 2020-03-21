@@ -7,19 +7,29 @@ import org.skyscreamer.jsonassert.JSONAssert
 import java.net.URI
 import java.time.Duration
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 
 internal class SerDesTest {
 
     @Test
     internal fun `Test reserialisering av request`() {
-        JSONAssert.assertEquals(komplettSøknadJson, komplettSøknad.somJson(), true)
-        assertEquals(komplettSøknad, SøknadUtils.objectMapper.readValue(komplettSøknadJson))
+        JSONAssert.assertEquals(SøknadJson, søknad.somJson(), true)
+        assertEquals(søknad, SøknadUtils.objectMapper.readValue(SøknadJson))
+    }
+
+    @Test
+    fun `Test serialisering av request til mottak`() {
+        JSONAssert.assertEquals(KomplettSøknadJson, komplettSøknad.somJson(), true)
+        assertEquals(komplettSøknad, SøknadUtils.objectMapper.readValue(KomplettSøknadJson))
     }
 
     private companion object {
+        val now = ZonedDateTime.of(2018, 1, 2, 3, 4, 5, 6, ZoneId.of("UTC"))
         internal val start = LocalDate.parse("2020-01-01")
-        internal val komplettSøknad = SøknadUtils.defaultSøknad.copy(
+
+        internal val søknad = SøknadUtils.defaultSøknad.copy(
             utbetalingsperioder = listOf(
                 UtbetalingsperiodeMedVedlegg(
                     fraOgMed = start,
@@ -30,7 +40,10 @@ internal class SerDesTest {
                     fraOgMed = start.plusDays(20),
                     tilOgMed = start.plusDays(20),
                     lengde = Duration.ofHours(5).plusMinutes(30),
-                    legeerklæringer = listOf(URI("http://localhost:8080/vedlegg/2"), URI("http://localhost:8080/vedlegg/3"))
+                    legeerklæringer = listOf(
+                        URI("http://localhost:8080/vedlegg/2"),
+                        URI("http://localhost:8080/vedlegg/3")
+                    )
                 ),
                 UtbetalingsperiodeMedVedlegg(
                     fraOgMed = start.plusDays(30),
@@ -53,7 +66,7 @@ internal class SerDesTest {
                     fraOgMed = start,
                     tilOgMed = start.plusDays(10),
                     næringsinntekt = 100000,
-                    navnPaVirksomheten = "Test",
+                    navnPåVirksomheten = "Test",
                     organisasjonsnummer = "111",
                     registrertINorge = JaNei.Nei,
                     registrertILand = "Tyskland",
@@ -65,13 +78,13 @@ internal class SerDesTest {
                         inntektEtterEndring = 1337,
                         forklaring = "Fordi"
                     ),
-                    regnskapsforer = Regnskapsforer(
+                    regnskapsfører = Regnskapsfører(
                         navn = "Regn",
                         telefon = "555-FILK",
                         erNærVennFamilie = JaNei.Nei
                     ),
                     revisor = Revisor(
-                        navn ="Rev",
+                        navn = "Rev",
                         telefon = "555-FILM",
                         erNærVennFamilie = JaNei.Ja,
                         kanInnhenteOpplysninger = JaNei.Nei
@@ -79,8 +92,11 @@ internal class SerDesTest {
                 )
             )
         )
+        internal val komplettSøknad = SøknadUtils.defaultKomplettSøknad.copy(
+            mottatt = now
+        )
 
-        internal val komplettSøknadJson = """
+        internal val SøknadJson = """
         {
             "språk": "nb",
             "bosteder": [{
@@ -129,7 +145,7 @@ internal class SerDesTest {
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
                 "næringsinntekt": 100000,
-                "navnPaVirksomheten": "Test",
+                "navnPåVirksomheten": "Test",
                 "organisasjonsnummer": "111",
                 "registrertINorge": false,
                 "registrertILand": "Tyskland",
@@ -141,7 +157,7 @@ internal class SerDesTest {
                     "inntektEtterEndring": 1337,
                     "forklaring": "Fordi"
                 },
-                "regnskapsforer": {
+                "regnskapsfører": {
                     "navn": "Regn",
                     "telefon": "555-FILK",
                     "erNærVennFamilie": false
@@ -153,6 +169,90 @@ internal class SerDesTest {
                     "kanInnhenteOpplysninger": false
                 }
             }]
+        }
+        """.trimIndent()
+
+        internal val KomplettSøknadJson = """
+        {
+            "mottatt": "2018-01-02T03:04:05.000000006Z",
+            "språk": "nb",
+            "søker": {
+                "aktørId": "123456",
+                "fødselsdato": "1999-11-02",
+                "fødselsnummer": "02119970078",
+                "fornavn": "Ola",
+                "mellomnavn": null,
+                "etternavn": "Nordmann",
+                "myndig": true
+            },
+            "bosteder": [{
+                "fraOgMed": "2019-12-12",
+                "tilOgMed": "2019-12-22",
+                "landkode": "GB",
+                "landnavn": "Great Britain"
+            }],
+            "opphold": [{
+                "fraOgMed": "2019-12-12",
+                "tilOgMed": "2019-12-22",
+                "landkode": "GB",
+                "landnavn": "Great Britain"
+            }],
+            "spørsmål": [{
+                "spørsmål": "Et spørsmål",
+                "svar": false
+            }],
+            "bekreftelser": {
+                "harBekreftetOpplysninger": true,
+                "harForståttRettigheterOgPlikter": true
+            },
+            "utbetalingsperioder": [{
+                "fraOgMed": "2020-01-01",
+                "tilOgMed": "2020-01-11",
+                "lengde": null
+            }, {
+                "fraOgMed": "2020-01-21",
+                "tilOgMed": "2020-01-21",
+                "lengde": "PT5H30M"
+            }, {
+                "fraOgMed": "2020-01-31",
+                "tilOgMed": "2020-02-05",
+                "lengde": "PT7H30M"
+            }],
+            "frilans": {
+                "startdato": "2020-01-01",
+                "jobberFortsattSomFrilans": true
+            },
+            "selvstendigVirksomheter": [{
+                "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
+                "fiskerErPåBladB": false,
+                "fraOgMed": "2019-12-31",
+                "tilOgMed": "2020-01-01",
+                "næringsinntekt": 123123,
+                "navnPåVirksomheten": "TullOgTøys",
+                "organisasjonsnummer": "101010",
+                "registrertINorge": false,
+                "registrertILand": "Tyskland",
+                "yrkesaktivSisteTreFerdigliknedeÅrene": {
+                    "oppstartsdato": "2020-01-01"
+                },
+                "varigEndring": {
+                    "dato": "2020-01-01",
+                    "inntektEtterEndring": 1337,
+                    "forklaring": "Fordi"
+                },
+                "regnskapsfører": {
+                    "navn": "Kjell",
+                    "telefon": "84554",
+                    "erNærVennFamilie": false
+                },
+                "revisor": {
+                    "navn": "Kjell",
+                    "telefon": "12345678",
+                    "erNærVennFamilie": false,
+                    "kanInnhenteOpplysninger": true
+                }
+            }],
+            "vedlegg": []
         }
         """.trimIndent()
     }
