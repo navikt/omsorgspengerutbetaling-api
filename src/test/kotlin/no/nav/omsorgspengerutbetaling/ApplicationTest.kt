@@ -152,6 +152,12 @@ class ApplicationTest {
             expectedCode = HttpStatusCode.Accepted,
             cookie = cookie,
             requestEntity = SøknadUtils.defaultSøknad.copy(
+                spørsmål = listOf(
+                    SpørsmålOgSvar(
+                        spørsmål = "Spørsmål 1",
+                        svar = JaNei.Ja
+                    )
+                ),
                 utbetalingsperioder = listOf(
                     UtbetalingsperiodeMedVedlegg(
                         fraOgMed = LocalDate.now(),
@@ -166,6 +172,94 @@ class ApplicationTest {
                     )
                 )
             ).somJson()
+        )
+    }
+
+    @Test
+    fun `Sende soknad som raw json`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+        val jpegUrl = engine.jpegUrl(cookie)
+        val pdfUrl = engine.pdUrl(cookie)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse = null,
+            expectedCode = HttpStatusCode.Accepted,
+            cookie = cookie,
+            requestEntity = """
+                {
+            "språk": "nb",
+            "bosteder": [{
+                "fraOgMed": "2019-12-12",
+                "tilOgMed": "2019-12-22",
+                "landkode": "GB",
+                "landnavn": "Great Britain"
+            }],
+            "opphold": [{
+                "fraOgMed": "2019-12-12",
+                "tilOgMed": "2019-12-22",
+                "landkode": "GB",
+                "landnavn": "Great Britain"
+            }],
+            "spørsmål": [{
+                "spørsmål": "Et spørsmål",
+                "svar": false
+            }],
+            "bekreftelser": {
+                "harBekreftetOpplysninger": true,
+                "harForståttRettigheterOgPlikter": true
+            },
+            "utbetalingsperioder": [{
+                "fraOgMed": "2020-01-01",
+                "tilOgMed": "2020-01-11",
+                "lengde": null
+            }, {
+                "fraOgMed": "2020-01-21",
+                "tilOgMed": "2020-01-21",
+                "lengde": "PT5H30M"
+            }, {
+                "fraOgMed": "2020-01-31",
+                "tilOgMed": "2020-02-05",
+                "lengde": null,
+                "legeerklæringer": []
+            }],
+            "frilans": {
+                "startdato": "2020-01-01",
+                "jobberFortsattSomFrilans": true
+            },
+            "selvstendigVirksomheter": [{
+                "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
+                "fiskerErPåBladB": false,
+                "fraOgMed": "2020-01-01",
+                "tilOgMed": "2020-01-11",
+                "næringsinntekt": 100000,
+                "navnPåVirksomheten": "Test",
+                "organisasjonsnummer": "111",
+                "registrertINorge": false,
+                "registrertILand": "Tyskland",
+                "yrkesaktivSisteTreFerdigliknedeÅrene": {
+                    "oppstartsdato": "2018-01-01"
+                },
+                "varigEndring": {
+                    "dato": "2019-01-01",
+                    "inntektEtterEndring": 1337,
+                    "forklaring": "Fordi"
+                },
+                "regnskapsfører": {
+                    "navn": "Regn",
+                    "telefon": "555-FILK",
+                    "erNærVennFamilie": false
+                },
+                "revisor": {
+                    "navn": "Rev",
+                    "telefon": "555-FILM",
+                    "erNærVennFamilie": true,
+                    "kanInnhenteOpplysninger": false
+                }
+            }]
+        }
+            """.trimIndent()
         )
     }
 
