@@ -21,7 +21,8 @@ internal object SøknadUtils {
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
                 landkode = "GB",
-                landnavn = "Great Britain"
+                landnavn = "Great Britain",
+                erEØSLand = JaNei.Ja
             )
         ),
         opphold = listOf(
@@ -29,7 +30,8 @@ internal object SøknadUtils {
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
                 landkode = "GB",
-                landnavn = "Great Britain"
+                landnavn = "Great Britain",
+                erEØSLand = JaNei.Ja
             )
         ),
         spørsmål = listOf(
@@ -90,7 +92,8 @@ internal object SøknadUtils {
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
                 landkode = "GB",
-                landnavn = "Great Britain"
+                landnavn = "Great Britain",
+                erEØSLand = JaNei.Ja
             )
         ),
         opphold = listOf(
@@ -98,7 +101,8 @@ internal object SøknadUtils {
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
                 landkode = "GB",
-                landnavn = "Great Britain"
+                landnavn = "Great Britain",
+                erEØSLand = JaNei.Ja
             )
         ),
         spørsmål = listOf(

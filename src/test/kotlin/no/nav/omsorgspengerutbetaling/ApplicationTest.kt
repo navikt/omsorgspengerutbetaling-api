@@ -194,7 +194,8 @@ class ApplicationTest {
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
                 "landkode": "GB",
-                "landnavn": "Great Britain"
+                "landnavn": "Great Britain",
+                "erEØSLand": true
             }],
             "opphold": [{
                 "fraOgMed": "2019-12-12",
