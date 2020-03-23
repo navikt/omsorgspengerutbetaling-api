@@ -13,6 +13,7 @@ internal fun Søknad.valider() {
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
         addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
+        //TODO: Valider fosterbarn
     }
 
     if (violations.isNotEmpty()) {

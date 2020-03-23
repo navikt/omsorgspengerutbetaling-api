@@ -14,6 +14,7 @@ data class KomplettSoknad(
     val bekreftelser: Bekreftelser,
     val utbetalingsperioder: List<UtbetalingsperiodeUtenVedlegg>,
     val vedlegg: List<Vedlegg> = listOf(),
+    val fosterbarn: List<FosterBarn>? = listOf(),
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet>? = null
 )

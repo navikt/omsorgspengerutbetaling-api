@@ -166,6 +166,11 @@ internal class SerDesTest {
                     "telefon": "555-FILM",
                     "kanInnhenteOpplysninger": false
                 }
+            }],
+            "fosterbarn": [{
+                "fødselsnummer": "02119970078",
+                "fornavn": "fornavn",
+                "etternavn": "etternavn"
             }]
         }
         """.trimIndent()
@@ -249,6 +254,11 @@ internal class SerDesTest {
                     "telefon": "12345678",
                     "kanInnhenteOpplysninger": true
                 }
+            }],
+            "fosterbarn": [{
+                "fødselsnummer": "02119970078",
+                "fornavn": "fornavn",
+                "etternavn": "etternavn"
             }],
             "vedlegg": []
         }

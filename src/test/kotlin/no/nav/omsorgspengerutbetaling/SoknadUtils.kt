@@ -4,8 +4,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.soknad.Næringstyper.*
-import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
-import java.nio.charset.Charset
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -70,6 +68,13 @@ internal object SøknadUtils {
                     telefon = "84554"
                 ),
                 fiskerErPåBladB = JaNei.Nei
+            )
+        ),
+        fosterbarn = listOf(
+            FosterBarn(
+                fødselsnummer = "02119970078",
+                fornavn = "fornavn",
+                etternavn = "etternavn"
             )
         )
     )
@@ -157,6 +162,13 @@ internal object SøknadUtils {
                     forklaring = "Fordi"
                 ),
                 fiskerErPåBladB = JaNei.Nei
+            )
+        ),
+        fosterbarn = listOf(
+            FosterBarn(
+                fødselsnummer = "02119970078",
+                fornavn = "fornavn",
+                etternavn = "etternavn"
             )
         ),
         vedlegg = listOf(),
