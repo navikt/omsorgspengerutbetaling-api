@@ -13,11 +13,26 @@ internal fun Søknad.valider() {
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
         addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
-        //TODO: Valider fosterbarn
+        fosterbarn?.let { addAll(validerFosterbarn(it)) }
     }
 
     if (violations.isNotEmpty()) {
         throw Throwblem(ValidationProblemDetails(violations))
+    }
+}
+
+private fun validerFosterbarn(fosterbarn: List<FosterBarn>) = mutableSetOf<Violation>().apply {
+    fosterbarn.mapIndexed { index, barn ->
+        if (!barn.fødselsnummer.erKunSiffer()) {
+            add(
+                Violation(
+                    parameterName = "fosterbarn[$index].fødselsnummer",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "Ikke gyldig fødselsnummer.",
+                    invalidValue = barn.fødselsnummer
+                )
+            )
+        }
     }
 }
 

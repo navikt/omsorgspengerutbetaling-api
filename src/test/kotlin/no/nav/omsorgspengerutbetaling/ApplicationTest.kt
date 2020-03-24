@@ -523,6 +523,49 @@ class ApplicationTest {
         )
     }
 
+    @Test
+    fun `Sende søknad ugyldig fødselsnummer på fosterbarn, gir feilmelding`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse = """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "fosterbarn[1].fødselsnummer",
+                      "reason": "Ikke gyldig fødselsnummer.",
+                      "invalid_value": "ugyldig fødselsnummer"
+                    }
+                  ]
+                }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = SøknadUtils.defaultSøknad.copy(
+                fosterbarn = listOf(
+                    FosterBarn(
+                        fødselsnummer = "02119970078",
+                        fornavn = "Ole",
+                        etternavn = "Nordmann"
+                    ),
+                    FosterBarn(
+                        fødselsnummer = "ugyldig fødselsnummer",
+                        fornavn = "Ole",
+                        etternavn = "Nordmann"
+                    )
+                )
+            ).somJson()
+        )
+    }
+
 
     private fun expectedGetSokerJson(
         fodselsnummer: String,
