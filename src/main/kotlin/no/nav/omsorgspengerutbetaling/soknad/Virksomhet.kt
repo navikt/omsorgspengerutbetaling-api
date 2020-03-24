@@ -82,16 +82,6 @@ internal fun Virksomhet.validate(): MutableSet<Violation>{
         )
     }
 
-    if(!erFiskerGyldigSatt()){
-        violations.add(
-            Violation(
-                parameterName = "fiskerErPåBladB",
-                parameterType = ParameterType.ENTITY,
-                reason = "Hvis fisker er satt som naringstype, så må fiskerErPåBladB være satt til true eller false, ikke null",
-                invalidValue = fiskerErPåBladB
-            )
-        )
-    }
     return violations
 }
 
@@ -104,10 +94,3 @@ private fun Virksomhet.erRegistrertINorgeGyldigSatt(): Boolean{
 private fun Virksomhet.erRegistrertILandGyldigSatt() =
     registrertINorge == JaNei.Ja || registrertILand != null && registrertILand.isNotBlank()
 
-
-private fun Virksomhet.erFiskerGyldigSatt(): Boolean{
-    if (næringstyper.contains(Næringstyper.FISKE)){
-        return fiskerErPåBladB != null
-    }
-    return true
-}
