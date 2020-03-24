@@ -62,7 +62,7 @@ internal class SerDesTest {
                         Næringstyper.DAGMAMMA,
                         Næringstyper.ANNEN
                     ),
-                    fiskerErPåBladB = null,
+                    fiskerErPåBladB = JaNei.Ja,
                     fraOgMed = start,
                     tilOgMed = start.plusDays(10),
                     næringsinntekt = 100000,
@@ -141,7 +141,7 @@ internal class SerDesTest {
             },
             "selvstendigVirksomheter": [{
                 "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
-                "fiskerErPåBladB": null,
+                "fiskerErPåBladB": true,
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
                 "næringsinntekt": 100000,

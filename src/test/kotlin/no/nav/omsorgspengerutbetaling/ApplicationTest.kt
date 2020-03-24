@@ -230,7 +230,7 @@ class ApplicationTest {
             },
             "selvstendigVirksomheter": [{
                 "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
-                "fiskerErPåBladB": false,
+               
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
                 "næringsinntekt": 100000,
