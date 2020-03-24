@@ -522,6 +522,54 @@ class ApplicationTest {
     }
 
     @Test
+    fun `Sende søknad med selvstendig næringsvirksomhet som ikke er gyldig, har tomrom i organisasjonsnummer`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse = """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "organisasjonsnummer",
+                      "reason": "Hvis registrertINorge er true så må også organisasjonsnummer være satt",
+                      "invalid_value": " "
+                    }
+                  ]
+                }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = SøknadUtils.defaultSøknad.copy(
+                selvstendigVirksomheter = listOf(
+                    Virksomhet(
+                        næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                        fraOgMed = LocalDate.now().minusDays(1),
+                        tilOgMed = LocalDate.now(),
+                        næringsinntekt = 1233123,
+                        navnPåVirksomheten = "TullOgTøys",
+                        registrertINorge = JaNei.Ja,
+                        organisasjonsnummer = " ",
+                        yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                        regnskapsfører = Regnskapsfører(
+                            navn = "Kjell",
+                            telefon = "84554"
+                        ),
+                        fiskerErPåBladB = JaNei.Nei
+                    )
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
     fun `Sende søknad ugyldig fødselsnummer på fosterbarn, gir feilmelding`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 

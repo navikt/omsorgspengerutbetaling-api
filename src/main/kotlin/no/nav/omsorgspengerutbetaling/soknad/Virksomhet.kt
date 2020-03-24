@@ -97,7 +97,7 @@ internal fun Virksomhet.validate(): MutableSet<Violation>{
 
 
 private fun Virksomhet.erRegistrertINorgeGyldigSatt(): Boolean{
-    if (registrertINorge == JaNei.Ja) return !organisasjonsnummer.isNullOrEmpty()
+    if (registrertINorge == JaNei.Ja) return !organisasjonsnummer.isNullOrBlank()
     return true
 }
 

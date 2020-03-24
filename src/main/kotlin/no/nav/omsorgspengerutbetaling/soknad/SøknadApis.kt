@@ -2,6 +2,7 @@ package no.nav.omsorgspengerutbetaling.soknad
 
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Parameters
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 import io.ktor.locations.post
@@ -27,6 +28,7 @@ internal fun Route.søknadApis(
     post { _ : sendSoknad ->
         logger.trace("Mottatt ny søknad. Mapper søknad.")
         val søknad = call.receive<Søknad>()
+
         logger.trace("Søknad mappet. Validerer")
 
         søknad.valider()
