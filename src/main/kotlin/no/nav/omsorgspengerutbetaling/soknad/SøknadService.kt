@@ -75,6 +75,7 @@ internal class SøknadService(
             utbetalingsperioder = utbetalingsperioder,
             vedlegg = vedlegg,
             frilans = søknad.frilans,
+            fosterbarn = søknad.fosterbarn,
             selvstendigVirksomheter = søknad.selvstendigVirksomheter,
             bekreftelser = søknad.bekreftelser
         )
