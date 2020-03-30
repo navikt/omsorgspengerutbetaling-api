@@ -42,7 +42,7 @@ import no.nav.omsorgspengerutbetaling.redis.RedisStore
 import no.nav.omsorgspengerutbetaling.soker.SøkerGateway
 import no.nav.omsorgspengerutbetaling.soker.SøkerService
 import no.nav.omsorgspengerutbetaling.soker.søkerApis
-import no.nav.omsorgspengerutbetaling.soknad.OmsorgpengesøknadMottakGateway
+import no.nav.omsorgspengerutbetaling.mottak.OmsorgpengesøknadMottakGateway
 import no.nav.omsorgspengerutbetaling.soknad.SøknadService
 import no.nav.omsorgspengerutbetaling.soknad.søknadApis
 import no.nav.omsorgspengerutbetaling.vedlegg.K9DokumentGateway
@@ -129,12 +129,13 @@ fun Application.omsorgpengesoknadapi() {
             )
         )
 
-        val omsorgpengesoknadMottakGateway = OmsorgpengesøknadMottakGateway(
-            baseUrl = configuration.getOmsorgpengesoknadMottakBaseUrl(),
-            accessTokenClient = accessTokenClientResolver.accessTokenClient(),
-            sendeSoknadTilProsesseringScopes = configuration.getSendSoknadTilProsesseringScopes(),
-            apiGatewayApiKey = apiGatewayApiKey
-        )
+        val omsorgpengesoknadMottakGateway =
+            OmsorgpengesøknadMottakGateway(
+                baseUrl = configuration.getOmsorgpengesoknadMottakBaseUrl(),
+                accessTokenClient = accessTokenClientResolver.accessTokenClient(),
+                sendeSoknadTilProsesseringScopes = configuration.getSendSoknadTilProsesseringScopes(),
+                apiGatewayApiKey = apiGatewayApiKey
+            )
 
         val sokerGateway = SøkerGateway(
             baseUrl = configuration.getK9OppslagUrl(),

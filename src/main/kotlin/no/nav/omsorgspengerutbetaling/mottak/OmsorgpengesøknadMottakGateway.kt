@@ -1,4 +1,4 @@
-package no.nav.omsorgspengerutbetaling.soknad
+package no.nav.omsorgspengerutbetaling.mottak
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
@@ -16,8 +16,10 @@ import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
+import no.nav.omsorgspengerutbetaling.arbeidstakerutbetaling.KomplettArbeidstakerutbetalingsøknad
 import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.general.auth.ApiGatewayApiKey
+import no.nav.omsorgspengerutbetaling.soknad.KomplettSoknad
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream

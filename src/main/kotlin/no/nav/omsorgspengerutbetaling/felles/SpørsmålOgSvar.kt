@@ -1,9 +1,10 @@
-package no.nav.omsorgspengerutbetaling.soknad
+package no.nav.omsorgspengerutbetaling.felles
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import no.nav.helse.dusseldorf.ktor.core.ParameterType
 import no.nav.helse.dusseldorf.ktor.core.Violation
+import no.nav.omsorgspengerutbetaling.soknad.erBlankEllerForLangFritekst
 
 data class SpørsmålOgSvar(
     val spørsmål: Spørsmål,

@@ -2,6 +2,7 @@ package no.nav.omsorgspengerutbetaling.soknad
 
 import com.fasterxml.jackson.annotation.JsonValue
 import java.net.URL
+import no.nav.omsorgspengerutbetaling.felles.*
 
 data class Søknad(
     val språk: Språk,
