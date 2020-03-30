@@ -20,6 +20,9 @@ import io.ktor.metrics.micrometer.MicrometerMetrics
 import io.ktor.routing.Routing
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
+import no.nav.helse.arbeidsgiver.ArbeidsgivereGateway
+import no.nav.helse.arbeidsgiver.ArbeidsgivereService
+import no.nav.helse.arbeidsgiver.arbeidsgiverApis
 import no.nav.helse.dusseldorf.ktor.auth.clients
 import no.nav.helse.dusseldorf.ktor.client.HttpRequestHealthCheck
 import no.nav.helse.dusseldorf.ktor.client.HttpRequestHealthConfig
@@ -142,6 +145,10 @@ fun Application.omsorgpengesoknadapi() {
             apiGatewayApiKey = apiGatewayApiKey
         )
 
+        val arbeidsgivereGateway = ArbeidsgivereGateway(
+            baseUrl = configuration.getK9OppslagUrl(),
+            apiGatewayApiKey = apiGatewayApiKey
+        )
 
         val søkerService = SøkerService(
             søkerGateway = sokerGateway
@@ -151,6 +158,13 @@ fun Application.omsorgpengesoknadapi() {
 
             søkerApis(
                 søkerService = søkerService,
+                idTokenProvider = idTokenProvider
+            )
+
+            arbeidsgiverApis(
+                arbeidsgivereService = ArbeidsgivereService(
+                    arbeidsgivereGateway = arbeidsgivereGateway
+                ),
                 idTokenProvider = idTokenProvider
             )
 
