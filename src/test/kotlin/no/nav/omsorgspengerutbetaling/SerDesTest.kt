@@ -1,6 +1,8 @@
 package no.nav.omsorgspengerutbetaling
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.omsorgspengerutbetaling.felles.JaNei
+import no.nav.omsorgspengerutbetaling.felles.UtbetalingsperiodeMedVedlegg
 import no.nav.omsorgspengerutbetaling.soknad.*
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert

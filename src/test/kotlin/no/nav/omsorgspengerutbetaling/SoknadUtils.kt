@@ -1,6 +1,7 @@
 package no.nav.omsorgspengerutbetaling
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.omsorgspengerutbetaling.felles.*
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.soknad.Næringstyper.*

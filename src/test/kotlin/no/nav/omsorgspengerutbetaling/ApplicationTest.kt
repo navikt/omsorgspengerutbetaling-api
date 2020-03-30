@@ -15,6 +15,7 @@ import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
 import no.nav.omsorgspengerutbetaling.soknad.*
+import no.nav.omsorgspengerutbetaling.felles.*
 import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.junit.AfterClass
 import org.junit.BeforeClass

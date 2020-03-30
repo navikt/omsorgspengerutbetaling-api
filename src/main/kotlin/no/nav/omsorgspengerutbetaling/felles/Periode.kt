@@ -1,4 +1,4 @@
-package no.nav.omsorgspengerutbetaling.soknad
+package no.nav.omsorgspengerutbetaling.felles
 
 import no.nav.helse.dusseldorf.ktor.core.ParameterType
 import no.nav.helse.dusseldorf.ktor.core.Violation

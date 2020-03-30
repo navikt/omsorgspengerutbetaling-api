@@ -1,5 +1,6 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
+import no.nav.omsorgspengerutbetaling.felles.*
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import java.time.ZonedDateTime

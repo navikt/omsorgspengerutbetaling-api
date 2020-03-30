@@ -1,6 +1,6 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
-import com.fasterxml.jackson.annotation.JsonValue
+import no.nav.omsorgspengerutbetaling.felles.*
 
 data class Søknad(
     val språk: Språk,
@@ -14,8 +14,3 @@ data class Søknad(
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf()
 )
-
-enum class Språk(@JsonValue val språk: String) {
-    BOKMÅL("nb"),
-    NYNORSK("nn");
-}

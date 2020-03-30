@@ -1,4 +1,4 @@
-package no.nav.omsorgspengerutbetaling.soknad
+package no.nav.omsorgspengerutbetaling.felles
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import no.nav.helse.dusseldorf.ktor.core.ParameterType
@@ -17,7 +17,12 @@ typealias Opphold = Bosted
 
 internal fun List<Bosted>.valider(jsonPath: String) : Set<Violation> {
     val violations = mutableSetOf<Violation>()
-    val perioder = map { Periode(fraOgMed = it.fraOgMed, tilOgMed = it.tilOgMed) }
+    val perioder = map {
+        Periode(
+            fraOgMed = it.fraOgMed,
+            tilOgMed = it.tilOgMed
+        )
+    }
     violations.addAll(perioder.valider(jsonPath))
 
     forEachIndexed { index, it ->

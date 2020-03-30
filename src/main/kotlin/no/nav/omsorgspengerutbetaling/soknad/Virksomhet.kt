@@ -3,6 +3,9 @@ package no.nav.omsorgspengerutbetaling.soknad
 import com.fasterxml.jackson.annotation.JsonFormat
 import no.nav.helse.dusseldorf.ktor.core.ParameterType
 import no.nav.helse.dusseldorf.ktor.core.Violation
+import no.nav.omsorgspengerutbetaling.felles.JaNei
+import no.nav.omsorgspengerutbetaling.felles.Periode
+import no.nav.omsorgspengerutbetaling.felles.valider
 import java.time.LocalDate
 
 data class Virksomhet(

@@ -1,4 +1,4 @@
-package no.nav.omsorgspengerutbetaling.soknad
+package no.nav.omsorgspengerutbetaling.felles
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import no.nav.helse.dusseldorf.ktor.core.*
@@ -28,10 +28,11 @@ data class UtbetalingsperiodeMedVedlegg(
     val legeerklæringer: List<URI> = listOf()
 )
 
-internal fun UtbetalingsperiodeMedVedlegg.somPeriode() = Periode(
-    fraOgMed = fraOgMed,
-    tilOgMed = tilOgMed
-)
+internal fun UtbetalingsperiodeMedVedlegg.somPeriode() =
+    Periode(
+        fraOgMed = fraOgMed,
+        tilOgMed = tilOgMed
+    )
 
 data class UtbetalingsperiodeUtenVedlegg(
     @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,

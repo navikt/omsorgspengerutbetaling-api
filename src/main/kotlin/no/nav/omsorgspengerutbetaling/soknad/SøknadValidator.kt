@@ -1,6 +1,8 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
 import no.nav.helse.dusseldorf.ktor.core.*
+import no.nav.omsorgspengerutbetaling.felles.FosterBarn
+import no.nav.omsorgspengerutbetaling.felles.valider
 import java.time.format.DateTimeFormatter
 
 private const val MAX_FRITEKST_TEGN = 1000
