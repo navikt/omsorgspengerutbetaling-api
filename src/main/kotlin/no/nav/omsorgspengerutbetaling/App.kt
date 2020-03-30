@@ -35,6 +35,8 @@ import no.nav.helse.dusseldorf.ktor.jackson.JacksonStatusPages
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.dusseldorf.ktor.metrics.init
+import no.nav.omsorgspengerutbetaling.arbeidstakerutbetaling.ArbeidstakerutbetalingSøknadService
+import no.nav.omsorgspengerutbetaling.arbeidstakerutbetaling.arbeidstakerutbetalingsøknadApis
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.auth.authorizationStatusPages
 import no.nav.omsorgspengerutbetaling.general.systemauth.AccessTokenClientResolver
@@ -189,6 +191,15 @@ fun Application.omsorgpengesoknadapi() {
             søknadApis(
                 idTokenProvider = idTokenProvider,
                 søknadService = SøknadService(
+                    omsorgpengesøknadMottakGateway = omsorgpengesoknadMottakGateway,
+                    søkerService = søkerService,
+                    vedleggService = vedleggService
+                )
+            )
+
+            arbeidstakerutbetalingsøknadApis(
+                idTokenProvider = idTokenProvider,
+                søknadService = ArbeidstakerutbetalingSøknadService(
                     omsorgpengesøknadMottakGateway = omsorgpengesoknadMottakGateway,
                     søkerService = søkerService,
                     vedleggService = vedleggService
