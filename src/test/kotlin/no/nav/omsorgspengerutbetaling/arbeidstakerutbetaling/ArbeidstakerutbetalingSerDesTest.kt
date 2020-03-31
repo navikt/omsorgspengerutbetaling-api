@@ -1,7 +1,7 @@
 package no.nav.omsorgspengerutbetaling.arbeidstakerutbetaling
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.omsorgspengerutbetaling.felles.UtbetalingsperiodeMedVedlegg
+import no.nav.omsorgspengerutbetaling.felles.Utbetalingsperiode
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import java.net.URI
@@ -39,21 +39,16 @@ internal class ArbeidstakerutbetalingSerDesTest {
 
         internal val søknad = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.copy(
             utbetalingsperioder = listOf(
-                UtbetalingsperiodeMedVedlegg(
+                Utbetalingsperiode(
                     fraOgMed = start,
-                    tilOgMed = start.plusDays(10),
-                    legeerklæringer = listOf(URI("http://localhost:8080/vedlegg/1"))
+                    tilOgMed = start.plusDays(10)
                 ),
-                UtbetalingsperiodeMedVedlegg(
+                Utbetalingsperiode(
                     fraOgMed = start.plusDays(20),
                     tilOgMed = start.plusDays(20),
-                    lengde = Duration.ofHours(5).plusMinutes(30),
-                    legeerklæringer = listOf(
-                        URI("http://localhost:8080/vedlegg/2"),
-                        URI("http://localhost:8080/vedlegg/3")
-                    )
+                    lengde = Duration.ofHours(5).plusMinutes(30)
                 ),
-                UtbetalingsperiodeMedVedlegg(
+                Utbetalingsperiode(
                     fraOgMed = start.plusDays(30),
                     tilOgMed = start.plusDays(35)
                 )
@@ -127,18 +122,15 @@ internal class ArbeidstakerutbetalingSerDesTest {
             "utbetalingsperioder": [{
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
-                "lengde": null,
-                "legeerklæringer": ["http://localhost:8080/vedlegg/1"]
+                "lengde": null
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
-                "lengde": "PT5H30M",
-                "legeerklæringer": ["http://localhost:8080/vedlegg/2", "http://localhost:8080/vedlegg/3"]
+                "lengde": "PT5H30M"
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
-                "lengde": null,
-                "legeerklæringer": []
+                "lengde": null
             }],
             "fosterbarn": [{
                 "fødselsnummer": "02119970078",

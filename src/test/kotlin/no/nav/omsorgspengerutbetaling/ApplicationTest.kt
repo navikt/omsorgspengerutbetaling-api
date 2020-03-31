@@ -54,7 +54,7 @@ class ApplicationTest {
             .stubK9DokumentHealth()
             .stubOmsorgspengerutbetalingsoknadMottakHealth()
             .stubOppslagHealth()
-            .stubLeggSoknadTilProsessering()
+            .stubLeggSoknadTilProsessering("/v1/soknad")
             .stubK9OppslagSoker()
             .stubK9Dokument()
 

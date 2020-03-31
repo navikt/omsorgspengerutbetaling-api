@@ -119,17 +119,17 @@ internal object SøknadUtils {
             )
         ),
         utbetalingsperioder = listOf(
-            UtbetalingsperiodeUtenVedlegg(
+            Utbetalingsperiode(
                 fraOgMed = start,
                 tilOgMed = start.plusDays(10),
                 lengde = null
             ),
-            UtbetalingsperiodeUtenVedlegg(
+            Utbetalingsperiode(
                 fraOgMed = start.plusDays(20),
                 tilOgMed = start.plusDays(20),
                 lengde = Duration.ofHours(5).plusMinutes(30)
             ),
-            UtbetalingsperiodeUtenVedlegg(
+            Utbetalingsperiode(
                 fraOgMed = start.plusDays(30),
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 lengde = Duration.ofHours(7).plusMinutes(30)

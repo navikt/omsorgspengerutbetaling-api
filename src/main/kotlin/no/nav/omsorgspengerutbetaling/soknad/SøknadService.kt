@@ -1,7 +1,7 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
 import no.nav.omsorgspengerutbetaling.mottak.OmsorgpengesøknadMottakGateway
-import no.nav.omsorgspengerutbetaling.felles.UtbetalingsperiodeUtenVedlegg
+import no.nav.omsorgspengerutbetaling.felles.Utbetalingsperiode
 import no.nav.omsorgspengerutbetaling.felles.somPeriode
 import no.nav.omsorgspengerutbetaling.felles.valider
 import no.nav.omsorgspengerutbetaling.general.CallId
@@ -38,7 +38,7 @@ internal class SøknadService(
         logger.trace("Søker Validert.")
 
         val utbetalingsperioder = søknad.utbetalingsperioder.map {
-            UtbetalingsperiodeUtenVedlegg(
+            Utbetalingsperiode(
                 fraOgMed = it.fraOgMed,
                 tilOgMed = it.tilOgMed,
                 lengde = it.lengde

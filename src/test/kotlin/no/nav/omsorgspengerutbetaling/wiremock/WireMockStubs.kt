@@ -68,9 +68,9 @@ internal fun WireMockServer.stubK9DokumentHealth() = stubHealthEndpoint("$k9Doku
 internal fun WireMockServer.stubOmsorgspengerutbetalingsoknadMottakHealth() = stubHealthEndpointThroughZones("$omsorgpengerutbetalingsoknadMottakPath/health")
 internal fun WireMockServer.stubOppslagHealth() = stubHealthEndpointThroughZones("$k9OppslagPath/health")
 
-internal fun WireMockServer.stubLeggSoknadTilProsessering() : WireMockServer{
+internal fun WireMockServer.stubLeggSoknadTilProsessering(path: String): WireMockServer{
     WireMock.stubFor(
-        WireMock.post(WireMock.urlMatching(".*$omsorgpengerutbetalingsoknadMottakPath/v1/soknad"))
+        WireMock.post(WireMock.urlMatching(".*$omsorgpengerutbetalingsoknadMottakPath$path"))
             .withHeader("x-nav-apiKey", AnythingPattern())
             .willReturn(
                 WireMock.aResponse()
