@@ -1,7 +1,7 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
 import no.nav.omsorgspengerutbetaling.mottak.OmsorgpengesøknadMottakGateway
-import no.nav.omsorgspengerutbetaling.felles.UtbetalingsperiodeUtenVedlegg
+import no.nav.omsorgspengerutbetaling.felles.Utbetalingsperiode
 import no.nav.omsorgspengerutbetaling.felles.somPeriode
 import no.nav.omsorgspengerutbetaling.felles.valider
 import no.nav.omsorgspengerutbetaling.general.CallId
@@ -42,7 +42,7 @@ internal class SøknadService(
         logger.trace("Henter legeerklæringer for ${søknad.utbetalingsperioder.size} utbetalingsperioder.")
 
         val utbetalingsperioder = søknad.utbetalingsperioder.map {
-            UtbetalingsperiodeUtenVedlegg(
+            Utbetalingsperiode(
                 fraOgMed = it.fraOgMed,
                 tilOgMed = it.tilOgMed,
                 lengde = it.lengde

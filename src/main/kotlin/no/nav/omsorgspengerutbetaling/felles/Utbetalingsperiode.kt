@@ -34,10 +34,16 @@ internal fun UtbetalingsperiodeMedVedlegg.somPeriode() =
         tilOgMed = tilOgMed
     )
 
-data class UtbetalingsperiodeUtenVedlegg(
+internal fun Utbetalingsperiode.somPeriode() =
+    Periode(
+        fraOgMed = fraOgMed,
+        tilOgMed = tilOgMed
+    )
+
+data class Utbetalingsperiode(
     @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
-    val lengde: Duration?
+    val lengde: Duration? = null
 )
 
 internal fun List<UtbetalingsperiodeMedVedlegg>.valider() : Set<Violation> {
@@ -72,6 +78,26 @@ internal fun List<UtbetalingsperiodeMedVedlegg>.valider() : Set<Violation> {
             }
         }
     }
+    return violations
+}
+
+internal fun List<Utbetalingsperiode>.validerUenVedlegg() : Set<Violation> {
+    val violations = mutableSetOf<Violation>()
+
+    if (isEmpty()) {
+        violations.add(
+            Violation(
+                parameterName = Verktøy.JsonPath,
+                parameterType = ParameterType.ENTITY,
+                reason = "Må settes minst en utbetalingsperiode.",
+                invalidValue = this
+            )
+        )
+    }
+
+    val perioder = map { it.somPeriode() }
+    violations.addAll(perioder.valider(Verktøy.JsonPath))
+
     return violations
 }
 

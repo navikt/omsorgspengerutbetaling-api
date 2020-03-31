@@ -1,11 +1,8 @@
 package no.nav.omsorgspengerutbetaling.arbeidstakerutbetaling
 
-import no.nav.omsorgspengerutbetaling.mottak.OmsorgpengesøknadMottakGateway
-import no.nav.omsorgspengerutbetaling.felles.UtbetalingsperiodeUtenVedlegg
-import no.nav.omsorgspengerutbetaling.felles.somPeriode
-import no.nav.omsorgspengerutbetaling.felles.valider
 import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.general.auth.IdToken
+import no.nav.omsorgspengerutbetaling.mottak.OmsorgpengesøknadMottakGateway
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soker.SøkerService
 import no.nav.omsorgspengerutbetaling.soker.validate
@@ -39,34 +36,6 @@ internal class ArbeidstakerutbetalingSøknadService(
 
         logger.trace("Søker Validert.")
 
-        logger.trace("Henter legeerklæringer for ${søknad.utbetalingsperioder.size} utbetalingsperioder.")
-
-        val utbetalingsperioder = søknad.utbetalingsperioder.map {
-            UtbetalingsperiodeUtenVedlegg(
-                fraOgMed = it.fraOgMed,
-                tilOgMed = it.tilOgMed,
-                lengde = it.lengde
-            )
-        }
-
-        val vedlegg = søknad.utbetalingsperioder.map { perioder ->
-            logger.trace("Henter ${perioder.legeerklæringer} legeerklæringer.")
-            val periode = perioder.somPeriode()
-            vedleggService.hentVedlegg(
-                idToken = idToken,
-                callId = callId,
-                vedleggUrls = perioder.legeerklæringer
-            ).onEach { vedlegg -> vedlegg.title = "$periode: Legeerklæring" }
-        }.flatten()
-
-        logger.trace("Legeærkleringer hentet. Validerer dem.")
-
-        val alleVedleggReferanser = søknad.utbetalingsperioder
-            .map { it.legeerklæringer }
-            .flatten()
-
-        vedlegg.valider(alleVedleggReferanser = alleVedleggReferanser)
-
         logger.info("Legger søknad til prosessering")
 
         val komplettSoknad = KomplettArbeidstakerutbetalingsøknad(
@@ -77,7 +46,7 @@ internal class ArbeidstakerutbetalingSøknadService(
             opphold = søknad.opphold,
             spørsmål = søknad.spørsmål,
             arbeidsgivere = søknad.arbeidsgivere,
-            utbetalingsperioder = utbetalingsperioder,
+            utbetalingsperioder = søknad.utbetalingsperioder,
             fosterbarn = søknad.fosterbarn,
             bekreftelser = søknad.bekreftelser
         )
@@ -87,16 +56,8 @@ internal class ArbeidstakerutbetalingSøknadService(
             callId = callId
         )
 
-        logger.trace("Søknad lagt til prosessering. Sletter vedlegg.")
+        logger.trace("Søknad lagt til prosessering.")
 
-
-        vedleggService.slettVedleg(
-            vedleggUrls = alleVedleggReferanser,
-            callId = callId,
-            idToken = idToken
-        )
-
-        logger.trace("Vedlegg slettet.")
     }
 }
 

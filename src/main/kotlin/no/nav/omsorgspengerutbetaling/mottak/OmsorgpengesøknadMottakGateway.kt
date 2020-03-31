@@ -46,7 +46,7 @@ class OmsorgpengesøknadMottakGateway(
 
     private val komplettArbeidstakerutbetalingUrl = Url.buildURL(
         baseUrl = baseUrl,
-        pathParts = listOf("v1", "soknad/arbeidstaker")
+        pathParts = listOf("v1", "arbeidstaker", "soknad")
     ).toString()
 
     private val cachedAccessTokenClient = CachedAccessTokenClient(accessTokenClient)

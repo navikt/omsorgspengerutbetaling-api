@@ -27,7 +27,8 @@ class ApplicationWithMocks {
                 .stubK9DokumentHealth()
                 .stubOmsorgspengerutbetalingsoknadMottakHealth()
                 .stubOppslagHealth()
-                .stubLeggSoknadTilProsessering()
+                .stubLeggSoknadTilProsessering("/v1/soknad")
+                .stubLeggSoknadTilProsessering("/arbeidstaker/soknad")
                 .stubK9Dokument()
                 .stubK9OppslagSoker()
 

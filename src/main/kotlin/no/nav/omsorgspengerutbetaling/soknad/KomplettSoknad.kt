@@ -13,7 +13,7 @@ data class KomplettSoknad(
     val opphold: List<Opphold>,
     val spørsmål: List<SpørsmålOgSvar>,
     val bekreftelser: Bekreftelser,
-    val utbetalingsperioder: List<UtbetalingsperiodeUtenVedlegg>,
+    val utbetalingsperioder: List<Utbetalingsperiode>,
     val andreUtbetalinger: List<String>?, //TODO: Fjern ? når dette er prodsatt.
     val vedlegg: List<Vedlegg> = listOf(),
     val fosterbarn: List<FosterBarn>? = listOf(),
