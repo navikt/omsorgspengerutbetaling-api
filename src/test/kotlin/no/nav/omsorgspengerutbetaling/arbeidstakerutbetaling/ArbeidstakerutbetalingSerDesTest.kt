@@ -71,36 +71,28 @@ internal class ArbeidstakerutbetalingSerDesTest {
             "arbeidsgivere": {
               "organisasjoner": [
                 {
-                  "navn": "Arbeidsgiver 1",
-                  "organisasjonsnummer": "917755736",
-                  "skalJobbeProsent": 100.0,
-                  "skalJobbe": "ja",
-                  "jobberNormaltTimer": 37.5,
-                  "vetIkkeEkstrainfo": null
+                    "navn": "Arbeidsgiver 1",
+                    "organisasjonsnummer": "917755736",
+                    "harHattFraværHosArbeidsgiver": true,
+                    "arbeidsgiverHarUtbetaltLønn": false
                 },
                 {
                   "navn": "Arbeidsgiver 2",
                   "organisasjonsnummer": "917755736",
-                  "skalJobbeProsent": 50.0,
-                  "skalJobbe": "redusert",
-                  "jobberNormaltTimer": 37.5,
-                  "vetIkkeEkstrainfo": null
+                    "harHattFraværHosArbeidsgiver": true,
+                    "arbeidsgiverHarUtbetaltLønn": false
                 },
                 {
                   "navn": "Arbeidsgiver 3",
                   "organisasjonsnummer": "917755736",
-                  "skalJobbeProsent": 0.0,
-                  "skalJobbe": "vet_ikke",
-                  "vetIkkeEkstrainfo": "Usikker på om jeg skal jobbe.",
-                  "jobberNormaltTimer": 37.5
+                    "harHattFraværHosArbeidsgiver": true,
+                    "arbeidsgiverHarUtbetaltLønn": false
                 },
                 {
                   "navn": null,
                   "organisasjonsnummer": "917755736",
-                  "skalJobbeProsent": 0.0,
-                  "skalJobbe": "nei",
-                  "jobberNormaltTimer": 37.5,
-                  "vetIkkeEkstrainfo": null
+                    "harHattFraværHosArbeidsgiver": true,
+                    "arbeidsgiverHarUtbetaltLønn": false
                 }
               ]
             },
@@ -158,34 +150,26 @@ internal class ArbeidstakerutbetalingSerDesTest {
                 {
                   "navn": "Arbeidsgiver 1",
                   "organisasjonsnummer": "917755736",
-                  "skalJobbeProsent": 100.0,
-                  "skalJobbe": "ja",
-                  "jobberNormaltTimer": 37.5,
-                  "vetIkkeEkstrainfo": null
+                    "harHattFraværHosArbeidsgiver": true,
+                    "arbeidsgiverHarUtbetaltLønn": false
                 },
                 {
                   "navn": "Arbeidsgiver 2",
                   "organisasjonsnummer": "917755736",
-                  "skalJobbeProsent": 50.0,
-                  "skalJobbe": "redusert",
-                  "jobberNormaltTimer": 37.5,
-                  "vetIkkeEkstrainfo": null
+                    "harHattFraværHosArbeidsgiver": true,
+                    "arbeidsgiverHarUtbetaltLønn": false
                 },
                 {
                   "navn": "Arbeidsgiver 3",
                   "organisasjonsnummer": "917755736",
-                  "skalJobbeProsent": 0.0,
-                  "skalJobbe": "vet_ikke",
-                  "vetIkkeEkstrainfo": "Usikker på om jeg skal jobbe.",
-                  "jobberNormaltTimer": 37.5
+                    "harHattFraværHosArbeidsgiver": true,
+                    "arbeidsgiverHarUtbetaltLønn": false
                 },
                 {
                   "navn": null,
                   "organisasjonsnummer": "917755736",
-                  "skalJobbeProsent": 0.0,
-                  "skalJobbe": "nei",
-                  "jobberNormaltTimer": 37.5,
-                  "vetIkkeEkstrainfo": null
+                    "harHattFraværHosArbeidsgiver": true,
+                    "arbeidsgiverHarUtbetaltLønn": false
                 }
               ]
             },

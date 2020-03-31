@@ -21,30 +21,25 @@ internal object ArbeidstakerutbetalingSøknadUtils {
                 OrganisasjonDetaljer(
                     navn = "Arbeidsgiver 1",
                     organisasjonsnummer = GYLDIG_ORGNR,
-                    skalJobbeProsent = 100.0,
-                    skalJobbe = "ja",
-                    jobberNormaltTimer = 37.5
+                    harHattFraværHosArbeidsgiver = true,
+                    arbeidsgiverHarUtbetaltLønn = false
                 ),
                 OrganisasjonDetaljer(
                     navn = "Arbeidsgiver 2",
                     organisasjonsnummer = GYLDIG_ORGNR,
-                    skalJobbeProsent = 50.0,
-                    skalJobbe = "redusert",
-                    jobberNormaltTimer = 37.5
+                    harHattFraværHosArbeidsgiver = true,
+                    arbeidsgiverHarUtbetaltLønn = false
                 ),
                 OrganisasjonDetaljer(
                     navn = "Arbeidsgiver 3",
                     organisasjonsnummer = GYLDIG_ORGNR,
-                    skalJobbeProsent = 0.0,
-                    skalJobbe = "vet_ikke",
-                    vetIkkeEkstrainfo = "Usikker på om jeg skal jobbe.",
-                    jobberNormaltTimer = 37.5
+                    harHattFraværHosArbeidsgiver = true,
+                    arbeidsgiverHarUtbetaltLønn = false
                 ),
                 OrganisasjonDetaljer(
                     organisasjonsnummer = GYLDIG_ORGNR,
-                    skalJobbeProsent = 0.0,
-                    skalJobbe = "nei",
-                    jobberNormaltTimer = 37.5
+                    harHattFraværHosArbeidsgiver = true,
+                    arbeidsgiverHarUtbetaltLønn = false
                 )
             )
         ),
@@ -108,30 +103,25 @@ internal object ArbeidstakerutbetalingSøknadUtils {
                 OrganisasjonDetaljer(
                     navn = "Arbeidsgiver 1",
                     organisasjonsnummer = GYLDIG_ORGNR,
-                    skalJobbeProsent = 100.0,
-                    skalJobbe = "ja",
-                    jobberNormaltTimer = 37.5
+                    harHattFraværHosArbeidsgiver = true,
+                    arbeidsgiverHarUtbetaltLønn = false
                 ),
                 OrganisasjonDetaljer(
                     navn = "Arbeidsgiver 2",
                     organisasjonsnummer = GYLDIG_ORGNR,
-                    skalJobbeProsent = 50.0,
-                    skalJobbe = "redusert",
-                    jobberNormaltTimer = 37.5
+                    harHattFraværHosArbeidsgiver = true,
+                    arbeidsgiverHarUtbetaltLønn = false
                 ),
                 OrganisasjonDetaljer(
                     navn = "Arbeidsgiver 3",
                     organisasjonsnummer = GYLDIG_ORGNR,
-                    skalJobbeProsent = 0.0,
-                    skalJobbe = "vet_ikke",
-                    vetIkkeEkstrainfo = "Usikker på om jeg skal jobbe.",
-                    jobberNormaltTimer = 37.5
+                    harHattFraværHosArbeidsgiver = true,
+                    arbeidsgiverHarUtbetaltLønn = false
                 ),
                 OrganisasjonDetaljer(
                     organisasjonsnummer = GYLDIG_ORGNR,
-                    skalJobbeProsent = 0.0,
-                    skalJobbe = "nei",
-                    jobberNormaltTimer = 37.5
+                    harHattFraværHosArbeidsgiver = true,
+                    arbeidsgiverHarUtbetaltLønn = false
                 )
             )
         ),
