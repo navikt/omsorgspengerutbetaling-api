@@ -29,4 +29,14 @@ fun Route.søkerApis(
             callId = call.getCallId()
         ))
     }
+
+    @Location("/arbeidstakerutbetaling/soker")
+    class getArbeidstakerutbetalingSoker
+
+    get { _: getArbeidstakerutbetalingSoker ->
+        call.respond(søkerService.getSoker(
+            idToken = idTokenProvider.getIdToken(call),
+            callId = call.getCallId()
+        ))
+    }
 }
