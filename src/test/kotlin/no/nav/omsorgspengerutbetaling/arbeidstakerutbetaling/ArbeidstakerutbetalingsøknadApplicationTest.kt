@@ -132,6 +132,10 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                         "landnavn": "Great Britain",
                         "erEØSLand": true
                     }],
+                    "jobbHosNåværendeArbeidsgiver": {
+                        "merEnn4Uker": true,
+                        "begrunnelse": "ANNET_ARBEIDSFORHOLD"
+                    },
                     "arbeidsgivere": {
                       "organisasjoner": [
                         {
@@ -357,6 +361,10 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                         "landnavn": "Great Britain",
                         "erEØSLand": true
                     }],
+                    "jobbHosNåværendeArbeidsgiver": {
+                        "merEnn4Uker": true,
+                        "begrunnelse": "ANNET_ARBEIDSFORHOLD"
+                    },
                     "arbeidsgivere": {
                       "organisasjoner": [
                         {
@@ -415,6 +423,115 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                         "lengde": null
                     }],
                     "andreUtbetalinger": ["dagpenger", "koronapenger"]
+                }
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `Sende ugyldig søknad, der begrunnelse på jobbHosNåværendeArbeidsgiver ikke er satt når arbeidsforholder har vart mer enn 4 uker`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/arbeidstaker/soknad",
+            expectedResponse = """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "jobbHosNåværendeArbeidsgiver.begrunnelse",
+                      "reason": "Begrunnelse kan ikke være null, dersom merEnn4Uker er satt til true.",
+                      "invalid_value": null
+                    }
+                  ]
+                }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = """
+                 {
+                    "språk": "nb",
+                    "bosteder": [{
+                        "fraOgMed": "2019-12-12",
+                        "tilOgMed": "2019-12-22",
+                        "landkode": "GB",
+                        "landnavn": "Great Britain",
+                        "erEØSLand": true
+                    }],
+                    "opphold": [{
+                        "fraOgMed": "2019-12-12",
+                        "tilOgMed": "2019-12-22",
+                        "landkode": "GB",
+                        "landnavn": "Great Britain",
+                        "erEØSLand": true
+                    }],
+                    "jobbHosNåværendeArbeidsgiver": {
+                        "merEnn4Uker": true
+                    },
+                    "arbeidsgivere": {
+                      "organisasjoner": [
+                        {
+                          "navn": "Arbeidsgiver 1",
+                          "organisasjonsnummer": "917755736",
+                          "skalJobbeProsent": 100.0,
+                          "skalJobbe": "ja",
+                          "jobberNormaltTimer": 37.5,
+                          "vetIkkeEkstrainfo": null
+                        },
+                        {
+                          "navn": "Arbeidsgiver 2",
+                          "organisasjonsnummer": "917755736",
+                          "skalJobbeProsent": 50.0,
+                          "skalJobbe": "redusert",
+                          "jobberNormaltTimer": 37.5,
+                          "vetIkkeEkstrainfo": null
+                        },
+                        {
+                          "navn": "Arbeidsgiver 3",
+                          "organisasjonsnummer": "917755736",
+                          "skalJobbeProsent": 0.0,
+                          "skalJobbe": "vet_ikke",
+                          "vetIkkeEkstrainfo": "Usikker på om jeg skal jobbe.",
+                          "jobberNormaltTimer": 37.5
+                        },
+                        {
+                          "navn": null,
+                          "organisasjonsnummer": "917755736",
+                          "skalJobbeProsent": 0.0,
+                          "skalJobbe": "nei",
+                          "jobberNormaltTimer": 37.5,
+                          "vetIkkeEkstrainfo": null
+                        }
+                      ]
+                    },
+                    "spørsmål": [{
+                        "spørsmål": "Et spørsmål",
+                        "svar": false
+                    }],
+                    "bekreftelser": {
+                        "harBekreftetOpplysninger": true,
+                        "harForståttRettigheterOgPlikter": true
+                    },
+                    "utbetalingsperioder": [{
+                        "fraOgMed": "2020-01-01",
+                        "tilOgMed": "2020-01-11",
+                        "lengde": null
+                    }, {
+                        "fraOgMed": "2020-01-21",
+                        "tilOgMed": "2020-01-21",
+                        "lengde": "PT5H30M"
+                    }, {
+                        "fraOgMed": "2020-01-31",
+                        "tilOgMed": "2020-02-05",
+                        "lengde": null
+                    }],
+                    "andreUtbetalinger": ["dagpenger", "sykepenger"]
                 }
                 """.trimIndent()
         )

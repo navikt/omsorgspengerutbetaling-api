@@ -45,6 +45,7 @@ internal class ArbeidstakerutbetalingSøknadService(
             bosteder = søknad.bosteder,
             opphold = søknad.opphold,
             spørsmål = søknad.spørsmål,
+            jobbHosNåværendeArbeidsgiver = søknad.jobbHosNåværendeArbeidsgiver,
             arbeidsgivere = søknad.arbeidsgivere,
             utbetalingsperioder = søknad.utbetalingsperioder,
             andreUtbetalinger = søknad.andreUtbetalinger,
