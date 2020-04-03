@@ -48,6 +48,7 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(5)
             )
         ),
+        andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
         frilans = Frilans(
             startdato = start,
             jobberFortsattSomFrilans = JaNei.Ja
@@ -132,6 +133,7 @@ internal object SøknadUtils {
                 lengde = Duration.ofHours(7).plusMinutes(30)
             )
         ),
+        andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
         frilans = Frilans(
             startdato = start,
             jobberFortsattSomFrilans = JaNei.Ja

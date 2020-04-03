@@ -11,6 +11,7 @@ private val fnrDateFormat = DateTimeFormatter.ofPattern("ddMMyy")
 internal fun Søknad.valider() {
     val violations = mutableSetOf<Violation>().apply {
         addAll(utbetalingsperioder.valider())
+        andreUtbetalinger?.let { addAll(it.valider()) } // TODO: Fjen optional når prodsatt.
         addAll(opphold.valider("opphold"))
         addAll(bosteder.valider("bosteder"))
         addAll(spørsmål.valider())

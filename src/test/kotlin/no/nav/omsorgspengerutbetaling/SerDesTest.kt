@@ -135,6 +135,7 @@ internal class SerDesTest {
                 "lengde": null,
                 "legeerklæringer": []
             }],
+            "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "frilans": {
                 "startdato": "2020-01-01",
                 "jobberFortsattSomFrilans": true
@@ -223,6 +224,7 @@ internal class SerDesTest {
                 "tilOgMed": "2020-02-05",
                 "lengde": "PT7H30M"
             }],
+            "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "frilans": {
                 "startdato": "2020-01-01",
                 "jobberFortsattSomFrilans": true
