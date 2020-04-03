@@ -48,6 +48,7 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(5)
             )
         ),
+        andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
         frilans = Frilans(
             startdato = start,
             jobberFortsattSomFrilans = JaNei.Ja
@@ -72,9 +73,7 @@ internal object SøknadUtils {
         ),
         fosterbarn = listOf(
             FosterBarn(
-                fødselsnummer = "02119970078",
-                fornavn = "fornavn",
-                etternavn = "etternavn"
+                fødselsnummer = "02119970078"
             )
         )
     )
@@ -132,6 +131,7 @@ internal object SøknadUtils {
                 lengde = Duration.ofHours(7).plusMinutes(30)
             )
         ),
+        andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
         frilans = Frilans(
             startdato = start,
             jobberFortsattSomFrilans = JaNei.Ja
@@ -166,9 +166,7 @@ internal object SøknadUtils {
         ),
         fosterbarn = listOf(
             FosterBarn(
-                fødselsnummer = "02119970078",
-                fornavn = "fornavn",
-                etternavn = "etternavn"
+                fødselsnummer = "02119970078"
             )
         ),
         vedlegg = listOf(),

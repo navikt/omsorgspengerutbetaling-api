@@ -73,6 +73,7 @@ internal class SøknadService(
             opphold = søknad.opphold,
             spørsmål = søknad.spørsmål,
             utbetalingsperioder = utbetalingsperioder,
+            andreUtbetalinger = søknad.andreUtbetalinger,
             vedlegg = vedlegg,
             frilans = søknad.frilans,
             fosterbarn = søknad.fosterbarn,
