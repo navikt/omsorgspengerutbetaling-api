@@ -11,6 +11,7 @@ data class KomplettArbeidstakerutbetalingsøknad(
     val søker: Søker,
     val bosteder: List<Bosted>,
     val opphold: List<Opphold>,
+    val jobbHosNåværendeArbeidsgiver: JobbHosNåværendeArbeidsgiver,
     val arbeidsgivere: ArbeidsgiverDetaljer,
     val spørsmål: List<SpørsmålOgSvar>,
     val bekreftelser: Bekreftelser,

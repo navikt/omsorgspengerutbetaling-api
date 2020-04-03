@@ -2,6 +2,7 @@ package no.nav.omsorgspengerutbetaling.arbeidstakerutbetaling
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.arbeidsgiver.ArbeidsgiverDetaljer
+import no.nav.omsorgspengerutbetaling.arbeidstakerutbetaling.JobbHosNåværendeArbeidsgiver.Begrunnelse.ANNET_ARBEIDSFORHOLD
 import no.nav.omsorgspengerutbetaling.felles.*
 import no.nav.omsorgspengerutbetaling.omsorgspengerKonfiguert
 import no.nav.omsorgspengerutbetaling.soker.Søker
@@ -16,6 +17,10 @@ internal object ArbeidstakerutbetalingSøknadUtils {
 
     internal val defaultSøknad = Arbeidstakerutbetalingsøknad(
         språk = Språk.BOKMÅL,
+        jobbHosNåværendeArbeidsgiver = JobbHosNåværendeArbeidsgiver(
+            merEnn4Uker = true,
+            begrunnelse = ANNET_ARBEIDSFORHOLD
+        ),
         arbeidsgivere = ArbeidsgiverDetaljer(
             organisasjoner = listOf(
                 OrganisasjonDetaljer(
@@ -98,6 +103,10 @@ internal object ArbeidstakerutbetalingSøknadUtils {
             mellomnavn = null,
             fornavn = "Ola",
             myndig = true
+        ),
+        jobbHosNåværendeArbeidsgiver = JobbHosNåværendeArbeidsgiver(
+            merEnn4Uker = true,
+            begrunnelse = ANNET_ARBEIDSFORHOLD
         ),
         arbeidsgivere = ArbeidsgiverDetaljer(
             organisasjoner = listOf(

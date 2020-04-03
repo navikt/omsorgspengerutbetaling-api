@@ -8,6 +8,7 @@ data class Arbeidstakerutbetalingsøknad(
     val bosteder: List<Bosted>,
     val opphold: List<Opphold>,
     val spørsmål: List<SpørsmålOgSvar>,
+    val jobbHosNåværendeArbeidsgiver: JobbHosNåværendeArbeidsgiver,
     val arbeidsgivere: ArbeidsgiverDetaljer,
     val bekreftelser: Bekreftelser,
     val utbetalingsperioder: List<Utbetalingsperiode>,

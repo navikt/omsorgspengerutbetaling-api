@@ -68,6 +68,10 @@ internal class ArbeidstakerutbetalingSerDesTest {
                 "landnavn": "Great Britain",
                 "erEØSLand": true
             }],
+            "jobbHosNåværendeArbeidsgiver": {
+                "merEnn4Uker": true,
+                "begrunnelse": "ANNET_ARBEIDSFORHOLD"
+            },
             "arbeidsgivere": {
               "organisasjoner": [
                 {
@@ -124,7 +128,6 @@ internal class ArbeidstakerutbetalingSerDesTest {
                 "tilOgMed": "2020-02-05",
                 "lengde": null
             }],
-            
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "fosterbarn": [{
                 "fødselsnummer": "02119970078",
@@ -146,6 +149,10 @@ internal class ArbeidstakerutbetalingSerDesTest {
                 "mellomnavn": null,
                 "etternavn": "Nordmann",
                 "myndig": true
+            },
+            "jobbHosNåværendeArbeidsgiver": {
+                "merEnn4Uker": true,
+                "begrunnelse": "ANNET_ARBEIDSFORHOLD"
             },
             "arbeidsgivere": {
               "organisasjoner": [
