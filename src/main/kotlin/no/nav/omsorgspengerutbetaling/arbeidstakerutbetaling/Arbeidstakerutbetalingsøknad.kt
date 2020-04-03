@@ -11,5 +11,6 @@ data class Arbeidstakerutbetalingsøknad(
     val arbeidsgivere: ArbeidsgiverDetaljer,
     val bekreftelser: Bekreftelser,
     val utbetalingsperioder: List<Utbetalingsperiode>,
+    val andreUtbetalinger: List<String>,
     val fosterbarn: List<FosterBarn>? = listOf()
 )

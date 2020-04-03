@@ -18,6 +18,7 @@ internal fun Arbeidstakerutbetalingsøknad.valider() {
         addAll(bosteder.valider("bosteder"))
         addAll(spørsmål.valider())
         addAll(bekreftelser.valider())
+        addAll(andreUtbetalinger.valider())
         fosterbarn?.let { addAll(validerFosterbarn(it)) }
     }
 
