@@ -77,6 +77,7 @@ internal object ArbeidstakerutbetalingSøknadUtils {
                 tilOgMed = start.plusDays(5)
             )
         ),
+        andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
         fosterbarn = listOf(
             FosterBarn(
                 fødselsnummer = "02119970078",
@@ -166,6 +167,7 @@ internal object ArbeidstakerutbetalingSøknadUtils {
                 lengde = Duration.ofHours(7).plusMinutes(30)
             )
         ),
+        andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
         fosterbarn = listOf(
             FosterBarn(
                 fødselsnummer = "02119970078",

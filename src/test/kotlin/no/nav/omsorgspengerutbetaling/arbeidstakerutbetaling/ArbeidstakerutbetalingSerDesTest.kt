@@ -124,6 +124,8 @@ internal class ArbeidstakerutbetalingSerDesTest {
                 "tilOgMed": "2020-02-05",
                 "lengde": null
             }],
+            
+            "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "fosterbarn": [{
                 "fødselsnummer": "02119970078",
                 "fornavn": "fornavn",
@@ -208,6 +210,7 @@ internal class ArbeidstakerutbetalingSerDesTest {
                 "tilOgMed": "2020-02-05",
                 "lengde": "PT7H30M"
             }],
+            "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "fosterbarn": [{
                 "fødselsnummer": "02119970078",
                 "fornavn": "fornavn",

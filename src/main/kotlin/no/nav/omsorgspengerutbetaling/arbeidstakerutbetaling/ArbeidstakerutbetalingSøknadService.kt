@@ -47,6 +47,7 @@ internal class ArbeidstakerutbetalingSøknadService(
             spørsmål = søknad.spørsmål,
             arbeidsgivere = søknad.arbeidsgivere,
             utbetalingsperioder = søknad.utbetalingsperioder,
+            andreUtbetalinger = søknad.andreUtbetalinger,
             fosterbarn = søknad.fosterbarn,
             bekreftelser = søknad.bekreftelser
         )
