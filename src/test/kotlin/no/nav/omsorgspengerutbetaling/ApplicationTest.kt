@@ -630,14 +630,10 @@ class ApplicationTest {
             requestEntity = SøknadUtils.defaultSøknad.copy(
                 fosterbarn = listOf(
                     FosterBarn(
-                        fødselsnummer = "02119970078",
-                        fornavn = "Ole",
-                        etternavn = "Nordmann"
+                        fødselsnummer = "02119970078"
                     ),
                     FosterBarn(
-                        fødselsnummer = "ugyldig fødselsnummer",
-                        fornavn = "Ole",
-                        etternavn = "Nordmann"
+                        fødselsnummer = "ugyldig fødselsnummer"
                     )
                 )
             ).somJson()

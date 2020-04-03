@@ -169,9 +169,7 @@ internal class SerDesTest {
                 }
             }],
             "fosterbarn": [{
-                "fødselsnummer": "02119970078",
-                "fornavn": "fornavn",
-                "etternavn": "etternavn"
+                "fødselsnummer": "02119970078"
             }]
         }
         """.trimIndent()
@@ -258,9 +256,7 @@ internal class SerDesTest {
                 }
             }],
             "fosterbarn": [{
-                "fødselsnummer": "02119970078",
-                "fornavn": "fornavn",
-                "etternavn": "etternavn"
+                "fødselsnummer": "02119970078"
             }],
             "vedlegg": []
         }
