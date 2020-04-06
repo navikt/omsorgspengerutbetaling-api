@@ -85,9 +85,7 @@ internal object ArbeidstakerutbetalingSøknadUtils {
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
         fosterbarn = listOf(
             FosterBarn(
-                fødselsnummer = "02119970078",
-                fornavn = "fornavn",
-                etternavn = "etternavn"
+                fødselsnummer = "02119970078"
             )
         )
     )
@@ -179,9 +177,7 @@ internal object ArbeidstakerutbetalingSøknadUtils {
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
         fosterbarn = listOf(
             FosterBarn(
-                fødselsnummer = "02119970078",
-                fornavn = "fornavn",
-                etternavn = "etternavn"
+                fødselsnummer = "02119970078"
             )
         ),
         bekreftelser = Bekreftelser(
