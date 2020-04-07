@@ -40,3 +40,4 @@ fun Route.søkerApis(
         ))
     }
 }
+
