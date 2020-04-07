@@ -20,3 +20,4 @@ enum class Språk(@JsonValue val språk: String) {
     BOKMÅL("nb"),
     NYNORSK("nn");
 }
+
