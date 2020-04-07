@@ -168,6 +168,7 @@ internal class SerDesTest {
                     "kanInnhenteOpplysninger": false
                 }
             }],
+            "erArbeidstakerOgså": true,
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
             }]
@@ -255,6 +256,7 @@ internal class SerDesTest {
                     "kanInnhenteOpplysninger": true
                 }
             }],
+            "erArbeidstakerOgså": true,
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
             }],

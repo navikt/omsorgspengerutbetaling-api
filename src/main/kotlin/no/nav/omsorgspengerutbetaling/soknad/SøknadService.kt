@@ -78,6 +78,7 @@ internal class SøknadService(
             frilans = søknad.frilans,
             fosterbarn = søknad.fosterbarn,
             selvstendigVirksomheter = søknad.selvstendigVirksomheter,
+            erArbeidstakerOgså = søknad.erArbeidstakerOgså,
             bekreftelser = søknad.bekreftelser
         )
 
