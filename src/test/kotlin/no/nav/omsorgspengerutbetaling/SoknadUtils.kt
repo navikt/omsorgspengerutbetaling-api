@@ -72,6 +72,7 @@ internal object SøknadUtils {
                 fiskerErPåBladB = JaNei.Nei
             )
         ),
+        erArbeidstakerOgså = true,
         fosterbarn = listOf(
             FosterBarn(
                 fødselsnummer = "02119970078"
@@ -165,6 +166,7 @@ internal object SøknadUtils {
                 fiskerErPåBladB = JaNei.Nei
             )
         ),
+        erArbeidstakerOgså = true,
         fosterbarn = listOf(
             FosterBarn(
                 fødselsnummer = "02119970078"

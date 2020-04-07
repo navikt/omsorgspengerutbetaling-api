@@ -10,6 +10,7 @@ data class Søknad(
     val bekreftelser: Bekreftelser,
     val utbetalingsperioder: List<UtbetalingsperiodeMedVedlegg>,
     val andreUtbetalinger: List<String>?, //TODO: Fjern ? når dette er prodsatt.
+    val erArbeidstakerOgså: Boolean,
     val fosterbarn: List<FosterBarn>? = listOf(),
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf()
