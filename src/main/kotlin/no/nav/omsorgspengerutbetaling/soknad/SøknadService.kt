@@ -30,12 +30,8 @@ internal class SøknadService(
         val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
 
         logger.trace("Søker hentet. Validerer søker.")
-
         søker.validate()
-
         logger.trace("Søker Validert.")
-
-        logger.trace("Henter legeerklæringer for ${søknad.utbetalingsperioder.size} utbetalingsperioder.")
 
         val utbetalingsperioder = søknad.utbetalingsperioder.map {
             UtbetalingsperiodeUtenVedlegg(
@@ -45,26 +41,17 @@ internal class SøknadService(
             )
         }
 
-        val vedlegg = søknad.utbetalingsperioder.map { perioder ->
-            logger.trace("Henter ${perioder.legeerklæringer} legeerklæringer.")
-            val periode = perioder.somPeriode()
-            vedleggService.hentVedlegg(
-                idToken = idToken,
-                callId = callId,
-                vedleggUrls = perioder.legeerklæringer
-            ).onEach { vedlegg -> vedlegg.title = "$periode: Legeerklæring" }
-        }.flatten()
+        logger.trace("Henter ${søknad.vedlegg?.size ?: 0} vedlegg.")
+        val vedlegg = vedleggService.hentVedlegg(
+            idToken = idToken,
+            vedleggUrls = søknad.vedlegg?: listOf(),
+            callId = callId
+        )
 
-        logger.trace("Legeærkleringer hentet. Validerer dem.")
-
-        val alleVedleggReferanser = søknad.utbetalingsperioder
-            .map { it.legeerklæringer }
-            .flatten()
-
-        vedlegg.valider(alleVedleggReferanser = alleVedleggReferanser)
+        logger.trace("${vedlegg.size} vedlegg hentet. Validerer dem.")
+        vedlegg.valider(vedleggReferanser = søknad.vedlegg?: listOf())
 
         logger.info("Legger søknad til prosessering")
-
         val komplettSoknad = KomplettSoknad(
             språk = søknad.språk,
             mottatt = ZonedDateTime.now(ZoneOffset.UTC),
@@ -88,14 +75,11 @@ internal class SøknadService(
         )
 
         logger.trace("Søknad lagt til prosessering. Sletter vedlegg.")
-
-
         vedleggService.slettVedleg(
-            vedleggUrls = alleVedleggReferanser,
+            vedleggUrls = søknad.vedlegg?: listOf(),
             callId = callId,
             idToken = idToken
         )
-
         logger.trace("Vedlegg slettet.")
     }
 }

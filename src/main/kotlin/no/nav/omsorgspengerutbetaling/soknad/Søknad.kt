@@ -1,6 +1,7 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
 import com.fasterxml.jackson.annotation.JsonValue
+import java.net.URL
 
 data class Søknad(
     val språk: Språk,
@@ -13,7 +14,8 @@ data class Søknad(
     val erArbeidstakerOgså: Boolean,
     val fosterbarn: List<FosterBarn>? = listOf(),
     val frilans: Frilans? = null,
-    val selvstendigVirksomheter: List<Virksomhet> = listOf()
+    val selvstendigVirksomheter: List<Virksomhet> = listOf(),
+    val vedlegg: List<URL>? = listOf()
 )
 
 enum class Språk(@JsonValue val språk: String) {

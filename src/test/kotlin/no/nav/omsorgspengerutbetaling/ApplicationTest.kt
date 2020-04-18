@@ -22,6 +22,7 @@ import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
+import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
 import java.util.*
@@ -324,16 +325,7 @@ class ApplicationTest {
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
             requestEntity = SøknadUtils.defaultSøknad.copy(
-                utbetalingsperioder = listOf(
-                    UtbetalingsperiodeMedVedlegg(
-                        fraOgMed = LocalDate.now().plusDays(10),
-                        tilOgMed = LocalDate.now().plusDays(15),
-                        legeerklæringer = listOf(
-                            URI(jpegUrl),
-                            URI(finnesIkkeUrl)
-                        )
-                    )
-                )
+                vedlegg = listOf(URL(jpegUrl), URL(finnesIkkeUrl))
             ).somJson()
         )
     }

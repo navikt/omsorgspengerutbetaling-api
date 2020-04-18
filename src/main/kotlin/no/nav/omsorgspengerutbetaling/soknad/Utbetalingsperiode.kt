@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import no.nav.helse.dusseldorf.ktor.core.*
 import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import java.net.URI
+import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
 
@@ -74,17 +75,17 @@ internal fun List<UtbetalingsperiodeMedVedlegg>.valider() : Set<Violation> {
     return violations
 }
 
-internal fun List<Vedlegg>.valider(alleVedleggReferanser: List<URI>) {
+internal fun List<Vedlegg>.valider(vedleggReferanser: List<URL>) {
 
-    if (alleVedleggReferanser.size != size) {
+    if (vedleggReferanser.size != size) {
         throw Throwblem(
             ValidationProblemDetails(
                 violations = setOf(
                     Violation(
                         parameterName = Verktøy.JsonPath,
                         parameterType = ParameterType.ENTITY,
-                        reason = "Mottok referanse til ${alleVedleggReferanser.size} vedlegg, men fant kun $size vedlegg.",
-                        invalidValue = alleVedleggReferanser
+                        reason = "Mottok referanse til ${vedleggReferanser.size} vedlegg, men fant kun $size vedlegg.",
+                        invalidValue = vedleggReferanser
                     )
                 )
             )
