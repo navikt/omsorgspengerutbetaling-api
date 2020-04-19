@@ -9,6 +9,7 @@ import no.nav.omsorgspengerutbetaling.general.auth.IdToken
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
+import java.net.URL
 
 private val logger: Logger = LoggerFactory.getLogger("nav.VedleggService")
 
@@ -43,7 +44,7 @@ class VedleggService(
     }
 
     suspend fun hentVedlegg(
-        vedleggUrls: List<URI>,
+        vedleggUrls: List<URL>,
         idToken: IdToken,
         callId: CallId
     ) : List<Vedlegg> {
@@ -75,7 +76,7 @@ class VedleggService(
     }
 
     suspend fun slettVedleg(
-        vedleggUrls: List<URI>,
+        vedleggUrls: List<URL>,
         idToken: IdToken,
         callId: CallId
     ) {
@@ -93,7 +94,7 @@ class VedleggService(
         }
     }
 
-    private fun vedleggIdFromUrl(url: URI) : VedleggId {
+    private fun vedleggIdFromUrl(url: URL) : VedleggId {
         return VedleggId(url.path.substringAfterLast("/"))
     }
 }

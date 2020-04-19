@@ -5,6 +5,7 @@ import no.nav.omsorgspengerutbetaling.soknad.*
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import java.net.URI
+import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
@@ -88,6 +89,11 @@ internal class SerDesTest {
                         kanInnhenteOpplysninger = JaNei.Nei
                     )
                 )
+            ),
+            vedlegg = listOf(
+                URL("http://localhost:8080/vedlegg/1"),
+                URL("http://localhost:8080/vedlegg/2"),
+                URL("http://localhost:8080/vedlegg/3")
             )
         )
         internal val komplettSøknad = SøknadUtils.defaultKomplettSøknad.copy(
@@ -171,7 +177,13 @@ internal class SerDesTest {
             "erArbeidstakerOgså": true,
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
-            }]
+            }],
+            "vedlegg": [
+              "http://localhost:8080/vedlegg/1",
+              "http://localhost:8080/vedlegg/2",
+              "http://localhost:8080/vedlegg/3"
+            ],
+            "hjemmePgaSmittevernhensyn": true
         }
         """.trimIndent()
 
@@ -260,7 +272,8 @@ internal class SerDesTest {
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
             }],
-            "vedlegg": []
+            "vedlegg": [],
+            "hjemmePgaSmittevernhensyn": true
         }
         """.trimIndent()
     }

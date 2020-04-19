@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.soknad.Næringstyper.*
+import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -76,7 +77,8 @@ internal object SøknadUtils {
             FosterBarn(
                 fødselsnummer = "02119970078"
             )
-        )
+        ),
+        hjemmePgaSmittevernhensyn = true
     )
 
     internal val defaultKomplettSøknad = KomplettSoknad(
@@ -175,7 +177,8 @@ internal object SøknadUtils {
         bekreftelser = Bekreftelser(
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja
-        )
+        ),
+        hjemmePgaSmittevernhensyn = true
     )
 }
 
