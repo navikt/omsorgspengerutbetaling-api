@@ -182,7 +182,8 @@ internal class SerDesTest {
               "http://localhost:8080/vedlegg/1",
               "http://localhost:8080/vedlegg/2",
               "http://localhost:8080/vedlegg/3"
-            ]
+            ],
+            "hjemmePgaSmittevernhensyn": true
         }
         """.trimIndent()
 
@@ -271,7 +272,8 @@ internal class SerDesTest {
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
             }],
-            "vedlegg": []
+            "vedlegg": [],
+            "hjemmePgaSmittevernhensyn": true
         }
         """.trimIndent()
     }

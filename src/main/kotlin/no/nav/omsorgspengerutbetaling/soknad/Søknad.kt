@@ -15,7 +15,8 @@ data class Søknad(
     val fosterbarn: List<FosterBarn>? = listOf(),
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
-    val vedlegg: List<URL>? = listOf()
+    val vedlegg: List<URL>? = listOf(),
+    val hjemmePgaSmittevernhensyn: Boolean
 )
 
 enum class Språk(@JsonValue val språk: String) {

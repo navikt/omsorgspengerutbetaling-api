@@ -77,7 +77,8 @@ internal object SøknadUtils {
             FosterBarn(
                 fødselsnummer = "02119970078"
             )
-        )
+        ),
+        hjemmePgaSmittevernhensyn = true
     )
 
     internal val defaultKomplettSøknad = KomplettSoknad(
@@ -176,7 +177,8 @@ internal object SøknadUtils {
         bekreftelser = Bekreftelser(
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja
-        )
+        ),
+        hjemmePgaSmittevernhensyn = true
     )
 }
 

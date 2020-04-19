@@ -66,6 +66,7 @@ internal class SøknadService(
             fosterbarn = søknad.fosterbarn,
             selvstendigVirksomheter = søknad.selvstendigVirksomheter,
             erArbeidstakerOgså = søknad.erArbeidstakerOgså,
+            hjemmePgaSmittevernhensyn = søknad.hjemmePgaSmittevernhensyn,
             bekreftelser = søknad.bekreftelser
         )
 
