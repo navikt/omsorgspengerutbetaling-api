@@ -11,7 +11,7 @@ data class Søknad(
     val spørsmål: List<SpørsmålOgSvar>,
     val bekreftelser: Bekreftelser,
     val utbetalingsperioder: List<UtbetalingsperiodeMedVedlegg>,
-    val andreUtbetalinger: List<String>?, //TODO: Fjern ? når dette er prodsatt.
+    val andreUtbetalinger: List<String>?, //TODO: Fjern? når dette er prodsatt.
     val erArbeidstakerOgså: Boolean,
     val fosterbarn: List<FosterBarn>? = listOf(),
     val frilans: Frilans? = null,
