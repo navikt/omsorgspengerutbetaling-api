@@ -58,6 +58,7 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
     when {
         erVirksomhetIUtlandet() -> {
             when {
+                //TODO: Fjern case etter at frontend har vært prodatt i mer enn 24 timer.
                 !erRegistrertILandGyldigSatt() -> {
                     violations.add(
                         Violation(
