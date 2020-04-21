@@ -61,8 +61,12 @@ internal object SøknadUtils {
                 tilOgMed = start,
                 næringsinntekt = 123123,
                 navnPåVirksomheten = "TullOgTøys",
-                registrertINorge = JaNei.Ja,
+                registrertINorge = JaNei.Nei,
                 registrertILand = "Tyskland",
+                registrertIUtlandet = Land(
+                    landkode = "DEU",
+                    landnavn = "Tyskland"
+                ),
                 organisasjonsnummer = "101010",
                 yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
                 regnskapsfører = Regnskapsfører(
@@ -152,6 +156,10 @@ internal object SøknadUtils {
                 navnPåVirksomheten = "TullOgTøys",
                 registrertINorge = JaNei.Nei,
                 registrertILand = "Tyskland",
+                registrertIUtlandet = Land(
+                    landkode = "DEU",
+                    landnavn = "Tyskland"
+                ),
                 organisasjonsnummer = "101010",
                 yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
                 regnskapsfører = Regnskapsfører(

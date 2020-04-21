@@ -58,8 +58,8 @@ private fun validerSelvstendigVirksomheter(
     selvstendigVirksomheter: List<Virksomhet>
 ): MutableSet<Violation> = mutableSetOf<Violation>().apply {
     if (selvstendigVirksomheter.isNotEmpty()) {
-        selvstendigVirksomheter.forEach { virksomhet ->
-            addAll(virksomhet.validate())
+        selvstendigVirksomheter.mapIndexed { index, virksomhet ->
+            addAll(virksomhet.validate(index))
         }
     }
 }
