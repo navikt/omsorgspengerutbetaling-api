@@ -19,6 +19,7 @@ import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.junit.AfterClass
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -615,6 +616,55 @@ class ApplicationTest {
 
     @Test
     fun `Sende søknad med selvstendig næringsvirksomhet som ikke er gyldig, mangler registrertILand`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse = """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "selvstendigVirksomheter[0].registrertILand",
+                      "reason": "Hvis registrertINorge er false så må registrertILand være satt.",
+                      "invalid_value": null
+                    }
+                  ]
+                }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = defaultSøknad.copy(
+                selvstendigVirksomheter = listOf(
+                    Virksomhet(
+                        næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                        fraOgMed = LocalDate.now().minusDays(1),
+                        tilOgMed = LocalDate.now(),
+                        næringsinntekt = 1233123,
+                        navnPåVirksomheten = "TullOgTøys",
+                        registrertINorge = JaNei.Nei,
+                        organisasjonsnummer = "101010",
+                        yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                        regnskapsfører = Regnskapsfører(
+                            navn = "Kjell",
+                            telefon = "84554"
+                        ),
+                        fiskerErPåBladB = JaNei.Nei
+                    )
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
+    @Ignore //TODO: Aktiver test når endringene har vært i prod i mer enn 24t
+    fun `Sende søknad med selvstendig næringsvirksomhet som ikke er gyldig, mangler registrertIUtLandet`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
         requestAndAssert(

@@ -72,7 +72,8 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
                 erRegistrertIUtlLandetGyldigSatt() -> {
                         violations.addAll(registrertIUtlandet!!.valider("${felt}.registrertIUtlandet"))
                 }
-                !erRegistrertIUtlLandetGyldigSatt() -> {
+                //TODO: Aktiver dette når har frontend har vært prodsatt i mer enn 24t.
+                /*!erRegistrertIUtlLandetGyldigSatt() -> {
                     violations.add(
                         Violation(
                             parameterName = "${felt}.registrertIUtlandet",
@@ -81,7 +82,7 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
                             invalidValue = registrertIUtlandet
                         )
                     )
-                }
+                }*/
             }
         }
         erVirksomhetINorge() -> {
