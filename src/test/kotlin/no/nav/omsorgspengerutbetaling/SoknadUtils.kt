@@ -5,7 +5,7 @@ import no.nav.omsorgspengerutbetaling.felles.*
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.soknad.Næringstyper.*
-import java.net.URL
+import no.nav.omsorgspengerutbetaling.soknad.Språk
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime

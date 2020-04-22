@@ -3,6 +3,8 @@ package no.nav.omsorgspengerutbetaling.arbeidstakerutbetaling
 import no.nav.helse.arbeidsgiver.ArbeidsgiverDetaljer
 import no.nav.omsorgspengerutbetaling.felles.*
 import no.nav.omsorgspengerutbetaling.soker.Søker
+import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
+import java.net.URL
 import java.time.ZonedDateTime
 
 data class KomplettArbeidstakerutbetalingsøknad(
@@ -17,5 +19,6 @@ data class KomplettArbeidstakerutbetalingsøknad(
     val bekreftelser: Bekreftelser,
     val utbetalingsperioder: List<Utbetalingsperiode>,
     val andreUtbetalinger: List<String>,
-    val fosterbarn: List<FosterBarn>? = listOf()
+    val fosterbarn: List<FosterBarn>? = listOf(),
+    val vedlegg: List<Vedlegg>
 )

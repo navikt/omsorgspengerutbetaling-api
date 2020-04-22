@@ -6,6 +6,7 @@ import no.nav.omsorgspengerutbetaling.arbeidstakerutbetaling.JobbHosNåværendeA
 import no.nav.omsorgspengerutbetaling.felles.*
 import no.nav.omsorgspengerutbetaling.omsorgspengerKonfiguert
 import no.nav.omsorgspengerutbetaling.soker.Søker
+import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -87,7 +88,8 @@ internal object ArbeidstakerutbetalingSøknadUtils {
             FosterBarn(
                 fødselsnummer = "02119970078"
             )
-        )
+        ),
+        vedlegg = emptyList()
     )
 
     internal val defaultKomplettSøknad = KomplettArbeidstakerutbetalingsøknad(
@@ -183,7 +185,8 @@ internal object ArbeidstakerutbetalingSøknadUtils {
         bekreftelser = Bekreftelser(
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja
-        )
+        ),
+        vedlegg = emptyList()
     )
 }
 

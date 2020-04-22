@@ -193,7 +193,8 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                         "tilOgMed": "2020-02-05",
                         "lengde": null
                     }],
-                    "andreUtbetalinger": ["dagpenger", "sykepenger"]
+                    "andreUtbetalinger": ["dagpenger", "sykepenger"],
+                    "vedlegg": []
                 }
             """.trimIndent()
         )
@@ -418,7 +419,8 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                         "tilOgMed": "2020-02-05",
                         "lengde": null
                     }],
-                    "andreUtbetalinger": ["dagpenger", "koronapenger"]
+                    "andreUtbetalinger": ["dagpenger", "koronapenger"],
+                    "vedlegg": []
                 }
                 """.trimIndent()
         )
@@ -527,7 +529,8 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                         "tilOgMed": "2020-02-05",
                         "lengde": null
                     }],
-                    "andreUtbetalinger": ["dagpenger", "sykepenger"]
+                    "andreUtbetalinger": ["dagpenger", "sykepenger"],
+                    "vedlegg": []
                 }
                 """.trimIndent()
         )

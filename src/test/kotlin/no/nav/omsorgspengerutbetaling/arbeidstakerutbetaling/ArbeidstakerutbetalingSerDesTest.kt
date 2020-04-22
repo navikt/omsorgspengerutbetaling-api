@@ -131,7 +131,8 @@ internal class ArbeidstakerutbetalingSerDesTest {
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
-            }]
+            }],
+            "vedlegg": []
         }
         """.trimIndent()
 
@@ -218,7 +219,8 @@ internal class ArbeidstakerutbetalingSerDesTest {
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
-            }]
+            }],
+            "vedlegg": []
         }
         """.trimIndent()
     }

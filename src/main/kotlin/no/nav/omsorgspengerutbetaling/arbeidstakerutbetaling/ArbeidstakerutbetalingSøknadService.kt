@@ -6,9 +6,11 @@ import no.nav.omsorgspengerutbetaling.mottak.OmsorgpengesøknadMottakGateway
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soker.SøkerService
 import no.nav.omsorgspengerutbetaling.soker.validate
+import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import no.nav.omsorgspengerutbetaling.vedlegg.VedleggService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.net.URL
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
@@ -33,8 +35,18 @@ internal class ArbeidstakerutbetalingSøknadService(
         logger.trace("Søker hentet. Validerer søker.")
 
         søker.validate()
-
         logger.trace("Søker Validert.")
+
+        logger.trace("Henter ${søknad.vedlegg.size} vedlegg.")
+        val vedlegg: List<Vedlegg> = vedleggService.hentVedlegg(
+            idToken = idToken,
+            vedleggUrls = søknad.vedlegg,
+            callId = callId
+        )
+
+        logger.trace("Vedlegg hentet. Validerer vedlegg.")
+        vedlegg.validerVedlegg(søknad.vedlegg)
+        logger.info("Vedlegg validert")
 
         logger.info("Legger søknad til prosessering")
 
@@ -50,7 +62,8 @@ internal class ArbeidstakerutbetalingSøknadService(
             utbetalingsperioder = søknad.utbetalingsperioder,
             andreUtbetalinger = søknad.andreUtbetalinger,
             fosterbarn = søknad.fosterbarn,
-            bekreftelser = søknad.bekreftelser
+            bekreftelser = søknad.bekreftelser,
+            vedlegg = vedlegg
         )
 
         omsorgpengesøknadMottakGateway.leggTilProsessering(

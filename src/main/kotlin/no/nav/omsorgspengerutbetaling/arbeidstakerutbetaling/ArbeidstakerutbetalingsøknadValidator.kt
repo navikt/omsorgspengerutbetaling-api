@@ -4,6 +4,8 @@ import no.nav.helse.dusseldorf.ktor.core.*
 import no.nav.omsorgspengerutbetaling.felles.FosterBarn
 import no.nav.omsorgspengerutbetaling.felles.valider
 import no.nav.omsorgspengerutbetaling.felles.validerUenVedlegg
+import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
+import java.net.URL
 import java.time.format.DateTimeFormatter
 
 private const val MAX_FRITEKST_TEGN = 1000
@@ -83,6 +85,38 @@ fun String.starterMedFodselsdato(): Boolean {
         false
     }
 }
+
+internal fun List<Vedlegg>.validerVedlegg(vedleggUrler: List<URL>) {
+    if (size != vedleggUrler.size) {
+        throw Throwblem(
+            ValidationProblemDetails(
+                violations = setOf(
+                    Violation(
+                        parameterName = "vedlegg",
+                        parameterType = ParameterType.ENTITY,
+                        reason = "Mottok referanse til ${vedleggUrler.size} vedlegg, men fant kun $size vedlegg.",
+                        invalidValue = vedleggUrler
+                    )
+                )
+            )
+        )
+    }
+    validerTotalStorresle()
+}
+
+private fun List<Vedlegg>.validerTotalStorresle() {
+    val totalSize = sumBy { it.content.size }
+    if (totalSize > MAX_VEDLEGG_SIZE) {
+        throw Throwblem(vedleggTooLargeProblemDetails)
+    }
+}
+
+private const val MAX_VEDLEGG_SIZE = 24 * 1024 * 1024 // 3 vedlegg på 8 MB
+private val vedleggTooLargeProblemDetails = DefaultProblemDetails(
+    title = "attachments-too-large",
+    status = 413,
+    detail = "Totale størreslsen på alle vedlegg overstiger maks på 24 MB."
+)
 
 /**
  * https://github.com/navikt/helse-sparkel/blob/2e79217ae00632efdd0d4e68655ada3d7938c4b6/src/main/kotlin/no/nav/helse/ws/organisasjon/Mod11.kt
