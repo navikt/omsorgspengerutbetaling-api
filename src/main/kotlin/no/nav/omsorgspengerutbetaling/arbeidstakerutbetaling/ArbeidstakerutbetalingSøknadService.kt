@@ -8,6 +8,7 @@ import no.nav.omsorgspengerutbetaling.soker.SøkerService
 import no.nav.omsorgspengerutbetaling.soker.validate
 import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import no.nav.omsorgspengerutbetaling.vedlegg.VedleggService
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URL
@@ -71,7 +72,15 @@ internal class ArbeidstakerutbetalingSøknadService(
             callId = callId
         )
 
-        logger.trace("Søknad lagt til prosessering.")
+        logger.trace("Søknad lagt til prosessering. Sletter vedlegg.")
+
+        vedleggService.slettVedleg(
+            vedleggUrls = søknad.vedlegg,
+            callId = callId,
+            idToken = idToken
+        )
+
+        logger.trace("Vedlegg slettet.")
 
     }
 }
