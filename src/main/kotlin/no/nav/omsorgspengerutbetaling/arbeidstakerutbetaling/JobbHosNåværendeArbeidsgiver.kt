@@ -16,12 +16,12 @@ data class JobbHosNåværendeArbeidsgiver(
 }
 
 fun JobbHosNåværendeArbeidsgiver.valider() = mutableSetOf<Violation>().apply {
-    if (merEnn4Uker && begrunnelse == null) {
+    if (merEnn4Uker == false && begrunnelse == null) {
         add(
             Violation(
                 parameterType = ParameterType.ENTITY,
                 parameterName = "jobbHosNåværendeArbeidsgiver.begrunnelse",
-                reason = "Begrunnelse kan ikke være null, dersom merEnn4Uker er satt til true.",
+                reason = "Begrunnelse kan ikke være null, dersom merEnn4Uker er satt til false.",
                 invalidValue = begrunnelse
             )
         )

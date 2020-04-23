@@ -444,7 +444,7 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                     {
                       "type": "entity",
                       "name": "jobbHosNåværendeArbeidsgiver.begrunnelse",
-                      "reason": "Begrunnelse kan ikke være null, dersom merEnn4Uker er satt til true.",
+                      "reason": "Begrunnelse kan ikke være null, dersom merEnn4Uker er satt til false.",
                       "invalid_value": null
                     }
                   ]
@@ -470,7 +470,7 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                         "erEØSLand": true
                     }],
                     "jobbHosNåværendeArbeidsgiver": {
-                        "merEnn4Uker": true
+                        "merEnn4Uker": false
                     },
                     "arbeidsgivere": {
                       "organisasjoner": [
