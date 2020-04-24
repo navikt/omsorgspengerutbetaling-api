@@ -21,7 +21,7 @@ internal fun Arbeidstakerutbetalingsøknad.valider() {
         addAll(spørsmål.valider())
         addAll(bekreftelser.valider())
         addAll(andreUtbetalinger.valider())
-        addAll(jobbHosNåværendeArbeidsgiver.valider())
+        addAll(jobbHosNåværendeArbeidsgiver.valider(vedlegg))
         fosterbarn?.let { addAll(validerFosterbarn(it)) }
     }
 

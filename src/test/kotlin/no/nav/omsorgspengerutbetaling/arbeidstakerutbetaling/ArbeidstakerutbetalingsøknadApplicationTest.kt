@@ -5,22 +5,30 @@ import com.github.tomakehurst.wiremock.http.Cookie
 import com.typesafe.config.ConfigFactory
 import io.ktor.config.ApplicationConfig
 import io.ktor.config.HoconApplicationConfig
-import io.ktor.http.*
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
-import no.nav.omsorgspengerutbetaling.*
+import no.nav.omsorgspengerutbetaling.TestConfiguration
+import no.nav.omsorgspengerutbetaling.felles.Bekreftelser
+import no.nav.omsorgspengerutbetaling.felles.FosterBarn
+import no.nav.omsorgspengerutbetaling.felles.JaNei
+import no.nav.omsorgspengerutbetaling.getAuthCookie
+import no.nav.omsorgspengerutbetaling.jpegUrl
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
-import no.nav.omsorgspengerutbetaling.felles.*
+import no.nav.omsorgspengerutbetaling.pdUrl
 import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.net.URL
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -94,6 +102,8 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
     @Test
     fun `Sende soknad`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
+        val jpegUrl = engine.jpegUrl(cookie)
+        val pdfUrl = engine.pdUrl(cookie)
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
@@ -101,13 +111,19 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
             expectedResponse = null,
             expectedCode = HttpStatusCode.Accepted,
             cookie = cookie,
-            requestEntity = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.somJson()
+            requestEntity = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.copy(
+                vedlegg = listOf(
+                    URL(pdfUrl), URL(jpegUrl)
+                )
+            ).somJson()
         )
     }
 
     @Test
     fun `Sende soknad som raw json`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
+        val jpegUrl = engine.jpegUrl(cookie)
+        val pdfUrl = engine.pdUrl(cookie)
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
@@ -194,7 +210,7 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                         "lengde": null
                     }],
                     "andreUtbetalinger": ["dagpenger", "sykepenger"],
-                    "vedlegg": []
+                    "vedlegg": ["$jpegUrl", "$pdfUrl"]
                 }
             """.trimIndent()
         )
@@ -215,6 +231,8 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
     @Test
     fun `Sende soknad ikke myndig`() {
         val cookie = getAuthCookie(ikkeMyndigFnr)
+        val jpegUrl = engine.jpegUrl(cookie)
+        val pdfUrl = engine.pdUrl(cookie)
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
@@ -230,12 +248,22 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.Forbidden,
             cookie = cookie,
-            requestEntity = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.somJson()
+            requestEntity = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.copy(
+                vedlegg = listOf(
+                    URL(jpegUrl), URL(pdfUrl)
+                )
+            )
+                .somJson()
         )
     }
 
     @Test
     fun `Sende soknad med ugylidge parametre gir feil`() {
+
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+        val jpegUrl = engine.jpegUrl(cookie)
+        val pdfUrl = engine.pdUrl(cookie)
+
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/arbeidstaker/soknad",
@@ -246,7 +274,10 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                     harBekreftetOpplysninger = JaNei.Nei
                 ),
                 spørsmål = listOf(),
-                utbetalingsperioder = listOf()
+                utbetalingsperioder = listOf(),
+                vedlegg = listOf(
+                    URL(jpegUrl), URL(pdfUrl)
+                )
             ).somJson(),
             expectedResponse = """
             {
@@ -279,6 +310,8 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
     @Test
     fun `Sende søknad ugyldig fødselsnummer på fosterbarn, gir feilmelding`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
+        val jpegUrl = engine.jpegUrl(cookie)
+        val pdfUrl = engine.pdUrl(cookie)
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
@@ -310,6 +343,9 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                     FosterBarn(
                         fødselsnummer = "ugyldig fødselsnummer"
                     )
+                ),
+                vedlegg = listOf(
+                    URL(jpegUrl), URL(pdfUrl)
                 )
             ).somJson()
         )
@@ -318,6 +354,8 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
     @Test
     fun `Sende søknad med ugyldig andreUtbetalinger`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
+        val jpegUrl = engine.jpegUrl(cookie)
+        val pdfUrl = engine.pdUrl(cookie)
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
@@ -420,7 +458,7 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                         "lengde": null
                     }],
                     "andreUtbetalinger": ["dagpenger", "koronapenger"],
-                    "vedlegg": []
+                    "vedlegg": ["$jpegUrl", "$pdfUrl"]
                 }
                 """.trimIndent()
         )
@@ -533,6 +571,42 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                     "vedlegg": []
                 }
                 """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `Sende ugyldig søknad, der jobbHosNåværendeArbeidsgiver er mer enn 4 uker, men mangler vedlegg`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/arbeidstaker/soknad",
+            expectedResponse = """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "jobbHosNåværendeArbeidsgiver.merEnn4Uker && vedlegg",
+                      "reason": "Vedlegg kan ikke være tom, dersom merEnn4Uker er satt til true.",
+                      "invalid_value": []
+                    }
+                  ]
+                }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.copy(
+                jobbHosNåværendeArbeidsgiver = JobbHosNåværendeArbeidsgiver(
+                    merEnn4Uker = true,
+                    begrunnelse = JobbHosNåværendeArbeidsgiver.Begrunnelse.ANNET_ARBEIDSFORHOLD
+                ),
+                vedlegg = listOf()
+            ).somJson()
         )
     }
 
