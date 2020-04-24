@@ -43,7 +43,7 @@ internal fun Route.arbeidstakerutbetalingsøknadApis(
         call.respond(HttpStatusCode.Accepted)
     }
 
-    @Location("/soknad/arbeidstaker")
+    @Location("/valider/soknad/arbeidstaker")
     class validerSoknad
 
     post { _ : validerSoknad ->
