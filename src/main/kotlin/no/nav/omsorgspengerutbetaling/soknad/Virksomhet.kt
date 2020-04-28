@@ -98,7 +98,6 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
             }
         }
     }
-
     return violations
 }
 
