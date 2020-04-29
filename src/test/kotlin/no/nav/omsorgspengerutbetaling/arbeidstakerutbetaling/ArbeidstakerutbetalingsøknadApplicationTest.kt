@@ -15,6 +15,7 @@ import io.ktor.server.testing.setBody
 import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.TestConfiguration
+import no.nav.omsorgspengerutbetaling.arbeidstakerutbetaling.ArbeidstakerutbetalingSøknadUtils.defaultSøknad
 import no.nav.omsorgspengerutbetaling.felles.Bekreftelser
 import no.nav.omsorgspengerutbetaling.felles.FosterBarn
 import no.nav.omsorgspengerutbetaling.felles.JaNei
@@ -111,7 +112,7 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
             expectedResponse = null,
             expectedCode = HttpStatusCode.Accepted,
             cookie = cookie,
-            requestEntity = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
                 vedlegg = listOf(
                     URL(pdfUrl), URL(jpegUrl)
                 )
@@ -133,84 +134,120 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
             cookie = cookie,
             requestEntity = """
                 {
-                    "språk": "nb",
-                    "bosteder": [{
-                        "fraOgMed": "2019-12-12",
-                        "tilOgMed": "2019-12-22",
-                        "landkode": "GB",
-                        "landnavn": "Great Britain",
-                        "erEØSLand": true
-                    }],
-                    "opphold": [{
-                        "fraOgMed": "2019-12-12",
-                        "tilOgMed": "2019-12-22",
-                        "landkode": "GB",
-                        "landnavn": "Great Britain",
-                        "erEØSLand": true
-                    }],
-                    "jobbHosNåværendeArbeidsgiver": {
-                        "merEnn4Uker": true,
-                        "begrunnelse": "ANNET_ARBEIDSFORHOLD"
+                  "språk": "nb",
+                  "bosteder": [
+                    {
+                      "fraOgMed": "2019-12-12",
+                      "tilOgMed": "2019-12-22",
+                      "landkode": "GB",
+                      "landnavn": "Great Britain",
+                      "erEØSLand": true
+                    }
+                  ],
+                  "opphold": [
+                    {
+                      "fraOgMed": "2019-12-12",
+                      "tilOgMed": "2019-12-22",
+                      "landkode": "GB",
+                      "landnavn": "Great Britain",
+                      "erEØSLand": true
+                    }
+                  ],
+                  "jobbHosNåværendeArbeidsgiver": {
+                    "merEnn4Uker": true,
+                    "begrunnelse": "ANNET_ARBEIDSFORHOLD"
+                  },
+                  "arbeidsgivere": {
+                    "organisasjoner": [
+                      {
+                        "navn": "Arbeidsgiver 1",
+                        "organisasjonsnummer": "917755736",
+                        "harHattFraværHosArbeidsgiver": true,
+                        "arbeidsgiverHarUtbetaltLønn": false,
+                        "perioder": [
+                          {
+                            "fraOgMed": "2020-01-01",
+                            "tilOgMed": "2020-01-11",
+                            "lengde": null
+                          }
+                        ]
+                      },
+                      {
+                        "navn": "Arbeidsgiver 2",
+                        "organisasjonsnummer": "917755736",
+                        "harHattFraværHosArbeidsgiver": true,
+                        "arbeidsgiverHarUtbetaltLønn": false,
+                        "perioder": [
+                          {
+                            "fraOgMed": "2020-01-21",
+                            "tilOgMed": "2020-01-21",
+                            "lengde": "PT5H30M"
+                          }
+                        ]
+                      },
+                      {
+                        "navn": "Arbeidsgiver 3",
+                        "organisasjonsnummer": "917755736",
+                        "harHattFraværHosArbeidsgiver": true,
+                        "arbeidsgiverHarUtbetaltLønn": false,
+                        "perioder": [
+                          {
+                            "fraOgMed": "2020-01-31",
+                            "tilOgMed": "2020-02-05",
+                            "lengde": null
+                          }
+                        ]
+                      },
+                      {
+                        "navn": null,
+                        "organisasjonsnummer": "917755736",
+                        "harHattFraværHosArbeidsgiver": true,
+                        "arbeidsgiverHarUtbetaltLønn": false,
+                        "perioder": [
+                          {
+                            "fraOgMed": "2020-02-01",
+                            "tilOgMed": "2020-02-06",
+                            "lengde": null
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "spørsmål": [
+                    {
+                      "spørsmål": "Et spørsmål",
+                      "svar": false
+                    }
+                  ],
+                  "bekreftelser": {
+                    "harBekreftetOpplysninger": true,
+                    "harForståttRettigheterOgPlikter": true
+                  },
+                  "utbetalingsperioder": [
+                    {
+                      "fraOgMed": "2020-01-01",
+                      "tilOgMed": "2020-01-11",
+                      "lengde": null
                     },
-                    "arbeidsgivere": {
-                      "organisasjoner": [
-                        {
-                          "navn": "Arbeidsgiver 1",
-                          "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 100.0,
-                          "skalJobbe": "ja",
-                          "jobberNormaltTimer": 37.5,
-                          "vetIkkeEkstrainfo": null
-                        },
-                        {
-                          "navn": "Arbeidsgiver 2",
-                          "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 50.0,
-                          "skalJobbe": "redusert",
-                          "jobberNormaltTimer": 37.5,
-                          "vetIkkeEkstrainfo": null
-                        },
-                        {
-                          "navn": "Arbeidsgiver 3",
-                          "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 0.0,
-                          "skalJobbe": "vet_ikke",
-                          "vetIkkeEkstrainfo": "Usikker på om jeg skal jobbe.",
-                          "jobberNormaltTimer": 37.5
-                        },
-                        {
-                          "navn": null,
-                          "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 0.0,
-                          "skalJobbe": "nei",
-                          "jobberNormaltTimer": 37.5,
-                          "vetIkkeEkstrainfo": null
-                        }
-                      ]
+                    {
+                      "fraOgMed": "2020-01-21",
+                      "tilOgMed": "2020-01-21",
+                      "lengde": "PT5H30M"
                     },
-                    "spørsmål": [{
-                        "spørsmål": "Et spørsmål",
-                        "svar": false
-                    }],
-                    "bekreftelser": {
-                        "harBekreftetOpplysninger": true,
-                        "harForståttRettigheterOgPlikter": true
-                    },
-                    "utbetalingsperioder": [{
-                        "fraOgMed": "2020-01-01",
-                        "tilOgMed": "2020-01-11",
-                        "lengde": null
-                    }, {
-                        "fraOgMed": "2020-01-21",
-                        "tilOgMed": "2020-01-21",
-                        "lengde": "PT5H30M"
-                    }, {
-                        "fraOgMed": "2020-01-31",
-                        "tilOgMed": "2020-02-05",
-                        "lengde": null
-                    }],
-                    "andreUtbetalinger": ["dagpenger", "sykepenger"],
-                    "vedlegg": ["$jpegUrl", "$pdfUrl"]
+                    {
+                      "fraOgMed": "2020-01-31",
+                      "tilOgMed": "2020-02-05",
+                      "lengde": null
+                    }
+                  ],
+                  "andreUtbetalinger": [
+                    "dagpenger",
+                    "sykepenger"
+                  ],
+                  "vedlegg": [
+                    "$jpegUrl",
+                    "$pdfUrl"
+                  ]
                 }
             """.trimIndent()
         )
@@ -223,7 +260,7 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
             path = "/arbeidstaker/soknad",
             expectedCode = HttpStatusCode.Unauthorized,
             expectedResponse = null,
-            requestEntity = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.somJson(),
+            requestEntity = defaultSøknad.somJson(),
             leggTilCookie = false
         )
     }
@@ -248,7 +285,7 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.Forbidden,
             cookie = cookie,
-            requestEntity = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
                 vedlegg = listOf(
                     URL(jpegUrl), URL(pdfUrl)
                 )
@@ -268,13 +305,19 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
             httpMethod = HttpMethod.Post,
             path = "/arbeidstaker/soknad",
             expectedCode = HttpStatusCode.BadRequest,
-            requestEntity = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
+                arbeidsgivere = defaultSøknad.arbeidsgivere.copy(
+                    organisasjoner = listOf(
+                        defaultSøknad.arbeidsgivere.organisasjoner[0].copy(
+                            perioder = listOf()
+                        )
+                    )
+                ),
                 bekreftelser = Bekreftelser(
                     harForståttRettigheterOgPlikter = JaNei.Nei,
                     harBekreftetOpplysninger = JaNei.Nei
                 ),
                 spørsmål = listOf(),
-                utbetalingsperioder = listOf(),
                 vedlegg = listOf(
                     URL(jpegUrl), URL(pdfUrl)
                 )
@@ -335,7 +378,7 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
                 fosterbarn = listOf(
                     FosterBarn(
                         fødselsnummer = "02119970078"
@@ -403,36 +446,56 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                     "arbeidsgivere": {
                       "organisasjoner": [
                         {
-                          "navn": "Arbeidsgiver 1",
-                          "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 100.0,
-                          "skalJobbe": "ja",
-                          "jobberNormaltTimer": 37.5,
-                          "vetIkkeEkstrainfo": null
+                            "navn": "Arbeidsgiver 1",
+                            "organisasjonsnummer": "917755736",
+                            "harHattFraværHosArbeidsgiver": true,
+                            "arbeidsgiverHarUtbetaltLønn": false,
+                            "perioder": [
+                              {
+                                "fraOgMed": "2020-01-01",
+                                "tilOgMed": "2020-01-11",
+                                "lengde": null
+                              }
+                            ]
                         },
                         {
                           "navn": "Arbeidsgiver 2",
                           "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 50.0,
-                          "skalJobbe": "redusert",
-                          "jobberNormaltTimer": 37.5,
-                          "vetIkkeEkstrainfo": null
+                            "harHattFraværHosArbeidsgiver": true,
+                            "arbeidsgiverHarUtbetaltLønn": false,
+                            "perioder": [
+                              {
+                                "fraOgMed": "2020-01-21",
+                                "tilOgMed": "2020-01-21",
+                                "lengde": "PT5H30M"
+                              }
+                            ]
                         },
                         {
                           "navn": "Arbeidsgiver 3",
                           "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 0.0,
-                          "skalJobbe": "vet_ikke",
-                          "vetIkkeEkstrainfo": "Usikker på om jeg skal jobbe.",
-                          "jobberNormaltTimer": 37.5
+                            "harHattFraværHosArbeidsgiver": true,
+                            "arbeidsgiverHarUtbetaltLønn": false,
+                            "perioder": [
+                              {
+                                "fraOgMed": "2020-01-31",
+                                "tilOgMed": "2020-02-05",
+                                "lengde": null
+                              }
+                            ]
                         },
                         {
                           "navn": null,
                           "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 0.0,
-                          "skalJobbe": "nei",
-                          "jobberNormaltTimer": 37.5,
-                          "vetIkkeEkstrainfo": null
+                            "harHattFraværHosArbeidsgiver": true,
+                            "arbeidsgiverHarUtbetaltLønn": false,
+                            "perioder": [
+                              {
+                                "fraOgMed": "2020-02-01",
+                                "tilOgMed": "2020-02-06",
+                                "lengde": null
+                              }
+                            ]
                         }
                       ]
                     },
@@ -444,19 +507,6 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                         "harBekreftetOpplysninger": true,
                         "harForståttRettigheterOgPlikter": true
                     },
-                    "utbetalingsperioder": [{
-                        "fraOgMed": "2020-01-01",
-                        "tilOgMed": "2020-01-11",
-                        "lengde": null
-                    }, {
-                        "fraOgMed": "2020-01-21",
-                        "tilOgMed": "2020-01-21",
-                        "lengde": "PT5H30M"
-                    }, {
-                        "fraOgMed": "2020-01-31",
-                        "tilOgMed": "2020-02-05",
-                        "lengde": null
-                    }],
                     "andreUtbetalinger": ["dagpenger", "koronapenger"],
                     "vedlegg": ["$jpegUrl", "$pdfUrl"]
                 }
@@ -513,36 +563,56 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                     "arbeidsgivere": {
                       "organisasjoner": [
                         {
-                          "navn": "Arbeidsgiver 1",
-                          "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 100.0,
-                          "skalJobbe": "ja",
-                          "jobberNormaltTimer": 37.5,
-                          "vetIkkeEkstrainfo": null
+                            "navn": "Arbeidsgiver 1",
+                            "organisasjonsnummer": "917755736",
+                            "harHattFraværHosArbeidsgiver": true,
+                            "arbeidsgiverHarUtbetaltLønn": false,
+                            "perioder": [
+                              {
+                                "fraOgMed": "2020-01-01",
+                                "tilOgMed": "2020-01-11",
+                                "lengde": null
+                              }
+                            ]
                         },
                         {
                           "navn": "Arbeidsgiver 2",
                           "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 50.0,
-                          "skalJobbe": "redusert",
-                          "jobberNormaltTimer": 37.5,
-                          "vetIkkeEkstrainfo": null
+                            "harHattFraværHosArbeidsgiver": true,
+                            "arbeidsgiverHarUtbetaltLønn": false,
+                            "perioder": [
+                              {
+                                "fraOgMed": "2020-01-21",
+                                "tilOgMed": "2020-01-21",
+                                "lengde": "PT5H30M"
+                              }
+                            ]
                         },
                         {
                           "navn": "Arbeidsgiver 3",
                           "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 0.0,
-                          "skalJobbe": "vet_ikke",
-                          "vetIkkeEkstrainfo": "Usikker på om jeg skal jobbe.",
-                          "jobberNormaltTimer": 37.5
+                            "harHattFraværHosArbeidsgiver": true,
+                            "arbeidsgiverHarUtbetaltLønn": false,
+                            "perioder": [
+                              {
+                                "fraOgMed": "2020-01-31",
+                                "tilOgMed": "2020-02-05",
+                                "lengde": null
+                              }
+                            ]
                         },
                         {
                           "navn": null,
                           "organisasjonsnummer": "917755736",
-                          "skalJobbeProsent": 0.0,
-                          "skalJobbe": "nei",
-                          "jobberNormaltTimer": 37.5,
-                          "vetIkkeEkstrainfo": null
+                            "harHattFraværHosArbeidsgiver": true,
+                            "arbeidsgiverHarUtbetaltLønn": false,
+                            "perioder": [
+                              {
+                                "fraOgMed": "2020-02-01",
+                                "tilOgMed": "2020-02-06",
+                                "lengde": null
+                              }
+                            ]
                         }
                       ]
                     },
@@ -554,19 +624,6 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
                         "harBekreftetOpplysninger": true,
                         "harForståttRettigheterOgPlikter": true
                     },
-                    "utbetalingsperioder": [{
-                        "fraOgMed": "2020-01-01",
-                        "tilOgMed": "2020-01-11",
-                        "lengde": null
-                    }, {
-                        "fraOgMed": "2020-01-21",
-                        "tilOgMed": "2020-01-21",
-                        "lengde": "PT5H30M"
-                    }, {
-                        "fraOgMed": "2020-01-31",
-                        "tilOgMed": "2020-02-05",
-                        "lengde": null
-                    }],
                     "andreUtbetalinger": ["dagpenger", "sykepenger"],
                     "vedlegg": []
                 }
@@ -600,7 +657,7 @@ class ArbeidstakerutbetalingsøknadApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
                 jobbHosNåværendeArbeidsgiver = JobbHosNåværendeArbeidsgiver(
                     merEnn4Uker = true,
                     begrunnelse = JobbHosNåværendeArbeidsgiver.Begrunnelse.ANNET_ARBEIDSFORHOLD

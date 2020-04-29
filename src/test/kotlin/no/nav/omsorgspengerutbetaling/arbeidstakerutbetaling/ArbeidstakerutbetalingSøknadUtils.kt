@@ -28,24 +28,49 @@ internal object ArbeidstakerutbetalingSøknadUtils {
                     navn = "Arbeidsgiver 1",
                     organisasjonsnummer = GYLDIG_ORGNR,
                     harHattFraværHosArbeidsgiver = true,
-                    arbeidsgiverHarUtbetaltLønn = false
+                    arbeidsgiverHarUtbetaltLønn = false,
+                    perioder = listOf(
+                        Utbetalingsperiode(
+                            fraOgMed = start,
+                            tilOgMed = start.plusDays(10)
+                        )
+                    )
                 ),
                 OrganisasjonDetaljer(
                     navn = "Arbeidsgiver 2",
                     organisasjonsnummer = GYLDIG_ORGNR,
                     harHattFraværHosArbeidsgiver = true,
-                    arbeidsgiverHarUtbetaltLønn = false
+                    arbeidsgiverHarUtbetaltLønn = false,
+                    perioder = listOf(
+                        Utbetalingsperiode(
+                            fraOgMed = start.plusDays(20),
+                            tilOgMed = start.plusDays(20),
+                            lengde = Duration.ofHours(5).plusMinutes(30)
+                        )
+                    )
                 ),
                 OrganisasjonDetaljer(
                     navn = "Arbeidsgiver 3",
                     organisasjonsnummer = GYLDIG_ORGNR,
                     harHattFraværHosArbeidsgiver = true,
-                    arbeidsgiverHarUtbetaltLønn = false
+                    arbeidsgiverHarUtbetaltLønn = false,
+                    perioder = listOf(
+                        Utbetalingsperiode(
+                            fraOgMed = start.plusDays(30),
+                            tilOgMed = start.plusDays(35)
+                        )
+                    )
                 ),
                 OrganisasjonDetaljer(
                     organisasjonsnummer = GYLDIG_ORGNR,
                     harHattFraværHosArbeidsgiver = true,
-                    arbeidsgiverHarUtbetaltLønn = false
+                    arbeidsgiverHarUtbetaltLønn = false,
+                    perioder = listOf(
+                        Utbetalingsperiode(
+                            fraOgMed = start.plusMonths(1),
+                            tilOgMed = start.plusMonths(1).plusDays(5)
+                        )
+                    )
                 )
             )
         ),
@@ -76,12 +101,6 @@ internal object ArbeidstakerutbetalingSøknadUtils {
         bekreftelser = Bekreftelser(
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja
-        ),
-        utbetalingsperioder = listOf(
-            Utbetalingsperiode(
-                fraOgMed = start,
-                tilOgMed = start.plusDays(5)
-            )
         ),
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
         fosterbarn = listOf(
@@ -114,24 +133,49 @@ internal object ArbeidstakerutbetalingSøknadUtils {
                     navn = "Arbeidsgiver 1",
                     organisasjonsnummer = GYLDIG_ORGNR,
                     harHattFraværHosArbeidsgiver = true,
-                    arbeidsgiverHarUtbetaltLønn = false
+                    arbeidsgiverHarUtbetaltLønn = false,
+                    perioder = listOf(
+                        Utbetalingsperiode(
+                            fraOgMed = start,
+                            tilOgMed = start.plusDays(10)
+                        )
+                    )
                 ),
                 OrganisasjonDetaljer(
                     navn = "Arbeidsgiver 2",
                     organisasjonsnummer = GYLDIG_ORGNR,
                     harHattFraværHosArbeidsgiver = true,
-                    arbeidsgiverHarUtbetaltLønn = false
+                    arbeidsgiverHarUtbetaltLønn = false,
+                    perioder = listOf(
+                        Utbetalingsperiode(
+                            fraOgMed = start.plusDays(20),
+                            tilOgMed = start.plusDays(20),
+                            lengde = Duration.ofHours(5).plusMinutes(30)
+                        )
+                    )
                 ),
                 OrganisasjonDetaljer(
                     navn = "Arbeidsgiver 3",
                     organisasjonsnummer = GYLDIG_ORGNR,
                     harHattFraværHosArbeidsgiver = true,
-                    arbeidsgiverHarUtbetaltLønn = false
+                    arbeidsgiverHarUtbetaltLønn = false,
+                    perioder = listOf(
+                        Utbetalingsperiode(
+                            fraOgMed = start.plusDays(30),
+                            tilOgMed = start.plusDays(35)
+                        )
+                    )
                 ),
                 OrganisasjonDetaljer(
                     organisasjonsnummer = GYLDIG_ORGNR,
                     harHattFraværHosArbeidsgiver = true,
-                    arbeidsgiverHarUtbetaltLønn = false
+                    arbeidsgiverHarUtbetaltLønn = false,
+                    perioder = listOf(
+                        Utbetalingsperiode(
+                            fraOgMed = start.plusMonths(1),
+                            tilOgMed = start.plusMonths(1).plusDays(5)
+                        )
+                    )
                 )
             )
         ),
@@ -157,23 +201,6 @@ internal object ArbeidstakerutbetalingSøknadUtils {
             SpørsmålOgSvar(
                 spørsmål = "Et spørsmål",
                 svar = JaNei.Nei
-            )
-        ),
-        utbetalingsperioder = listOf(
-            Utbetalingsperiode(
-                fraOgMed = start,
-                tilOgMed = start.plusDays(10),
-                lengde = null
-            ),
-            Utbetalingsperiode(
-                fraOgMed = start.plusDays(20),
-                tilOgMed = start.plusDays(20),
-                lengde = Duration.ofHours(5).plusMinutes(30)
-            ),
-            Utbetalingsperiode(
-                fraOgMed = start.plusDays(30),
-                tilOgMed = start.plusMonths(1).plusDays(4),
-                lengde = Duration.ofHours(7).plusMinutes(30)
             )
         ),
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),

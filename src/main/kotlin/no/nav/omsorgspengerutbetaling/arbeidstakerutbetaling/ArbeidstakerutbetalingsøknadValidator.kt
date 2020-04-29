@@ -3,7 +3,6 @@ package no.nav.omsorgspengerutbetaling.arbeidstakerutbetaling
 import no.nav.helse.dusseldorf.ktor.core.*
 import no.nav.omsorgspengerutbetaling.felles.FosterBarn
 import no.nav.omsorgspengerutbetaling.felles.valider
-import no.nav.omsorgspengerutbetaling.felles.validerUenVedlegg
 import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import java.net.URL
 import java.time.format.DateTimeFormatter
@@ -15,7 +14,7 @@ private val fnrDateFormat = DateTimeFormatter.ofPattern("ddMMyy")
 
 internal fun Arbeidstakerutbetalingsøknad.valider() {
     val violations = mutableSetOf<Violation>().apply {
-        addAll(utbetalingsperioder.validerUenVedlegg())
+        addAll(arbeidsgivere.valider())
         addAll(opphold.valider("opphold"))
         addAll(bosteder.valider("bosteder"))
         addAll(spørsmål.valider())

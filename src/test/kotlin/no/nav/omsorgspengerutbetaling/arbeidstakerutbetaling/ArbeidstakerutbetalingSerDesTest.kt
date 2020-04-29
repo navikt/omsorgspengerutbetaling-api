@@ -37,23 +37,7 @@ internal class ArbeidstakerutbetalingSerDesTest {
         val now = ZonedDateTime.of(2018, 1, 2, 3, 4, 5, 6, ZoneId.of("UTC"))
         internal val start = LocalDate.parse("2020-01-01")
 
-        internal val søknad = ArbeidstakerutbetalingSøknadUtils.defaultSøknad.copy(
-            utbetalingsperioder = listOf(
-                Utbetalingsperiode(
-                    fraOgMed = start,
-                    tilOgMed = start.plusDays(10)
-                ),
-                Utbetalingsperiode(
-                    fraOgMed = start.plusDays(20),
-                    tilOgMed = start.plusDays(20),
-                    lengde = Duration.ofHours(5).plusMinutes(30)
-                ),
-                Utbetalingsperiode(
-                    fraOgMed = start.plusDays(30),
-                    tilOgMed = start.plusDays(35)
-                )
-            )
-        )
+        internal val søknad = ArbeidstakerutbetalingSøknadUtils.defaultSøknad
         internal val komplettSøknad = ArbeidstakerutbetalingSøknadUtils.defaultKomplettSøknad.copy(
             mottatt = now
         )
@@ -78,25 +62,53 @@ internal class ArbeidstakerutbetalingSerDesTest {
                     "navn": "Arbeidsgiver 1",
                     "organisasjonsnummer": "917755736",
                     "harHattFraværHosArbeidsgiver": true,
-                    "arbeidsgiverHarUtbetaltLønn": false
+                    "arbeidsgiverHarUtbetaltLønn": false,
+                    "perioder": [
+                      {
+                        "fraOgMed": "2020-01-01",
+                        "tilOgMed": "2020-01-11",
+                        "lengde": null
+                      }
+                    ]
                 },
                 {
                   "navn": "Arbeidsgiver 2",
                   "organisasjonsnummer": "917755736",
                     "harHattFraværHosArbeidsgiver": true,
-                    "arbeidsgiverHarUtbetaltLønn": false
+                    "arbeidsgiverHarUtbetaltLønn": false,
+                    "perioder": [
+                      {
+                        "fraOgMed": "2020-01-21",
+                        "tilOgMed": "2020-01-21",
+                        "lengde": "PT5H30M"
+                      }
+                    ]
                 },
                 {
                   "navn": "Arbeidsgiver 3",
                   "organisasjonsnummer": "917755736",
                     "harHattFraværHosArbeidsgiver": true,
-                    "arbeidsgiverHarUtbetaltLønn": false
+                    "arbeidsgiverHarUtbetaltLønn": false,
+                    "perioder": [
+                      {
+                        "fraOgMed": "2020-01-31",
+                        "tilOgMed": "2020-02-05",
+                        "lengde": null
+                      }
+                    ]
                 },
                 {
                   "navn": null,
                   "organisasjonsnummer": "917755736",
                     "harHattFraværHosArbeidsgiver": true,
-                    "arbeidsgiverHarUtbetaltLønn": false
+                    "arbeidsgiverHarUtbetaltLønn": false,
+                    "perioder": [
+                      {
+                        "fraOgMed": "2020-02-01",
+                        "tilOgMed": "2020-02-06",
+                        "lengde": null
+                      }
+                    ]
                 }
               ]
             },
@@ -115,19 +127,6 @@ internal class ArbeidstakerutbetalingSerDesTest {
                 "harBekreftetOpplysninger": true,
                 "harForståttRettigheterOgPlikter": true
             },
-            "utbetalingsperioder": [{
-                "fraOgMed": "2020-01-01",
-                "tilOgMed": "2020-01-11",
-                "lengde": null
-            }, {
-                "fraOgMed": "2020-01-21",
-                "tilOgMed": "2020-01-21",
-                "lengde": "PT5H30M"
-            }, {
-                "fraOgMed": "2020-01-31",
-                "tilOgMed": "2020-02-05",
-                "lengde": null
-            }],
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
@@ -156,28 +155,56 @@ internal class ArbeidstakerutbetalingSerDesTest {
             "arbeidsgivere": {
               "organisasjoner": [
                 {
-                  "navn": "Arbeidsgiver 1",
-                  "organisasjonsnummer": "917755736",
+                    "navn": "Arbeidsgiver 1",
+                    "organisasjonsnummer": "917755736",
                     "harHattFraværHosArbeidsgiver": true,
-                    "arbeidsgiverHarUtbetaltLønn": false
+                    "arbeidsgiverHarUtbetaltLønn": false,
+                    "perioder": [
+                      {
+                        "fraOgMed": "2020-01-01",
+                        "tilOgMed": "2020-01-11",
+                        "lengde": null
+                      }
+                    ]
                 },
                 {
                   "navn": "Arbeidsgiver 2",
                   "organisasjonsnummer": "917755736",
                     "harHattFraværHosArbeidsgiver": true,
-                    "arbeidsgiverHarUtbetaltLønn": false
+                    "arbeidsgiverHarUtbetaltLønn": false,
+                    "perioder": [
+                      {
+                        "fraOgMed": "2020-01-21",
+                        "tilOgMed": "2020-01-21",
+                        "lengde": "PT5H30M"
+                      }
+                    ]
                 },
                 {
                   "navn": "Arbeidsgiver 3",
                   "organisasjonsnummer": "917755736",
                     "harHattFraværHosArbeidsgiver": true,
-                    "arbeidsgiverHarUtbetaltLønn": false
+                    "arbeidsgiverHarUtbetaltLønn": false,
+                    "perioder": [
+                      {
+                        "fraOgMed": "2020-01-31",
+                        "tilOgMed": "2020-02-05",
+                        "lengde": null
+                      }
+                    ]
                 },
                 {
                   "navn": null,
                   "organisasjonsnummer": "917755736",
                     "harHattFraværHosArbeidsgiver": true,
-                    "arbeidsgiverHarUtbetaltLønn": false
+                    "arbeidsgiverHarUtbetaltLønn": false,
+                    "perioder": [
+                      {
+                        "fraOgMed": "2020-02-01",
+                        "tilOgMed": "2020-02-06",
+                        "lengde": null
+                      }
+                    ]
                 }
               ]
             },
@@ -203,19 +230,6 @@ internal class ArbeidstakerutbetalingSerDesTest {
                 "harBekreftetOpplysninger": true,
                 "harForståttRettigheterOgPlikter": true
             },
-            "utbetalingsperioder": [{
-                "fraOgMed": "2020-01-01",
-                "tilOgMed": "2020-01-11",
-                "lengde": null
-            }, {
-                "fraOgMed": "2020-01-21",
-                "tilOgMed": "2020-01-21",
-                "lengde": "PT5H30M"
-            }, {
-                "fraOgMed": "2020-01-31",
-                "tilOgMed": "2020-02-05",
-                "lengde": "PT7H30M"
-            }],
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"

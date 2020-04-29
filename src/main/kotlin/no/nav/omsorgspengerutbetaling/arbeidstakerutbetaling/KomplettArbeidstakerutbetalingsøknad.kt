@@ -17,7 +17,6 @@ data class KomplettArbeidstakerutbetalingsøknad(
     val arbeidsgivere: ArbeidsgiverDetaljer,
     val spørsmål: List<SpørsmålOgSvar>,
     val bekreftelser: Bekreftelser,
-    val utbetalingsperioder: List<Utbetalingsperiode>,
     val andreUtbetalinger: List<String>,
     val fosterbarn: List<FosterBarn>? = listOf(),
     val vedlegg: List<Vedlegg>
