@@ -101,7 +101,6 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
     return violations
 }
 
-
 private fun Virksomhet.erRegistrertINorgeGyldigSatt(): Boolean {
     return !organisasjonsnummer.isNullOrBlank()
 }
