@@ -16,6 +16,7 @@ import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.Operation.Companion.monitored
 import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.general.auth.IdToken
+import no.nav.omsorgspengerutbetaling.k9DokumentKonfigurert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
@@ -28,7 +29,8 @@ class K9DokumentGateway(
 
     private companion object {
         private val logger: Logger = LoggerFactory.getLogger(K9DokumentGateway::class.java)
-        private val objectMapper = jacksonObjectMapper().dusseldorfConfigured().configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
+        private val objectMapper = k9DokumentKonfigurert()
+
         private const val SLETTE_VEDLEGG_OPERATION = "slette-vedlegg"
         private const val HENTE_VEDLEGG_OPERATION = "hente-vedlegg"
         private const val LAGRE_VEDLEGG_OPERATION = "lagre-vedlegg"

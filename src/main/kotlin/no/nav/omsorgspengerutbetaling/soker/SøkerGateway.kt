@@ -13,6 +13,7 @@ import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.general.auth.ApiGatewayApiKey
 import no.nav.omsorgspengerutbetaling.general.auth.IdToken
 import no.nav.omsorgspengerutbetaling.general.oppslag.K9OppslagGateway
+import no.nav.omsorgspengerutbetaling.k9SelvbetjeningOppslagKonfigurert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -27,10 +28,8 @@ class SøkerGateway (
     private companion object {
         private val logger: Logger = LoggerFactory.getLogger("nav.SokerGateway")
         private const val HENTE_SOKER_OPERATION = "hente-soker"
-        private val objectMapper = jacksonObjectMapper().apply {
-            configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            registerModule(JavaTimeModule())
-        }
+        private val objectMapper = k9SelvbetjeningOppslagKonfigurert()
+
         private val attributter = Pair("a", listOf("aktør_id", "fornavn", "mellomnavn", "etternavn", "fødselsdato"))
     }
 

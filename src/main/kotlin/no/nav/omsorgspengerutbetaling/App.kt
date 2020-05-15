@@ -1,9 +1,12 @@
 package no.nav.omsorgspengerutbetaling
 
 import com.auth0.jwk.JwkProviderBuilder
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
@@ -53,7 +56,7 @@ import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
-fun main(args: Array<String>): Unit  = io.ktor.server.netty.EngineMain.main(args)
+fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 private val logger: Logger = LoggerFactory.getLogger("nav.omsorgpengesoknadapi")
 
@@ -184,11 +187,25 @@ fun Application.omsorgpengesoknadapi() {
         val healthService = HealthService(
             healthChecks = setOf(
                 omsorgpengesoknadMottakGateway,
-                HttpRequestHealthCheck(mapOf(
-                    configuration.getJwksUrl() to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK, includeExpectedStatusEntity = false),
-                    Url.buildURL(baseUrl = configuration.getK9DokumentUrl(), pathParts = listOf("health")) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
-                    Url.buildURL(baseUrl = configuration.getOmsorgpengesoknadMottakBaseUrl(), pathParts = listOf("health")) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK, httpHeaders = mapOf(apiGatewayApiKey.headerKey to apiGatewayApiKey.value))
-                ))
+                HttpRequestHealthCheck(
+                    mapOf(
+                        configuration.getJwksUrl() to HttpRequestHealthConfig(
+                            expectedStatus = HttpStatusCode.OK,
+                            includeExpectedStatusEntity = false
+                        ),
+                        Url.buildURL(
+                            baseUrl = configuration.getK9DokumentUrl(),
+                            pathParts = listOf("health")
+                        ) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
+                        Url.buildURL(
+                            baseUrl = configuration.getOmsorgpengesoknadMottakBaseUrl(),
+                            pathParts = listOf("health")
+                        ) to HttpRequestHealthConfig(
+                            expectedStatus = HttpStatusCode.OK,
+                            httpHeaders = mapOf(apiGatewayApiKey.headerKey to apiGatewayApiKey.value)
+                        )
+                    )
+                )
             )
         )
 
@@ -221,12 +238,26 @@ fun Application.omsorgpengesoknadapi() {
         correlationIdAndRequestIdInMdc()
         logRequests()
         mdc("id_token_jti") { call ->
-            try { idTokenProvider.getIdToken(call).getId() }
-            catch (cause: Throwable) { null }
+            try {
+                idTokenProvider.getIdToken(call).getId()
+            } catch (cause: Throwable) {
+                null
+            }
         }
     }
 }
 
 internal fun ObjectMapper.omsorgspengerKonfiguert() = dusseldorfConfigured()
-    .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
     .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
+
+internal fun k9DokumentKonfigurert() = jacksonObjectMapper().dusseldorfConfigured().apply {
+    configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
+    propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
+}
+
+internal fun k9SelvbetjeningOppslagKonfigurert() = jacksonObjectMapper().apply {
+    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    registerModule(JavaTimeModule())
+    propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
+}
+
