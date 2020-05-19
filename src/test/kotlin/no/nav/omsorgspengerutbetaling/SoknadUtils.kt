@@ -49,7 +49,7 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(5)
             )
         ),
-        andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
+        andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER, MIDLERTIDIG_KOMPENSASJON_SN_FRI),
         frilans = Frilans(
             startdato = start,
             jobberFortsattSomFrilans = JaNei.Ja

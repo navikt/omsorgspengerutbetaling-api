@@ -186,6 +186,7 @@ class ApplicationTest {
             expectedResponse = null,
             expectedCode = HttpStatusCode.Accepted,
             cookie = cookie,
+            //language=json
             requestEntity = """
                 {
             "språk": "nb",
@@ -432,7 +433,7 @@ class ApplicationTest {
                     {
                       "type": "entity",
                       "name": "andreUtbetalinger[1]",
-                      "reason": "Ugyldig verdig for andre utbetaling. Kun 'dagpenger' og 'sykepenger' er tillatt.",
+                      "reason": "Ugyldig verdi for annen utbetaling. Kun 'dagpenger', 'sykepenger' og 'midlertidigkompensasjonsnfri' er tillatt.",
                       "invalid_value": "koronapenger"
                     }
                   ]

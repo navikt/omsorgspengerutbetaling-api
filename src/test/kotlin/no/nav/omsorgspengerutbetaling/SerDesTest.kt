@@ -100,6 +100,7 @@ internal class SerDesTest {
             mottatt = now
         )
 
+        //language=json
         internal val SøknadJson = """
         {
             "språk": "nb",
@@ -141,7 +142,7 @@ internal class SerDesTest {
                 "lengde": null,
                 "legeerklæringer": []
             }],
-            "andreUtbetalinger": ["dagpenger", "sykepenger"],
+            "andreUtbetalinger": ["dagpenger", "sykepenger", "midlertidigkompensasjonsnfri"],
             "frilans": {
                 "startdato": "2020-01-01",
                 "jobberFortsattSomFrilans": true
