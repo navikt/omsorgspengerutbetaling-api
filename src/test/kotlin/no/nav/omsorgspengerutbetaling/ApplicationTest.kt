@@ -634,7 +634,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `Sende soknad med ja endring i arbeidsituasjon som frilans men uten å ha lagt til endringer`() {
+    fun `Sende soknad med harEndringFrilans som true men uten å ha lagt til endringer i endringerFrilans`() {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",

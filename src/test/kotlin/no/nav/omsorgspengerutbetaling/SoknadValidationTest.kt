@@ -24,7 +24,7 @@ internal class SøknadValideringsTest {
 
 
     @Test(expected = Throwblem::class)
-    fun `Skal feile dersom jaNeiFrilans satt til true men det ikke er lagt inn noen endringer for frilans`() {
+    fun `Skal feile dersom harEndringFrilans satt til true men endringerFrilans er tom`() {
         val søknad = SøknadUtils.defaultSøknad.copy(
             endringArbeidssituasjon = EndringArbeidssituasjon(
                 harEndringFrilans = JaNei.Ja,
@@ -35,7 +35,7 @@ internal class SøknadValideringsTest {
     }
 
     @Test(expected = Throwblem::class)
-    fun `Skal feile dersom jaNeiSelvstendig er satt til true men det ikke er lagt inn noen endringer for selvstendig`() {
+    fun `Skal feile dersom harEndringSelvstendig er satt til true men endringerSelvstendig er tom`() {
         val søknad = SøknadUtils.defaultSøknad.copy(
             endringArbeidssituasjon = EndringArbeidssituasjon(
                 harEndringFrilans = JaNei.Nei,
@@ -71,8 +71,7 @@ internal class SøknadValideringsTest {
     @Test
     fun `Skal ikke feile dersom endringArbeidssituasjon er null`() {
         val søknad = SøknadUtils.defaultSøknad.copy(
-            endringArbeidssituasjon = null
-        )
+            endringArbeidssituasjon = null        )
         søknad.valider()
     }
 }
