@@ -18,7 +18,8 @@ internal fun Søknad.valider() {
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
         addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
-        fosterbarn?.let { addAll(validerFosterbarn(it)) }
+        fosterbarn?.let { addAll(validerFosterbarn(it))}
+        endringArbeidssituasjon?.let { addAll(it.valider())}
     }
 
     if (violations.isNotEmpty()) {

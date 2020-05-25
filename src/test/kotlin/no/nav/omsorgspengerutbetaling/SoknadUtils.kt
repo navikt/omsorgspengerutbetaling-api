@@ -4,7 +4,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.soknad.Næringstyper.*
-import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -178,7 +177,23 @@ internal object SøknadUtils {
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja
         ),
-        hjemmePgaSmittevernhensyn = true
+        hjemmePgaSmittevernhensyn = true,
+        endringArbeidssituasjon = EndringArbeidssituasjon(
+            harEndringFrilans = JaNei.Ja,
+            endringerFrilans = listOf(
+                Endring(
+                    dato = LocalDate.parse("2020-01-01"),
+                    forklaring = "Korona"
+                )
+            ),
+            harEndringSelvstendig = JaNei.Ja,
+            endringerSelvstendig = listOf(
+                Endring(
+                    dato = LocalDate.parse("2020-01-01"),
+                    forklaring = "Korona"
+                )
+            )
+        )
     )
 }
 

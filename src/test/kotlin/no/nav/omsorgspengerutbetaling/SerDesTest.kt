@@ -90,6 +90,22 @@ internal class SerDesTest {
                     )
                 )
             ),
+            endringArbeidssituasjon = EndringArbeidssituasjon(
+                harEndringFrilans = JaNei.Ja,
+                endringerFrilans = listOf(
+                    Endring(
+                        dato = LocalDate.parse("2020-01-01"),
+                        forklaring = "Korona"
+                    )
+                ),
+                harEndringSelvstendig = JaNei.Ja,
+                endringerSelvstendig = listOf(
+                    Endring(
+                        dato = LocalDate.parse("2020-01-01"),
+                        forklaring = "Korona"
+                    )
+                )
+            ),
             vedlegg = listOf(
                 URL("http://localhost:8080/vedlegg/1"),
                 URL("http://localhost:8080/vedlegg/2"),
@@ -184,7 +200,23 @@ internal class SerDesTest {
               "http://localhost:8080/vedlegg/2",
               "http://localhost:8080/vedlegg/3"
             ],
-            "hjemmePgaSmittevernhensyn": true
+            "hjemmePgaSmittevernhensyn": true,
+            "endringArbeidssituasjon": {
+              "harEndringFrilans": true,
+              "endringerFrilans": [
+                {
+                  "dato": "2020-01-01",
+                  "forklaring": "Korona"
+                }
+              ],
+              "harEndringSelvstendig": true,
+              "endringerSelvstendig": [
+                {
+                  "dato": "2020-01-01",
+                  "forklaring": "Korona"
+                }
+              ]
+            }
         }
         """.trimIndent()
 
@@ -274,7 +306,23 @@ internal class SerDesTest {
                 "fødselsnummer": "02119970078"
             }],
             "vedlegg": [],
-            "hjemmePgaSmittevernhensyn": true
+            "hjemmePgaSmittevernhensyn": true,
+            "endringArbeidssituasjon": {
+              "harEndringFrilans": true,
+              "endringerFrilans": [
+                {
+                  "dato": "2020-01-01",
+                  "forklaring": "Korona"
+                }
+              ],
+              "harEndringSelvstendig": true,
+              "endringerSelvstendig": [
+                {
+                  "dato": "2020-01-01",
+                  "forklaring": "Korona"
+                }
+              ]
+            }
         }
         """.trimIndent()
     }

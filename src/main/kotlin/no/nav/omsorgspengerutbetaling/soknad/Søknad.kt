@@ -16,11 +16,13 @@ data class Søknad(
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
     val vedlegg: List<URL>? = listOf(),
-    val hjemmePgaSmittevernhensyn: Boolean
+    val hjemmePgaSmittevernhensyn: Boolean,
+    val endringArbeidssituasjon: EndringArbeidssituasjon? = null
 )
 
 enum class Språk(@JsonValue val språk: String) {
     BOKMÅL("nb"),
     NYNORSK("nn");
 }
+
 

@@ -633,6 +633,40 @@ class ApplicationTest {
         )
     }
 
+    @Test
+    fun `Sende soknad med ja endring i arbeidsituasjon som frilans men uten å ha lagt til endringer`() {
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedCode = HttpStatusCode.BadRequest,
+            requestEntity = SøknadUtils.defaultSøknad.copy(
+                endringArbeidssituasjon = EndringArbeidssituasjon(
+                    harEndringSelvstendig = JaNei.Nei,
+                    harEndringFrilans = JaNei.Ja
+                )
+            ).somJson(),
+            expectedResponse = """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "endringerFrilans",
+                      "reason": "Hvis harEndringFrilans er ja/true så må endringerFrilans inneholde minst en endring",
+                      "invalid_value": [
+                        
+                      ]
+                    }
+                  ]
+                }
+            """.trimIndent()
+        )
+    }
+
 
     private fun expectedGetSokerJson(
         fodselsnummer: String,

@@ -19,5 +19,6 @@ data class KomplettSoknad(
     val fosterbarn: List<FosterBarn>? = listOf(),
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet>? = null,
-    val hjemmePgaSmittevernhensyn: Boolean
+    val hjemmePgaSmittevernhensyn: Boolean,
+    val endringArbeidssituasjon: EndringArbeidssituasjon? = null
 )

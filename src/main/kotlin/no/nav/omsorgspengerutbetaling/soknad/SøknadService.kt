@@ -67,7 +67,8 @@ internal class SøknadService(
             selvstendigVirksomheter = søknad.selvstendigVirksomheter,
             erArbeidstakerOgså = søknad.erArbeidstakerOgså,
             hjemmePgaSmittevernhensyn = søknad.hjemmePgaSmittevernhensyn,
-            bekreftelser = søknad.bekreftelser
+            bekreftelser = søknad.bekreftelser,
+            endringArbeidssituasjon = søknad.endringArbeidssituasjon
         )
 
         omsorgpengesøknadMottakGateway.leggTilProsessering(
