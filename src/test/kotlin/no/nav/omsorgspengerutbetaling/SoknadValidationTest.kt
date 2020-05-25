@@ -71,7 +71,8 @@ internal class SøknadValideringsTest {
     @Test
     fun `Skal ikke feile dersom endringArbeidssituasjon er null`() {
         val søknad = SøknadUtils.defaultSøknad.copy(
-            endringArbeidssituasjon = null        )
+            endringArbeidssituasjon = null
+        )
         søknad.valider()
     }
 }
