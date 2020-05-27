@@ -230,16 +230,19 @@ internal class SerDesTest {
             "utbetalingsperioder": [{
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
+                "lengde": "PT2H",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H"
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
+                "lengde": "PT2H",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H"
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
+                "lengde": "PT2H",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H"
             }],
