@@ -40,7 +40,8 @@ internal class SerDesTest {
                 UtbetalingsperiodeMedVedlegg(
                     fraOgMed = start.plusDays(20),
                     tilOgMed = start.plusDays(20),
-                    lengde = Duration.ofHours(5).plusMinutes(30),
+                    antallTimerPlanlagt = Duration.ofHours(7).plusMinutes(30),
+                    antallTimerBorte = Duration.ofHours(7).plusMinutes(30),
                     legeerklæringer = listOf(
                         URI("http://localhost:8080/vedlegg/2"),
                         URI("http://localhost:8080/vedlegg/3")
@@ -129,17 +130,20 @@ internal class SerDesTest {
             "utbetalingsperioder": [{
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
-                "lengde": null,
+                "antallTimerBorte": null,
+                "antallTimerPlanlagt": null,
                 "legeerklæringer": ["http://localhost:8080/vedlegg/1"]
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
-                "lengde": "PT5H30M",
+                "antallTimerBorte": "PT7H30M",
+                "antallTimerPlanlagt": "PT7H30M",
                 "legeerklæringer": ["http://localhost:8080/vedlegg/2", "http://localhost:8080/vedlegg/3"]
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
-                "lengde": null,
+                "antallTimerBorte": null,
+                "antallTimerPlanlagt": null,
                 "legeerklæringer": []
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger", "midlertidigkompensasjonsnfri"],
@@ -226,15 +230,18 @@ internal class SerDesTest {
             "utbetalingsperioder": [{
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
-                "lengde": null
+                "antallTimerBorte": "PT3H",
+                "antallTimerPlanlagt": "PT5H"
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
-                "lengde": "PT5H30M"
+                "antallTimerBorte": "PT3H",
+                "antallTimerPlanlagt": "PT5H"
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
-                "lengde": "PT7H30M"
+                "antallTimerBorte": "PT3H",
+                "antallTimerPlanlagt": "PT5H"
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "frilans": {

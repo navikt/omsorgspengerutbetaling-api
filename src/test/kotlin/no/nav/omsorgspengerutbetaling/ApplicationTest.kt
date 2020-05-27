@@ -163,7 +163,8 @@ class ApplicationTest {
                     UtbetalingsperiodeMedVedlegg(
                         fraOgMed = LocalDate.now(),
                         tilOgMed = LocalDate.now(),
-                        lengde = Duration.ofHours(6),
+                        antallTimerPlanlagt = Duration.ofHours(3),
+                        antallTimerBorte = Duration.ofHours(2),
                         legeerklæringer = listOf(URI(jpegUrl), URI(pdfUrl))
                     ),
                     UtbetalingsperiodeMedVedlegg(
@@ -215,15 +216,16 @@ class ApplicationTest {
             "utbetalingsperioder": [{
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
-                "lengde": null
+                "antallTimerBorte": "PT3H",
+                "antallTimerPlanlagt": "PT5H"
             }, {
                 "fraOgMed": "2020-01-21",
-                "tilOgMed": "2020-01-21",
-                "lengde": "PT5H30M"
+                "tilOgMed": "2020-01-21"
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
-                "lengde": null,
+                "antallTimerBorte": "PT3H",
+                "antallTimerPlanlagt": "PT5H",
                 "legeerklæringer": []
             }],
             "frilans": {
@@ -327,6 +329,45 @@ class ApplicationTest {
             cookie = cookie,
             requestEntity = SøknadUtils.defaultSøknad.copy(
                 vedlegg = listOf(URL(jpegUrl), URL(finnesIkkeUrl))
+            ).somJson()
+        )
+    }
+
+    @Test
+    fun `Sende soknad hvor antallTimerPlanlagt er satt men ikke antallTimerBorte`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+        val jpegUrl = engine.jpegUrl(cookie)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse = """
+            {
+              "type": "/problem-details/invalid-request-parameters",
+              "title": "invalid-request-parameters",
+              "status": 400,
+              "detail": "Requesten inneholder ugyldige paramtere.",
+              "instance": "about:blank",
+              "invalid_parameters": [
+                {
+                  "type": "entity",
+                  "name": "utbetalingsperioder[0]",
+                  "reason": "Dersom antallTimerPlanlagt er satt så kan ikke antallTimerBorte være tom",
+                  "invalid_value": "antallTimerBorte = null, antallTimerPlanlagt=PT7H"
+                }
+              ]
+            }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = SøknadUtils.defaultSøknad.copy(
+                utbetalingsperioder = listOf(
+                    UtbetalingsperiodeMedVedlegg(
+                        fraOgMed = LocalDate.now(),
+                        tilOgMed = LocalDate.now().plusDays(1),
+                        antallTimerPlanlagt = Duration.ofHours(7)
+                    )
+                )
             ).somJson()
         )
     }

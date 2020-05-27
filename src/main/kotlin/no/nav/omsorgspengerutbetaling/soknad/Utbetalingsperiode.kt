@@ -25,7 +25,8 @@ private object Verktøy{
 data class UtbetalingsperiodeMedVedlegg(
     @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
-    val lengde: Duration? = null,
+    val antallTimerBorte: Duration? = null,
+    val antallTimerPlanlagt: Duration? = null,
     val legeerklæringer: List<URI> = listOf()
 )
 
@@ -37,7 +38,8 @@ internal fun UtbetalingsperiodeMedVedlegg.somPeriode() = Periode(
 data class UtbetalingsperiodeUtenVedlegg(
     @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
-    val lengde: Duration?
+    val antallTimerBorte: Duration? = null,
+    val antallTimerPlanlagt: Duration? = null
 )
 
 internal fun List<UtbetalingsperiodeMedVedlegg>.valider() : Set<Violation> {
@@ -70,6 +72,28 @@ internal fun List<UtbetalingsperiodeMedVedlegg>.valider() : Set<Violation> {
                     )
                 )
             }
+        }
+
+        if(utbetalingsperiode.antallTimerPlanlagt != null && utbetalingsperiode.antallTimerBorte == null){
+            violations.add(
+                Violation(
+                    parameterName = "${Verktøy.JsonPath}[$utbetalingsperiodeIndex]",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "Dersom antallTimerPlanlagt er satt så kan ikke antallTimerBorte være tom",
+                    invalidValue = "antallTimerBorte = ${utbetalingsperiode.antallTimerBorte}, antallTimerPlanlagt=${utbetalingsperiode.antallTimerPlanlagt}"
+                )
+            )
+        }
+
+        if(utbetalingsperiode.antallTimerBorte != null && utbetalingsperiode.antallTimerPlanlagt == null){
+            violations.add(
+                Violation(
+                    parameterName = "${Verktøy.JsonPath}[$utbetalingsperiodeIndex]",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "Dersom antallTimerBorte er satt så kan ikke antallTimerPlanlagt være tom",
+                    invalidValue = "antallTimerBorte = ${utbetalingsperiode.antallTimerBorte}, antallTimerPlanlagt=${utbetalingsperiode.antallTimerPlanlagt}"
+                )
+            )
         }
     }
     return violations
