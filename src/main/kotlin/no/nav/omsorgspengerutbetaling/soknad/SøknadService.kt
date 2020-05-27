@@ -37,7 +37,6 @@ internal class SøknadService(
             UtbetalingsperiodeUtenVedlegg(
                 fraOgMed = it.fraOgMed,
                 tilOgMed = it.tilOgMed,
-                lengde = it.antallTimerPlanlagt?.minus(it.antallTimerBorte),
                 antallTimerBorte = it.antallTimerBorte,
                 antallTimerPlanlagt = it.antallTimerPlanlagt
             )
