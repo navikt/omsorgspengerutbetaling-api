@@ -373,6 +373,46 @@ class ApplicationTest {
     }
 
     @Test
+    fun `Sende soknad hvor antallTimerPlanlagt er mindre enn antallTimerBorte`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+        val jpegUrl = engine.jpegUrl(cookie)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse = """
+            {
+              "type": "/problem-details/invalid-request-parameters",
+              "title": "invalid-request-parameters",
+              "status": 400,
+              "detail": "Requesten inneholder ugyldige paramtere.",
+              "instance": "about:blank",
+              "invalid_parameters": [
+                {
+                  "type": "entity",
+                  "name": "utbetalingsperioder[0]",
+                  "reason": "Antall timer borte kan ikke være større enn antall timer planlagt jobbe",
+                  "invalid_value": "antallTimerBorte = PT8H, antallTimerPlanlagt=PT7H"
+                }
+              ]
+            }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = SøknadUtils.defaultSøknad.copy(
+                utbetalingsperioder = listOf(
+                    UtbetalingsperiodeMedVedlegg(
+                        fraOgMed = LocalDate.now(),
+                        tilOgMed = LocalDate.now().plusDays(1),
+                        antallTimerPlanlagt = Duration.ofHours(7),
+                        antallTimerBorte = Duration.ofHours(8)
+                    )
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
     fun `Sende soknad med ugylidge parametre gir feil`() {
         requestAndAssert(
             httpMethod = HttpMethod.Post,

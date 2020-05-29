@@ -95,6 +95,19 @@ internal fun List<UtbetalingsperiodeMedVedlegg>.valider() : Set<Violation> {
                 )
             )
         }
+
+        if(utbetalingsperiode.antallTimerBorte != null && utbetalingsperiode.antallTimerPlanlagt != null){
+            if(utbetalingsperiode.antallTimerBorte > utbetalingsperiode.antallTimerPlanlagt){
+                violations.add(
+                    Violation(
+                        parameterName = "${Verktøy.JsonPath}[$utbetalingsperiodeIndex]",
+                        parameterType = ParameterType.ENTITY,
+                        reason = "Antall timer borte kan ikke være større enn antall timer planlagt jobbe",
+                        invalidValue = "antallTimerBorte = ${utbetalingsperiode.antallTimerBorte}, antallTimerPlanlagt=${utbetalingsperiode.antallTimerPlanlagt}"
+                    )
+                )
+            }
+        }
     }
     return violations
 }
