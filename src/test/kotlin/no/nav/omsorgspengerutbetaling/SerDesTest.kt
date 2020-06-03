@@ -132,18 +132,21 @@ internal class SerDesTest {
                 "tilOgMed": "2020-01-11",
                 "antallTimerBorte": null,
                 "antallTimerPlanlagt": null,
+                "lengde": null,
                 "legeerklæringer": ["http://localhost:8080/vedlegg/1"]
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
                 "antallTimerBorte": "PT7H30M",
                 "antallTimerPlanlagt": "PT7H30M",
+                "lengde": null,
                 "legeerklæringer": ["http://localhost:8080/vedlegg/2", "http://localhost:8080/vedlegg/3"]
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
                 "antallTimerBorte": null,
                 "antallTimerPlanlagt": null,
+                "lengde": null,
                 "legeerklæringer": []
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger", "midlertidigkompensasjonsnfri"],
@@ -231,17 +234,20 @@ internal class SerDesTest {
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
                 "antallTimerBorte": "PT3H",
-                "antallTimerPlanlagt": "PT5H"
+                "antallTimerPlanlagt": "PT5H",
+                "lengde": null
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
                 "antallTimerBorte": "PT3H",
-                "antallTimerPlanlagt": "PT5H"
+                "antallTimerPlanlagt": "PT5H",
+                "lengde": null
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
                 "antallTimerBorte": "PT3H",
-                "antallTimerPlanlagt": "PT5H"
+                "antallTimerPlanlagt": "PT5H",
+                "lengde": null
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "frilans": {
