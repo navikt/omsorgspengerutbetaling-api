@@ -37,6 +37,7 @@ internal class SøknadService(
             UtbetalingsperiodeUtenVedlegg(
                 fraOgMed = it.fraOgMed,
                 tilOgMed = it.tilOgMed,
+                lengde = it.lengde, //TODO: Fjerne etter prodsetting
                 antallTimerBorte = it.antallTimerBorte,
                 antallTimerPlanlagt = it.antallTimerPlanlagt
             )

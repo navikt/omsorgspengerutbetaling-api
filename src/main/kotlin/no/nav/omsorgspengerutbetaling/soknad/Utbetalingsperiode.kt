@@ -27,6 +27,7 @@ data class UtbetalingsperiodeMedVedlegg(
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
     val antallTimerBorte: Duration? = null,
     val antallTimerPlanlagt: Duration? = null,
+    val lengde: Duration? = null, //TODO: beholde lengde i en periode slik at vi ikke mister info i overgangen
     val legeerklæringer: List<URI> = listOf()
 )
 
@@ -38,6 +39,7 @@ internal fun UtbetalingsperiodeMedVedlegg.somPeriode() = Periode(
 data class UtbetalingsperiodeUtenVedlegg(
     @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
+    val lengde: Duration? = null, //TODO: Fjerne etter prodsetting
     val antallTimerBorte: Duration? = null,
     val antallTimerPlanlagt: Duration? = null
 )
