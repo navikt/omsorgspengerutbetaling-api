@@ -25,7 +25,9 @@ private object Verktøy{
 data class UtbetalingsperiodeMedVedlegg(
     @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
-    val lengde: Duration? = null,
+    val antallTimerBorte: Duration? = null,
+    val antallTimerPlanlagt: Duration? = null,
+    val lengde: Duration? = null, //TODO: beholde lengde i en periode slik at vi ikke mister info i overgangen
     val legeerklæringer: List<URI> = listOf()
 )
 
@@ -37,7 +39,9 @@ internal fun UtbetalingsperiodeMedVedlegg.somPeriode() = Periode(
 data class UtbetalingsperiodeUtenVedlegg(
     @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
-    val lengde: Duration?
+    val lengde: Duration? = null, //TODO: Fjerne etter prodsetting
+    val antallTimerBorte: Duration? = null,
+    val antallTimerPlanlagt: Duration? = null
 )
 
 internal fun List<UtbetalingsperiodeMedVedlegg>.valider() : Set<Violation> {
@@ -67,6 +71,41 @@ internal fun List<UtbetalingsperiodeMedVedlegg>.valider() : Set<Violation> {
                         parameterType = ParameterType.ENTITY,
                         reason = "Ikke gyldig vedlegg URL.",
                         invalidValue = uri
+                    )
+                )
+            }
+        }
+
+        if(utbetalingsperiode.antallTimerPlanlagt != null && utbetalingsperiode.antallTimerBorte == null){
+            violations.add(
+                Violation(
+                    parameterName = "${Verktøy.JsonPath}[$utbetalingsperiodeIndex]",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "Dersom antallTimerPlanlagt er satt så kan ikke antallTimerBorte være tom",
+                    invalidValue = "antallTimerBorte = ${utbetalingsperiode.antallTimerBorte}, antallTimerPlanlagt=${utbetalingsperiode.antallTimerPlanlagt}"
+                )
+            )
+        }
+
+        if(utbetalingsperiode.antallTimerBorte != null && utbetalingsperiode.antallTimerPlanlagt == null){
+            violations.add(
+                Violation(
+                    parameterName = "${Verktøy.JsonPath}[$utbetalingsperiodeIndex]",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "Dersom antallTimerBorte er satt så kan ikke antallTimerPlanlagt være tom",
+                    invalidValue = "antallTimerBorte = ${utbetalingsperiode.antallTimerBorte}, antallTimerPlanlagt=${utbetalingsperiode.antallTimerPlanlagt}"
+                )
+            )
+        }
+
+        if(utbetalingsperiode.antallTimerBorte != null && utbetalingsperiode.antallTimerPlanlagt != null){
+            if(utbetalingsperiode.antallTimerBorte > utbetalingsperiode.antallTimerPlanlagt){
+                violations.add(
+                    Violation(
+                        parameterName = "${Verktøy.JsonPath}[$utbetalingsperiodeIndex]",
+                        parameterType = ParameterType.ENTITY,
+                        reason = "Antall timer borte kan ikke være større enn antall timer planlagt jobbe",
+                        invalidValue = "antallTimerBorte = ${utbetalingsperiode.antallTimerBorte}, antallTimerPlanlagt=${utbetalingsperiode.antallTimerPlanlagt}"
                     )
                 )
             }

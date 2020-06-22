@@ -121,17 +121,20 @@ internal object SøknadUtils {
             UtbetalingsperiodeUtenVedlegg(
                 fraOgMed = start,
                 tilOgMed = start.plusDays(10),
-                lengde = null
+                antallTimerPlanlagt = Duration.ofHours(5),
+                antallTimerBorte = Duration.ofHours(3)
             ),
             UtbetalingsperiodeUtenVedlegg(
                 fraOgMed = start.plusDays(20),
                 tilOgMed = start.plusDays(20),
-                lengde = Duration.ofHours(5).plusMinutes(30)
+                antallTimerPlanlagt = Duration.ofHours(5),
+                antallTimerBorte = Duration.ofHours(3)
             ),
             UtbetalingsperiodeUtenVedlegg(
                 fraOgMed = start.plusDays(30),
                 tilOgMed = start.plusMonths(1).plusDays(4),
-                lengde = Duration.ofHours(7).plusMinutes(30)
+                antallTimerPlanlagt = Duration.ofHours(5),
+                antallTimerBorte = Duration.ofHours(3)
             )
         ),
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
