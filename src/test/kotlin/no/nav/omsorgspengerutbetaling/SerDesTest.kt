@@ -191,10 +191,12 @@ internal class SerDesTest {
               "http://localhost:8080/vedlegg/2",
               "http://localhost:8080/vedlegg/3"
             ],
-            "hjemmePgaSmittevernhensyn": true
+            "hjemmePgaSmittevernhensyn": true,
+            "hjemmePgaStengtBhgSkole": true
         }
         """.trimIndent()
 
+        //language=json
         internal val KomplettSøknadJson = """
         {
             "mottatt": "2018-01-02T03:04:05.000000006Z",
@@ -287,7 +289,8 @@ internal class SerDesTest {
                 "fødselsnummer": "02119970078"
             }],
             "vedlegg": [],
-            "hjemmePgaSmittevernhensyn": true
+            "hjemmePgaSmittevernhensyn": true,
+            "hjemmePgaStengtBhgSkole": true
         }
         """.trimIndent()
     }

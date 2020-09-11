@@ -78,7 +78,8 @@ internal object SøknadUtils {
                 fødselsnummer = "02119970078"
             )
         ),
-        hjemmePgaSmittevernhensyn = true
+        hjemmePgaSmittevernhensyn = true,
+        hjemmePgaStengtBhgSkole = true
     )
 
     internal val defaultKomplettSøknad = KomplettSoknad(
@@ -181,7 +182,8 @@ internal object SøknadUtils {
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja
         ),
-        hjemmePgaSmittevernhensyn = true
+        hjemmePgaSmittevernhensyn = true,
+        hjemmePgaStengtBhgSkole = true
     )
 }
 
