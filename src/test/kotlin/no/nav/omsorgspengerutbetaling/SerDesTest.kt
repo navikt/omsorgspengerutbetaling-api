@@ -83,11 +83,6 @@ internal class SerDesTest {
                     regnskapsfører = Regnskapsfører(
                         navn = "Regn",
                         telefon = "555-FILK"
-                    ),
-                    revisor = Revisor(
-                        navn = "Rev",
-                        telefon = "555-FILM",
-                        kanInnhenteOpplysninger = JaNei.Nei
                     )
                 )
             ),
@@ -175,11 +170,6 @@ internal class SerDesTest {
                 "regnskapsfører": {
                     "navn": "Regn",
                     "telefon": "555-FILK"
-                },
-                "revisor": {
-                    "navn": "Rev",
-                    "telefon": "555-FILM",
-                    "kanInnhenteOpplysninger": false
                 }
             }],
             "erArbeidstakerOgså": true,
@@ -277,11 +267,6 @@ internal class SerDesTest {
                 "regnskapsfører": {
                     "navn": "Kjell",
                     "telefon": "84554"
-                },
-                "revisor": {
-                    "navn": "Kjell",
-                    "telefon": "12345678",
-                    "kanInnhenteOpplysninger": true
                 }
             }],
             "erArbeidstakerOgså": true,
