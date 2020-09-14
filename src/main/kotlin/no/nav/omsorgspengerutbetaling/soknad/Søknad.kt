@@ -16,7 +16,8 @@ data class Søknad(
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
     val vedlegg: List<URL>? = listOf(),
-    val hjemmePgaSmittevernhensyn: Boolean
+    val hjemmePgaSmittevernhensyn: Boolean,
+    val hjemmePgaStengtBhgSkole: Boolean? = null // TODO låses til Boolean etter lansering.
 )
 
 enum class Språk(@JsonValue val språk: String) {
