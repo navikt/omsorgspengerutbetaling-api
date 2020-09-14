@@ -158,11 +158,6 @@ internal object SøknadUtils {
                     navn = "Kjell",
                     telefon = "84554"
                 ),
-                revisor = Revisor(
-                    navn = "Kjell",
-                    telefon = "12345678",
-                    kanInnhenteOpplysninger = JaNei.Ja
-                ),
                 varigEndring = VarigEndring(
                     dato = start,
                     inntektEtterEndring = 1337,

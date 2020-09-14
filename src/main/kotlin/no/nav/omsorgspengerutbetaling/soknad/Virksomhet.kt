@@ -19,8 +19,7 @@ data class Virksomhet(
     val registrertILand: String? = null,
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeArene? = null,
     val varigEndring: VarigEndring? = null,
-    val regnskapsfører: Regnskapsfører? = null,
-    val revisor: Revisor? = null
+    val regnskapsfører: Regnskapsfører? = null
 )
 
 data class YrkesaktivSisteTreFerdigliknedeArene(
@@ -39,12 +38,6 @@ data class VarigEndring(
     val dato: LocalDate,
     val inntektEtterEndring: Int,
     val forklaring: String
-)
-
-data class Revisor(
-    val navn: String,
-    val telefon: String,
-    val kanInnhenteOpplysninger: JaNei
 )
 
 data class Regnskapsfører(

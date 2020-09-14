@@ -254,12 +254,6 @@ class ApplicationTest {
                     "navn": "Regn",
                     "telefon": "555-FILK",
                     "erNærVennFamilie": false
-                },
-                "revisor": {
-                    "navn": "Rev",
-                    "telefon": "555-FILM",
-                    "erNærVennFamilie": true,
-                    "kanInnhenteOpplysninger": false
                 }
             }]
         }
