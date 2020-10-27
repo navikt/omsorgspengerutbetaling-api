@@ -44,7 +44,7 @@ internal fun Bekreftelser.valider() : Set<Violation> {
                 parameterName = "bekreftlser.harBekreftetOpplysninger",
                 parameterType = ParameterType.ENTITY,
                 reason = "Må besvars Ja.",
-                invalidValue = harBekreftetOpplysninger
+                invalidValue = harBekreftetOpplysninger.boolean
             )
         )
     }
@@ -55,7 +55,7 @@ internal fun Bekreftelser.valider() : Set<Violation> {
                 parameterName = "bekreftelser.harForståttRettigheterOgPlikter",
                 parameterType = ParameterType.ENTITY,
                 reason = "Må besvars Ja.",
-                invalidValue = harForståttRettigheterOgPlikter
+                invalidValue = harForståttRettigheterOgPlikter.boolean
             )
         )
     }

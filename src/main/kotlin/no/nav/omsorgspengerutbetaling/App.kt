@@ -1,6 +1,5 @@
 package no.nav.omsorgspengerutbetaling
 
-import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
@@ -10,8 +9,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
-import io.ktor.auth.jwt.JWTPrincipal
-import io.ktor.auth.jwt.jwt
 import io.ktor.features.*
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -23,7 +20,9 @@ import io.ktor.metrics.micrometer.MicrometerMetrics
 import io.ktor.routing.Routing
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
+import no.nav.helse.dusseldorf.ktor.auth.allIssuers
 import no.nav.helse.dusseldorf.ktor.auth.clients
+import no.nav.helse.dusseldorf.ktor.auth.multipleJwtIssuers
 import no.nav.helse.dusseldorf.ktor.client.HttpRequestHealthCheck
 import no.nav.helse.dusseldorf.ktor.client.HttpRequestHealthConfig
 import no.nav.helse.dusseldorf.ktor.client.buildURL
@@ -36,7 +35,7 @@ import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.dusseldorf.ktor.metrics.init
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
-import no.nav.omsorgspengerutbetaling.general.auth.authorizationStatusPages
+import no.nav.omsorgspengerutbetaling.general.auth.IdTokenStatusPages
 import no.nav.omsorgspengerutbetaling.general.systemauth.AccessTokenClientResolver
 import no.nav.omsorgspengerutbetaling.mellomlagring.MellomlagringService
 import no.nav.omsorgspengerutbetaling.mellomlagring.mellomlagringApis
@@ -54,7 +53,6 @@ import no.nav.omsorgspengerutbetaling.vedlegg.vedleggApis
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
-import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -92,34 +90,22 @@ fun Application.omsorgpengesoknadapi() {
     }
 
     val idTokenProvider = IdTokenProvider(cookieName = configuration.getCookieName())
-    val jwkProvider = JwkProviderBuilder(configuration.getJwksUrl().toURL())
-        .cached(10, 24, TimeUnit.HOURS)
-        .rateLimited(10, 1, TimeUnit.MINUTES)
-        .build()
+    val issuers = configuration.issuers()
 
     install(Authentication) {
-        jwt {
-            realm = appId
-            verifier(jwkProvider, configuration.getIssuer()) {
-                acceptNotBefore(10)
-                acceptIssuedAt(10)
-            }
-            authHeader { call ->
-                idTokenProvider
-                    .getIdToken(call)
-                    .medValidertLevel("Level4")
+        multipleJwtIssuers(
+            issuers = issuers,
+            extractHttpAuthHeader = { call ->
+                idTokenProvider.getIdToken(call)
                     .somHttpAuthHeader()
             }
-            validate { credentials ->
-                return@validate JWTPrincipal(credentials.payload)
-            }
-        }
+        )
     }
 
     install(StatusPages) {
         DefaultStatusPages()
         JacksonStatusPages()
-        authorizationStatusPages()
+        IdTokenStatusPages()
     }
 
     install(Locations)
@@ -149,7 +135,7 @@ fun Application.omsorgpengesoknadapi() {
             søkerGateway = sokerGateway
         )
 
-        authenticate {
+        authenticate(*issuers.allIssuers()) {
 
             søkerApis(
                 søkerService = søkerService,
@@ -189,10 +175,6 @@ fun Application.omsorgpengesoknadapi() {
                 omsorgpengesoknadMottakGateway,
                 HttpRequestHealthCheck(
                     mapOf(
-                        configuration.getJwksUrl() to HttpRequestHealthConfig(
-                            expectedStatus = HttpStatusCode.OK,
-                            includeExpectedStatusEntity = false
-                        ),
                         Url.buildURL(
                             baseUrl = configuration.getK9DokumentUrl(),
                             pathParts = listOf("health")
