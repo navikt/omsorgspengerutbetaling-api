@@ -448,7 +448,8 @@ class ApplicationTest {
                 {
                     "type": "entity",
                     "name": "frilans/selvstendigVirksomheter",
-                    "reason": "Må settes 'frilans' eller minst en 'selvstendigVirksomheter'"
+                    "reason": "Må settes 'frilans' eller minst en 'selvstendigVirksomheter'",
+                    "invalid_value": null
                 }]
             }
             """.trimIndent()
@@ -590,7 +591,8 @@ class ApplicationTest {
                     {
                       "type": "entity",
                       "name": "registrertILand",
-                      "reason": "Hvis registrertINorge er false så må registrertILand være satt til noe"
+                      "reason": "Hvis registrertINorge er false så må registrertILand være satt til noe",
+                      "invalid_value": null
                     }
                   ]
                 }
