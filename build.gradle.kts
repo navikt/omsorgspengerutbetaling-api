@@ -1,10 +1,10 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "1.4.3.c883096"
+val dusseldorfKtorVersion = "1.5.0.ae98b7c"
 val ktorVersion = ext.get("ktorVersion").toString()
 val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
-val lettuceVersion = "5.2.2.RELEASE"
+val lettuceVersion = "5.3.5.RELEASE"
 
 plugins {
     kotlin("jvm") version "1.4.21"
@@ -13,7 +13,7 @@ plugins {
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/c88309616e7f153ed7084699aa0392defd0675f5/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/ae98b7cfa4b75bf15d8d5bb5a7e19a7432b69c47/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -43,9 +43,7 @@ dependencies {
 }
 
 repositories {
-    maven("https://dl.bintray.com/kotlin/ktor")
-    maven("https://kotlin.bintray.com/kotlinx")
-    maven("http://packages.confluent.io/maven/")
+    mavenLocal()
 
     maven {
         name = "GitHubPackages"
@@ -56,9 +54,12 @@ repositories {
         }
     }
 
-    jcenter()
-    mavenLocal()
     mavenCentral()
+    jcenter()
+
+    maven("https://dl.bintray.com/kotlin/ktor")
+    maven("https://kotlin.bintray.com/kotlinx")
+    maven("http://packages.confluent.io/maven/")
 }
 
 
@@ -89,21 +90,5 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "6.7"
-}
-
-tasks.register("createDependabotFile") {
-    doLast {
-        mkdir("$projectDir/dependabot")
-        val file = File("$projectDir/dependabot/build.gradle")
-        file.writeText( "// Do not edit manually! This file was created by the 'createDependabotFile' task defined in the root build.gradle.kts file.\n")
-        file.appendText("dependencies {\n")
-        project.configurations.getByName("runtimeClasspath").allDependencies
-            .filter { it.group != rootProject.name && it.version != null }
-            .forEach { file.appendText("    compile '${it.group}:${it.name}:${it.version}'\n") }
-        project.configurations.getByName("testRuntimeClasspath").allDependencies
-            .filter { it.group != rootProject.name && it.version != null }
-            .forEach { file.appendText("    testCompile '${it.group}:${it.name}:${it.version}'\n") }
-        file.appendText("}\n")
-    }
+    gradleVersion = "6.7.1"
 }
