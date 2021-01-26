@@ -13,11 +13,13 @@ import io.ktor.server.testing.setBody
 import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
+import no.nav.omsorgspengerutbetaling.SøknadUtils.defaultSøknad
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.junit.AfterClass
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -152,7 +154,7 @@ class ApplicationTest {
             expectedResponse = null,
             expectedCode = HttpStatusCode.Accepted,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
                 spørsmål = listOf(
                     SpørsmålOgSvar(
                         spørsmål = "Spørsmål 1",
@@ -242,6 +244,10 @@ class ApplicationTest {
                 "organisasjonsnummer": "111",
                 "registrertINorge": false,
                 "registrertILand": "Tyskland",
+                "registrertIUtlandet": {
+                  "landkode": "DEU",
+                  "landnavn": "Tyskland"
+                },
                 "yrkesaktivSisteTreFerdigliknedeÅrene": {
                     "oppstartsdato": "2018-01-01"
                 },
@@ -268,7 +274,7 @@ class ApplicationTest {
             path = "/soknad",
             expectedCode = HttpStatusCode.Unauthorized,
             expectedResponse = null,
-            requestEntity = SøknadUtils.defaultSøknad.somJson(),
+            requestEntity = defaultSøknad.somJson(),
             leggTilCookie = false
         )
     }
@@ -291,7 +297,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.Forbidden,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.somJson()
+            requestEntity = defaultSøknad.somJson()
         )
     }
 
@@ -321,7 +327,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
                 vedlegg = listOf(URL(jpegUrl), URL(finnesIkkeUrl))
             ).somJson()
         )
@@ -412,7 +418,7 @@ class ApplicationTest {
             httpMethod = HttpMethod.Post,
             path = "/soknad",
             expectedCode = HttpStatusCode.BadRequest,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
                 bekreftelser = Bekreftelser(
                     harForståttRettigheterOgPlikter = JaNei.Nei,
                     harBekreftetOpplysninger = JaNei.Nei
@@ -516,7 +522,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
                 andreUtbetalinger = listOf("sykepenger", "koronapenger")
             ).somJson()
         )
@@ -541,6 +547,41 @@ class ApplicationTest {
             contentType = "image/png",
             fileName = "big_picture.png",
             expectedCode = HttpStatusCode.PayloadTooLarge
+        )
+    }
+
+    @Test
+    fun `Sende søknad med ugyldig registrertIUtlandet`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse = """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "selvstendigVirksomheter[0].registrertIUtlandet.landkode",
+                      "reason": "Landkode er ikke en gyldig ISO 3166-1 alpha-3 kode.",
+                      "invalid_value": "LOL"
+                    }
+                  ]
+                }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = defaultSøknad.copy(
+               selvstendigVirksomheter = listOf(defaultSøknad.selvstendigVirksomheter[0].copy(
+                   registrertINorge = JaNei.Nei,
+                   registrertIUtlandet = Land("LOL", "Laughing out loud")
+               ))
+            ).somJson()
         )
     }
 
@@ -590,8 +631,8 @@ class ApplicationTest {
                   "invalid_parameters": [
                     {
                       "type": "entity",
-                      "name": "registrertILand",
-                      "reason": "Hvis registrertINorge er false så må registrertILand være satt til noe",
+                      "name": "selvstendigVirksomheter[0].registrertILand",
+                      "reason": "Hvis registrertINorge er false så må registrertILand være satt.",
                       "invalid_value": null
                     }
                   ]
@@ -599,7 +640,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
                 selvstendigVirksomheter = listOf(
                     Virksomhet(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
@@ -608,6 +649,56 @@ class ApplicationTest {
                         næringsinntekt = 1233123,
                         navnPåVirksomheten = "TullOgTøys",
                         registrertINorge = JaNei.Nei,
+                        organisasjonsnummer = "101010",
+                        yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                        regnskapsfører = Regnskapsfører(
+                            navn = "Kjell",
+                            telefon = "84554"
+                        ),
+                        fiskerErPåBladB = JaNei.Nei
+                    )
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
+    @Ignore //TODO: Aktiver test når endringene har vært i prod i mer enn 24t
+    fun `Sende søknad med selvstendig næringsvirksomhet som ikke er gyldig, mangler registrertIUtLandet`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse = """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "selvstendigVirksomheter[0].registrertIUtlandet",
+                      "reason": "Hvis registrertINorge er false så må registrertIUtlandet være satt.",
+                      "invalid_value": null
+                    }
+                  ]
+                }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = defaultSøknad.copy(
+                selvstendigVirksomheter = listOf(
+                    Virksomhet(
+                        næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                        fraOgMed = LocalDate.now().minusDays(1),
+                        tilOgMed = LocalDate.now(),
+                        næringsinntekt = 1233123,
+                        navnPåVirksomheten = "TullOgTøys",
+                        registrertINorge = JaNei.Nei,
+                        registrertILand = "Tyskland",
                         organisasjonsnummer = "101010",
                         yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
                         regnskapsfører = Regnskapsfører(
@@ -638,7 +729,7 @@ class ApplicationTest {
                   "invalid_parameters": [
                     {
                       "type": "entity",
-                      "name": "organisasjonsnummer",
+                      "name": "selvstendigVirksomheter[0].organisasjonsnummer",
                       "reason": "Hvis registrertINorge er true så må også organisasjonsnummer være satt",
                       "invalid_value": " "
                     }
@@ -647,7 +738,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
                 selvstendigVirksomheter = listOf(
                     Virksomhet(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
@@ -695,7 +786,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = defaultSøknad.copy(
                 fosterbarn = listOf(
                     FosterBarn(
                         fødselsnummer = "02119970078"

@@ -72,6 +72,10 @@ internal class SerDesTest {
                     organisasjonsnummer = "111",
                     registrertINorge = JaNei.Nei,
                     registrertILand = "Tyskland",
+                    registrertIUtlandet = Land(
+                        landkode = "DEU",
+                        landnavn = "Tyskland"
+                    ),
                     yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(
                         oppstartsdato = start.minusYears(2)
                     ),
@@ -159,6 +163,10 @@ internal class SerDesTest {
                 "organisasjonsnummer": "111",
                 "registrertINorge": false,
                 "registrertILand": "Tyskland",
+                "registrertIUtlandet": {
+                  "landkode": "DEU",
+                  "landnavn": "Tyskland"
+                },
                 "yrkesaktivSisteTreFerdigliknedeÅrene": {
                     "oppstartsdato": "2018-01-01"
                 },
@@ -256,6 +264,10 @@ internal class SerDesTest {
                 "organisasjonsnummer": "101010",
                 "registrertINorge": false,
                 "registrertILand": "Tyskland",
+                "registrertIUtlandet": {
+                  "landkode": "DEU",
+                  "landnavn": "Tyskland"
+                },
                 "yrkesaktivSisteTreFerdigliknedeÅrene": {
                     "oppstartsdato": "2020-01-01"
                 },
