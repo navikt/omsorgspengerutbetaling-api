@@ -8,7 +8,8 @@
   "ingresses": [
     "https://omsorgspengerutbetalingsoknad-api-q.nav.no",
     "https://omsorgspengerutbetalingsoknad-api.dev-sbs-pub.nais.io",
-    "https://omsorgspengerutbetaling-api.nais.oera-q.local"
+    "https://omsorgspengerutbetaling-api.nais.oera-q.local",
+    "https://omsorgspengerutbetalingsoknad-api.dev.nav.no"
   ],
   "vaultKvPath": "/kv/preprod/sbs/omsorgspengerutbetaling-api/default",
   "azureadKvPath": "/azuread/data/dev/creds/omsorgspengerutbetaling-api",
