@@ -7,7 +7,6 @@
   "maxReplicas": "2",
   "ingresses": [
     "https://omsorgspengerutbetalingsoknad-api.nav.no",
-    "https://omsorgspengerutbetalingsoknad-api.prod-sbs-pub.nais.io",
     "https://omsorgspengerutbetaling-api.nais.oera.no"
   ],
   "vaultKvPath": "/kv/prod/sbs/omsorgspengerutbetaling-api/default",

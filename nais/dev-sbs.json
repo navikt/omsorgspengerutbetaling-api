@@ -7,7 +7,6 @@
   "maxReplicas": "2",
   "ingresses": [
     "https://omsorgspengerutbetalingsoknad-api-q.nav.no",
-    "https://omsorgspengerutbetalingsoknad-api.dev-sbs-pub.nais.io",
     "https://omsorgspengerutbetaling-api.nais.oera-q.local",
     "https://omsorgspengerutbetalingsoknad-api.dev.nav.no"
   ],
