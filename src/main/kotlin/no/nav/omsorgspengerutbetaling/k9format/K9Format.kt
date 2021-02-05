@@ -25,7 +25,7 @@ fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
 
     return Søknad(
         søknadId,
-        Versjon.of("1.0"),
+        Versjon.of("1.0.0"),
         mottatt,
         søker.tilK9Søker(),
         OmsorgspengerUtbetaling(

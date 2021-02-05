@@ -203,7 +203,7 @@ internal class SerDesTest {
             "k9FormatSøknad": {
                 "søknadId": "$søknadId",
                 "mottattDato": "2018-01-02T03:04:05.000Z",
-                "versjon": "1.0",
+                "versjon": "1.0.0",
                 "språk": "nb",
                 "søker": {
                     "norskIdentitetsnummer": "02119970078"
