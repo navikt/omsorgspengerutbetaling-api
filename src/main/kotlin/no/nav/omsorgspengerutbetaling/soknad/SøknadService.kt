@@ -2,6 +2,7 @@ package no.nav.omsorgspengerutbetaling.soknad
 
 import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.general.auth.IdToken
+import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soker.SøkerService
 import no.nav.omsorgspengerutbetaling.soker.validate
@@ -24,7 +25,8 @@ internal class SøknadService(
     internal suspend fun registrer(
         søknad: Søknad,
         idToken: IdToken,
-        callId: CallId) {
+        callId: CallId
+    ) {
         logger.trace("Registrerer søknad. Henter søker")
 
         val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
@@ -46,17 +48,19 @@ internal class SøknadService(
         logger.trace("Henter ${søknad.vedlegg?.size ?: 0} vedlegg.")
         val vedlegg = vedleggService.hentVedlegg(
             idToken = idToken,
-            vedleggUrls = søknad.vedlegg?: listOf(),
+            vedleggUrls = søknad.vedlegg ?: listOf(),
             callId = callId
         )
 
         logger.trace("${vedlegg.size} vedlegg hentet. Validerer dem.")
-        vedlegg.valider(vedleggReferanser = søknad.vedlegg?: listOf())
+        vedlegg.valider(vedleggReferanser = søknad.vedlegg ?: listOf())
 
         logger.info("Legger søknad til prosessering")
+        val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
         val komplettSoknad = KomplettSoknad(
+            søknadId = søknad.søknadId,
             språk = søknad.språk,
-            mottatt = ZonedDateTime.now(ZoneOffset.UTC),
+            mottatt = mottatt,
             søker = søker,
             bosteder = søknad.bosteder,
             opphold = søknad.opphold,
@@ -70,7 +74,11 @@ internal class SøknadService(
             erArbeidstakerOgså = søknad.erArbeidstakerOgså,
             hjemmePgaSmittevernhensyn = søknad.hjemmePgaSmittevernhensyn,
             hjemmePgaStengtBhgSkole = søknad.hjemmePgaStengtBhgSkole,
-            bekreftelser = søknad.bekreftelser
+            bekreftelser = søknad.bekreftelser,
+            k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(
+                mottatt = mottatt,
+                søker = søker
+            )
         )
 
         omsorgpengesøknadMottakGateway.leggTilProsessering(
@@ -80,7 +88,7 @@ internal class SøknadService(
 
         logger.trace("Søknad lagt til prosessering. Sletter vedlegg.")
         vedleggService.slettVedleg(
-            vedleggUrls = søknad.vedlegg?: listOf(),
+            vedleggUrls = søknad.vedlegg ?: listOf(),
             callId = callId,
             idToken = idToken
         )

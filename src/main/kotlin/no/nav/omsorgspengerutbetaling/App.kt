@@ -2,23 +2,19 @@ package no.nav.omsorgspengerutbetaling
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.application.*
-import io.ktor.auth.Authentication
-import io.ktor.auth.authenticate
+import io.ktor.auth.*
 import io.ktor.features.*
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.Url
-import io.ktor.jackson.jackson
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Locations
-import io.ktor.metrics.micrometer.MicrometerMetrics
-import io.ktor.routing.Routing
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.http.*
+import io.ktor.jackson.*
+import io.ktor.locations.*
+import io.ktor.metrics.micrometer.*
+import io.ktor.routing.*
+import io.ktor.util.*
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.helse.dusseldorf.ktor.auth.allIssuers
 import no.nav.helse.dusseldorf.ktor.auth.clients
@@ -236,12 +232,12 @@ internal fun ObjectMapper.omsorgspengerKonfiguert() = dusseldorfConfigured()
 
 internal fun k9DokumentKonfigurert() = jacksonObjectMapper().dusseldorfConfigured().apply {
     configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
-    propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
+    propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
 }
 
 internal fun k9SelvbetjeningOppslagKonfigurert() = jacksonObjectMapper().apply {
     configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     registerModule(JavaTimeModule())
-    propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
+    propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
 }
 

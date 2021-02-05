@@ -1,16 +1,20 @@
 package no.nav.omsorgspengerutbetaling
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.k9.søknad.felles.type.SøknadId
+import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.soknad.Næringstyper.*
-import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 internal object SøknadUtils {
     internal val objectMapper = jacksonObjectMapper().omsorgspengerKonfiguert()
+    val mottatt = ZonedDateTime.of(2018, 1, 2, 3, 4, 5, 6, ZoneId.of("UTC"))
+
     private val start = LocalDate.parse("2020-01-01")
 
     internal val defaultSøknad = Søknad(
@@ -22,6 +26,29 @@ internal object SøknadUtils {
                 landkode = "GB",
                 landnavn = "Great Britain",
                 erEØSLand = JaNei.Ja
+            )
+        ),
+        utbetalingsperioder = listOf(
+            UtbetalingsperiodeMedVedlegg(
+                fraOgMed = start,
+                tilOgMed = start.plusDays(10),
+                antallTimerPlanlagt = Duration.ofHours(5),
+                antallTimerBorte = Duration.ofHours(3),
+                lengde = Duration.ofHours(7)
+            ),
+            UtbetalingsperiodeMedVedlegg(
+                fraOgMed = start.plusDays(20),
+                tilOgMed = start.plusDays(20),
+                antallTimerPlanlagt = Duration.ofHours(5),
+                antallTimerBorte = Duration.ofHours(3),
+                lengde = Duration.ofHours(5)
+            ),
+            UtbetalingsperiodeMedVedlegg(
+                fraOgMed = start.plusDays(30),
+                tilOgMed = start.plusMonths(1).plusDays(4),
+                antallTimerPlanlagt = Duration.ofHours(5),
+                antallTimerBorte = Duration.ofHours(3),
+                lengde = null
             )
         ),
         opphold = listOf(
@@ -42,12 +69,6 @@ internal object SøknadUtils {
         bekreftelser = Bekreftelser(
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja
-        ),
-        utbetalingsperioder = listOf(
-            UtbetalingsperiodeMedVedlegg(
-                fraOgMed = start,
-                tilOgMed = start.plusDays(5)
-            )
         ),
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER, MIDLERTIDIG_KOMPENSASJON_SN_FRI),
         frilans = Frilans(
@@ -73,6 +94,11 @@ internal object SøknadUtils {
                     navn = "Kjell",
                     telefon = "84554"
                 ),
+                varigEndring = VarigEndring(
+                    dato = start,
+                    inntektEtterEndring = 1337,
+                    forklaring = "Fordi"
+                ),
                 fiskerErPåBladB = JaNei.Nei
             )
         ),
@@ -86,18 +112,26 @@ internal object SøknadUtils {
         hjemmePgaStengtBhgSkole = true
     )
 
-    internal val defaultKomplettSøknad = KomplettSoknad(
+    val søker = Søker(
+        aktørId = "123456",
+        fødselsnummer = "02119970078",
+        fødselsdato = LocalDate.parse("1999-11-02"),
+        etternavn = "Nordmann",
+        mellomnavn = null,
+        fornavn = "Ola",
+        myndig = true
+    )
+
+    fun k9FormatSøknad(søknadId: SøknadId) = defaultSøknad.copy(søknadId = søknadId).tilKOmsorgspengerUtbetalingSøknad(
+        mottatt = mottatt,
+        søker = søker
+    )
+
+    internal fun defaultKomplettSøknad(søknadId: SøknadId) = KomplettSoknad(
+        søknadId = søknadId,
         språk = Språk.BOKMÅL,
-        mottatt = ZonedDateTime.now(),
-        søker = Søker(
-            aktørId = "123456",
-            fødselsnummer = "02119970078",
-            fødselsdato = LocalDate.parse("1999-11-02"),
-            etternavn = "Nordmann",
-            mellomnavn = null,
-            fornavn = "Ola",
-            myndig = true
-        ),
+        mottatt = mottatt,
+        søker = søker,
         bosteder = listOf(
             Bosted(
                 fraOgMed = start.minusDays(20),
@@ -127,19 +161,22 @@ internal object SøknadUtils {
                 fraOgMed = start,
                 tilOgMed = start.plusDays(10),
                 antallTimerPlanlagt = Duration.ofHours(5),
-                antallTimerBorte = Duration.ofHours(3)
+                antallTimerBorte = Duration.ofHours(3),
+                lengde = Duration.ofHours(7)
             ),
             UtbetalingsperiodeUtenVedlegg(
                 fraOgMed = start.plusDays(20),
                 tilOgMed = start.plusDays(20),
                 antallTimerPlanlagt = Duration.ofHours(5),
-                antallTimerBorte = Duration.ofHours(3)
+                antallTimerBorte = Duration.ofHours(3),
+                lengde = Duration.ofHours(5)
             ),
             UtbetalingsperiodeUtenVedlegg(
                 fraOgMed = start.plusDays(30),
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 antallTimerPlanlagt = Duration.ofHours(5),
-                antallTimerBorte = Duration.ofHours(3)
+                antallTimerBorte = Duration.ofHours(3),
+                lengde = null
             )
         ),
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
@@ -186,7 +223,8 @@ internal object SøknadUtils {
             harBekreftetOpplysninger = JaNei.Ja
         ),
         hjemmePgaSmittevernhensyn = true,
-        hjemmePgaStengtBhgSkole = true
+        hjemmePgaStengtBhgSkole = true,
+        k9FormatSøknad = k9FormatSøknad(søknadId)
     )
 }
 
