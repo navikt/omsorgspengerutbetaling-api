@@ -55,8 +55,15 @@ internal class SøknadService(
         logger.trace("${vedlegg.size} vedlegg hentet. Validerer dem.")
         vedlegg.valider(vedleggReferanser = søknad.vedlegg ?: listOf())
 
-        logger.info("Legger søknad til prosessering")
         val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
+
+        logger.info("Mapper om søknad til k9format.")
+        val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(
+            mottatt = mottatt,
+            søker = søker
+        )
+
+        logger.info("Legger søknad til prosessering")
         val komplettSoknad = KomplettSoknad(
             søknadId = søknad.søknadId,
             språk = søknad.språk,
@@ -75,10 +82,7 @@ internal class SøknadService(
             hjemmePgaSmittevernhensyn = søknad.hjemmePgaSmittevernhensyn,
             hjemmePgaStengtBhgSkole = søknad.hjemmePgaStengtBhgSkole,
             bekreftelser = søknad.bekreftelser,
-            k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(
-                mottatt = mottatt,
-                søker = søker
-            )
+            k9FormatSøknad = k9FormatSøknad
         )
 
         omsorgpengesøknadMottakGateway.leggTilProsessering(
