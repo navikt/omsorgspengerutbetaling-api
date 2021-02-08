@@ -189,9 +189,10 @@ class ApplicationTest {
             expectedResponse = null,
             expectedCode = HttpStatusCode.Accepted,
             cookie = cookie,
+            requestEntity =
             //language=json
-            requestEntity = """
-                {
+            """
+            {
             "språk": "nb",
             "bosteder": [{
                 "fraOgMed": "2019-12-12",
@@ -286,7 +287,9 @@ class ApplicationTest {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",
-            expectedResponse = """
+            expectedResponse =
+            //language=json
+            """
                 {
                     "type": "/problem-details/unauthorized",
                     "title": "unauthorized",
@@ -310,7 +313,9 @@ class ApplicationTest {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",
-            expectedResponse = """
+            expectedResponse =
+            //language=json
+            """
             {
                 "type": "/problem-details/invalid-request-parameters",
                 "title": "invalid-request-parameters",
@@ -341,7 +346,9 @@ class ApplicationTest {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",
-            expectedResponse = """
+            expectedResponse =
+            //language=json
+            """
             {
               "type": "/problem-details/invalid-request-parameters",
               "title": "invalid-request-parameters",
@@ -380,7 +387,9 @@ class ApplicationTest {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",
-            expectedResponse = """
+            expectedResponse =
+            //language=json
+            """
             {
               "type": "/problem-details/invalid-request-parameters",
               "title": "invalid-request-parameters",
@@ -428,35 +437,47 @@ class ApplicationTest {
                 selvstendigVirksomheter = listOf(),
                 frilans = null
             ).somJson(),
-            expectedResponse = """
+            expectedResponse =
+            //language=json
+            """
             {
-                "type": "/problem-details/invalid-request-parameters",
-                "title": "invalid-request-parameters",
-                "status": 400,
-                "detail": "Requesten inneholder ugyldige paramtere.",
-                "instance": "about:blank",
-                "invalid_parameters": [{
-                    "type": "entity",
-                    "name": "utbetalingsperioder",
-                    "reason": "Må settes minst en utbetalingsperiode.",
-                    "invalid_value": []
-                }, {
-                    "type": "entity",
-                    "name": "bekreftlser.harBekreftetOpplysninger",
-                    "reason": "Må besvars Ja.",
-                    "invalid_value": false
-                }, {
-                    "type": "entity",
-                    "name": "bekreftelser.harForståttRettigheterOgPlikter",
-                    "reason": "Må besvars Ja.",
-                    "invalid_value": false
+              "type": "/problem-details/invalid-request-parameters",
+              "title": "invalid-request-parameters",
+              "status": 400,
+              "detail": "Requesten inneholder ugyldige paramtere.",
+              "instance": "about:blank",
+              "invalid_parameters": [
+                {
+                  "type": "entity",
+                  "name": "fraværsperioder",
+                  "reason": "Minst 1 fraværsperiode må oppgis",
+                  "invalid_value": "k9-format feilkode: påkrevd"
                 },
                 {
-                    "type": "entity",
-                    "name": "frilans/selvstendigVirksomheter",
-                    "reason": "Må settes 'frilans' eller minst en 'selvstendigVirksomheter'",
-                    "invalid_value": null
-                }]
+                  "type": "entity",
+                  "name": "bekreftlser.harBekreftetOpplysninger",
+                  "reason": "Må besvars Ja.",
+                  "invalid_value": false
+                },
+                {
+                  "type": "entity",
+                  "name": "bekreftelser.harForståttRettigheterOgPlikter",
+                  "reason": "Må besvars Ja.",
+                  "invalid_value": false
+                },
+                {
+                  "type": "entity",
+                  "name": "frilans/selvstendigVirksomheter",
+                  "reason": "Må settes 'frilans' eller minst en 'selvstendigVirksomheter'",
+                  "invalid_value": null
+                },
+                {
+                  "type": "entity",
+                  "name": "utbetalingsperioder",
+                  "reason": "Må settes minst en utbetalingsperiode.",
+                  "invalid_value": []
+                }
+              ]
             }
             """.trimIndent()
         )
@@ -503,7 +524,9 @@ class ApplicationTest {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",
-            expectedResponse = """
+            expectedResponse =
+            //language=json
+            """
                 {
                   "type": "/problem-details/invalid-request-parameters",
                   "title": "invalid-request-parameters",
@@ -557,7 +580,9 @@ class ApplicationTest {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",
-            expectedResponse = """
+            expectedResponse =
+            //language=json
+            """
                 {
                   "type": "/problem-details/invalid-request-parameters",
                   "title": "invalid-request-parameters",
@@ -577,10 +602,12 @@ class ApplicationTest {
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
             requestEntity = defaultSøknad.copy(
-               selvstendigVirksomheter = listOf(defaultSøknad.selvstendigVirksomheter[0].copy(
-                   registrertINorge = JaNei.Nei,
-                   registrertIUtlandet = Land("LOL", "Laughing out loud")
-               ))
+                selvstendigVirksomheter = listOf(
+                    defaultSøknad.selvstendigVirksomheter[0].copy(
+                        registrertINorge = JaNei.Nei,
+                        registrertIUtlandet = Land("LOL", "Laughing out loud")
+                    )
+                )
             ).somJson()
         )
     }
@@ -621,7 +648,9 @@ class ApplicationTest {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",
-            expectedResponse = """
+            expectedResponse =
+            //language=json
+            """
                 {
                   "type": "/problem-details/invalid-request-parameters",
                   "title": "invalid-request-parameters",
@@ -634,6 +663,18 @@ class ApplicationTest {
                       "name": "selvstendigVirksomheter[0].registrertILand",
                       "reason": "Hvis registrertINorge er false så må registrertILand være satt.",
                       "invalid_value": null
+                    },
+                    {
+                      "type": "entity",
+                      "name": "aktivitet.selvstendigNæringsdrivende[0].perioder[2021-02-07/2021-02-08].valideringRegistrertUtlandet",
+                      "reason": "[Feil{felt='.landkode', feilkode='påkrevd', feilmelding='landkode må være satt, og kan ikke være null, dersom virksomhet er registrert i utlandet.'}]",
+                      "invalid_value": "k9-format feilkode: påkrevd"
+                    },
+                    {
+                      "type": "entity",
+                      "name": "selvstendigNæringsdrivende.perioder{2021-02-07-2021-02-08}.landkode",
+                      "reason": "landkode må være satt, og kan ikke være null, dersom virksomhet er registrert i utlandet.",
+                      "invalid_value": "k9-format feilkode: påkrevd"
                     }
                   ]
                 }
@@ -670,7 +711,9 @@ class ApplicationTest {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",
-            expectedResponse = """
+            expectedResponse =
+            //language=json
+            """
                 {
                   "type": "/problem-details/invalid-request-parameters",
                   "title": "invalid-request-parameters",
@@ -719,7 +762,9 @@ class ApplicationTest {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",
-            expectedResponse = """
+            expectedResponse =
+            //language=json
+            """
                 {
                   "type": "/problem-details/invalid-request-parameters",
                   "title": "invalid-request-parameters",
@@ -729,9 +774,9 @@ class ApplicationTest {
                   "invalid_parameters": [
                     {
                       "type": "entity",
-                      "name": "selvstendigVirksomheter[0].organisasjonsnummer",
-                      "reason": "Hvis registrertINorge er true så må også organisasjonsnummer være satt",
-                      "invalid_value": " "
+                      "name": "aktivitet.selvstendigNæringsdrivende[0].okOrganisasjonsnummer",
+                      "reason": "organisasjonsnummer må være satt med mindre virksomhet er registrert i utlandet",
+                      "invalid_value": "k9-format feilkode: påkrevd"
                     }
                   ]
                 }
@@ -767,7 +812,9 @@ class ApplicationTest {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
             path = "/soknad",
-            expectedResponse = """
+            expectedResponse =
+            //language=json
+            """
                 {
                   "type": "/problem-details/invalid-request-parameters",
                   "title": "invalid-request-parameters",
@@ -777,9 +824,15 @@ class ApplicationTest {
                   "invalid_parameters": [
                     {
                       "type": "entity",
-                      "name": "fosterbarn[1].fødselsnummer",
-                      "reason": "Ikke gyldig fødselsnummer.",
-                      "invalid_value": "ugyldig fødselsnummer"
+                      "name": "fosterbarn[1].norskIdentitetsnummer.verdi",
+                      "reason": "'ugyldig fødselsnummer' matcher ikke tillatt pattern '^\\d+${'$'}'",
+                      "invalid_value": "k9-format feilkode: påkrevd"
+                    },
+                    {
+                      "type": "entity",
+                      "name": "fosterbarn[1].norskIdentitetsnummer.verdi",
+                      "reason": "size must be between 0 and 11",
+                      "invalid_value": "k9-format feilkode: påkrevd"
                     }
                   ]
                 }

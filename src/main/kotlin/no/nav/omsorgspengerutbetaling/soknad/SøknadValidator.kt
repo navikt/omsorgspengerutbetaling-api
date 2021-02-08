@@ -1,6 +1,9 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
 import no.nav.helse.dusseldorf.ktor.core.*
+import no.nav.k9.søknad.ValideringsFeil
+import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
+import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetalingValidator
 import java.time.format.DateTimeFormatter
 
 private const val MAX_FRITEKST_TEGN = 1000
@@ -8,7 +11,7 @@ internal val vekttallProviderFnr1: (Int) -> Int = { arrayOf(3, 7, 6, 1, 8, 9, 4,
 internal val vekttallProviderFnr2: (Int) -> Int = { arrayOf(5, 4, 3, 2, 7, 6, 5, 4, 3, 2).reversedArray()[it] }
 private val fnrDateFormat = DateTimeFormatter.ofPattern("ddMMyy")
 
-internal fun Søknad.valider() {
+internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
     val violations = mutableSetOf<Violation>().apply {
         addAll(utbetalingsperioder.valider())
         andreUtbetalinger?.let { addAll(it.valider()) } // TODO: Fjen optional når prodsatt.
@@ -18,26 +21,23 @@ internal fun Søknad.valider() {
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
         addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
-        fosterbarn?.let { addAll(validerFosterbarn(it)) }
-    }
+
+        try {
+            OmsorgspengerUtbetalingValidator().forsikreValidert(k9FormatSøknad.getYtelse<OmsorgspengerUtbetaling>())
+        } catch (feil: ValideringsFeil) {
+            addAll(feil.feil.map {
+                Violation(
+                    parameterName = it.felt,
+                    parameterType = ParameterType.ENTITY,
+                    reason = it.feilmelding,
+                    invalidValue = "k9-format feilkode: ${it.feilkode}"
+                )
+            })
+        }
+    }.sortedBy { it.reason }.toSet()
 
     if (violations.isNotEmpty()) {
         throw Throwblem(ValidationProblemDetails(violations))
-    }
-}
-
-private fun validerFosterbarn(fosterbarn: List<FosterBarn>) = mutableSetOf<Violation>().apply {
-    fosterbarn.mapIndexed { index, barn ->
-        if (!barn.fødselsnummer.erGyldigNorskIdentifikator()) {
-            add(
-                Violation(
-                    parameterName = "fosterbarn[$index].fødselsnummer",
-                    parameterType = ParameterType.ENTITY,
-                    reason = "Ikke gyldig fødselsnummer.",
-                    invalidValue = barn.fødselsnummer
-                )
-            )
-        }
     }
 }
 

@@ -27,6 +27,8 @@ dependencies {
     implementation ("io.ktor:ktor-locations:$ktorVersion")
 
     implementation ( "no.nav.k9:soknad:$k9FormatVersion")
+    implementation ( "org.glassfish:jakarta.el:3.0.3")
+
 
     // Client
     implementation ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")

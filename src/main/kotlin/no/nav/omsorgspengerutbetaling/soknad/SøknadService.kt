@@ -2,19 +2,14 @@ package no.nav.omsorgspengerutbetaling.soknad
 
 import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.general.auth.IdToken
-import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
 import no.nav.omsorgspengerutbetaling.soker.Søker
-import no.nav.omsorgspengerutbetaling.soker.SøkerService
-import no.nav.omsorgspengerutbetaling.soker.validate
 import no.nav.omsorgspengerutbetaling.vedlegg.VedleggService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 internal class SøknadService(
     private val omsorgpengesøknadMottakGateway: OmsorgpengesøknadMottakGateway,
-    private val søkerService: SøkerService,
     private val vedleggService: VedleggService
 ) {
 
@@ -25,15 +20,11 @@ internal class SøknadService(
     internal suspend fun registrer(
         søknad: Søknad,
         idToken: IdToken,
-        callId: CallId
+        callId: CallId,
+        mottatt: ZonedDateTime,
+        søker: Søker,
+        k9FormatSøknad: no.nav.k9.søknad.Søknad
     ) {
-        logger.trace("Registrerer søknad. Henter søker")
-
-        val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
-
-        logger.trace("Søker hentet. Validerer søker.")
-        søker.validate()
-        logger.trace("Søker Validert.")
 
         val utbetalingsperioder = søknad.utbetalingsperioder.map {
             UtbetalingsperiodeUtenVedlegg(
@@ -54,14 +45,6 @@ internal class SøknadService(
 
         logger.trace("${vedlegg.size} vedlegg hentet. Validerer dem.")
         vedlegg.valider(vedleggReferanser = søknad.vedlegg ?: listOf())
-
-        val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
-
-        logger.info("Mapper om søknad til k9format.")
-        val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(
-            mottatt = mottatt,
-            søker = søker
-        )
 
         logger.info("Legger søknad til prosessering")
         val komplettSoknad = KomplettSoknad(
