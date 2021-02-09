@@ -21,19 +21,15 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
         addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
+        addAll(OmsorgspengerUtbetalingValidator().valider(k9FormatSøknad.getYtelse<OmsorgspengerUtbetaling>()).map {
+            Violation(
+                parameterName = it.felt,
+                parameterType = ParameterType.ENTITY,
+                reason = it.feilmelding,
+                invalidValue = "k9-format feilkode: ${it.feilkode}"
+            )
+        })
 
-        try {
-            OmsorgspengerUtbetalingValidator().forsikreValidert(k9FormatSøknad.getYtelse<OmsorgspengerUtbetaling>())
-        } catch (feil: ValideringsFeil) {
-            addAll(feil.feil.map {
-                Violation(
-                    parameterName = it.felt,
-                    parameterType = ParameterType.ENTITY,
-                    reason = it.feilmelding,
-                    invalidValue = "k9-format feilkode: ${it.feilkode}"
-                )
-            })
-        }
     }.sortedBy { it.reason }.toSet()
 
     if (violations.isNotEmpty()) {
