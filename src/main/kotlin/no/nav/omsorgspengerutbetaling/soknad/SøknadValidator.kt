@@ -21,14 +21,7 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
         addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
-        addAll(OmsorgspengerUtbetalingValidator().valider(k9FormatSøknad.getYtelse<OmsorgspengerUtbetaling>()).map {
-            Violation(
-                parameterName = it.felt,
-                parameterType = ParameterType.ENTITY,
-                reason = it.feilmelding,
-                invalidValue = "k9-format feilkode: ${it.feilkode}"
-            )
-        })
+        addAll(k9FormatSøknad.valider())
 
     }.sortedBy { it.reason }.toSet()
 
@@ -36,6 +29,16 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         throw Throwblem(ValidationProblemDetails(violations))
     }
 }
+
+private fun no.nav.k9.søknad.Søknad.valider() =
+    OmsorgspengerUtbetalingValidator().valider(getYtelse<OmsorgspengerUtbetaling>()).map {
+        Violation(
+            parameterName = it.felt,
+            parameterType = ParameterType.ENTITY,
+            reason = it.feilmelding,
+            invalidValue = "k9-format feilkode: ${it.feilkode}"
+        )
+    }
 
 private fun Søknad.validerInntektsopplysninger() = mutableSetOf<Violation>().apply {
     if (frilans == null && selvstendigVirksomheter.isEmpty()) {
