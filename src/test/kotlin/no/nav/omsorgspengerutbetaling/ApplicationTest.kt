@@ -685,8 +685,8 @@ class ApplicationTest {
                 selvstendigVirksomheter = listOf(
                     Virksomhet(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
-                        fraOgMed = LocalDate.now().minusDays(1),
-                        tilOgMed = LocalDate.now(),
+                        fraOgMed = LocalDate.parse("2021-02-07"),
+                        tilOgMed = LocalDate.parse("2021-02-08"),
                         næringsinntekt = 1233123,
                         navnPåVirksomheten = "TullOgTøys",
                         registrertINorge = JaNei.Nei,
