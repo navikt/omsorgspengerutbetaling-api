@@ -85,18 +85,6 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
                 }*/
             }
         }
-        erVirksomhetINorge() -> {
-            if (!erRegistrertINorgeGyldigSatt()) {
-                violations.add(
-                    Violation(
-                        parameterName = "${felt}.organisasjonsnummer",
-                        parameterType = ParameterType.ENTITY,
-                        reason = "Hvis registrertINorge er true så må også organisasjonsnummer være satt",
-                        invalidValue = organisasjonsnummer
-                    )
-                )
-            }
-        }
     }
     return violations
 }

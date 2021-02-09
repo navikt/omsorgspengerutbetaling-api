@@ -1,9 +1,12 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
 import com.fasterxml.jackson.annotation.JsonValue
+import no.nav.k9.søknad.felles.type.SøknadId
 import java.net.URL
+import java.util.*
 
 data class Søknad(
+    val søknadId: SøknadId = SøknadId(UUID.randomUUID().toString()),
     val språk: Språk,
     val bosteder: List<Bosted>,
     val opphold: List<Opphold>,

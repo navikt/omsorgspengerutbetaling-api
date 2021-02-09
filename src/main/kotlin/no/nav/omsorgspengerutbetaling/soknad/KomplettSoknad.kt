@@ -1,10 +1,13 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
+import no.nav.k9.søknad.Søknad
+import no.nav.k9.søknad.felles.type.SøknadId
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import java.time.ZonedDateTime
 
 data class KomplettSoknad(
+    val søknadId: SøknadId,
     val språk: Språk,
     val mottatt: ZonedDateTime,
     val søker: Søker,
@@ -20,5 +23,6 @@ data class KomplettSoknad(
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
     val hjemmePgaSmittevernhensyn: Boolean,
-    val hjemmePgaStengtBhgSkole: Boolean? = null // TODO låses til Boolean etter lansering.
+    val hjemmePgaStengtBhgSkole: Boolean? = null, // TODO låses til Boolean etter lansering.
+    val k9FormatSøknad: Søknad
 )
