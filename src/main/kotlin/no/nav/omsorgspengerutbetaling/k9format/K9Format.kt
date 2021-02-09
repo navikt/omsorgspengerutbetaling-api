@@ -82,7 +82,7 @@ private fun List<Virksomhet>.tilK9SelvstendingNæringsdrivende(): List<Selvstend
     builder.build()
 }
 
-private fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo {
+fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo {
     val infoBuilder = SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
     infoBuilder
         .virksomhetstyper(næringstyper.tilK9Virksomhetstyper())
@@ -114,7 +114,7 @@ private fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæri
     return infoBuilder.build()
 }
 
-private fun Virksomhet.erEldreEnn3År() = fraOgMed.isBefore(LocalDate.now().minusYears(3))
+private fun Virksomhet.erEldreEnn3År() = fraOgMed.isBefore(LocalDate.now().minusYears(3)) || fraOgMed.isEqual(LocalDate.now().minusYears(3))
 
 private fun List<Næringstyper>.tilK9Virksomhetstyper(): List<VirksomhetType> = map {
     when (it) {

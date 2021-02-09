@@ -233,7 +233,7 @@ internal class SerDesTest {
                               "endringDato": "2020-01-01",
                               "endringBegrunnelse": "Fordi",
                               "bruttoInntekt": 123123,
-                              "erNyoppstartet": false,
+                              "erNyoppstartet": true,
                               "registrertIUtlandet": true,
                               "landkode": "DEU"
                             }
