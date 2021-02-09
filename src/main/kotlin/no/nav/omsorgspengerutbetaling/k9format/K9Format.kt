@@ -64,22 +64,18 @@ fun List<UtbetalingsperiodeMedVedlegg>.tilFraværsperiode(): List<FraværPeriode
     FraværPeriode(Periode(it.fraOgMed, it.tilOgMed), it.lengde)
 }
 
-fun OmsorgspengerutbetalingSoknadSøknad.arbeidAktivitet() = ArbeidAktivitet.builder()
-    .frilanser(frilans?.tilK9Frilanser())
-    .selvstendigNæringsdrivende(selvstendigVirksomheter.tilK9SelvstendingNæringsdrivende())
-    .build()
+fun OmsorgspengerutbetalingSoknadSøknad.arbeidAktivitet() = ArbeidAktivitet(
+    null,
+    selvstendigVirksomheter.tilK9SelvstendingNæringsdrivende(),
+    frilans?.tilK9Frilanser()
+)
 
 private fun List<Virksomhet>.tilK9SelvstendingNæringsdrivende(): List<SelvstendigNæringsdrivende> = map { virksomhet ->
-    val builder = SelvstendigNæringsdrivende.builder()
-        .virksomhetNavn(virksomhet.navnPåVirksomheten)
-        .periode(
-            Periode(virksomhet.fraOgMed, virksomhet.tilOgMed),
-            virksomhet.tilK9SelvstendingNæringsdrivendeInfo()
-        )
-
-    virksomhet.organisasjonsnummer?.let { builder.organisasjonsnummer(Organisasjonsnummer.of(it)) }
-
-    builder.build()
+    SelvstendigNæringsdrivende(
+        mapOf(Periode(virksomhet.fraOgMed, virksomhet.tilOgMed) to virksomhet.tilK9SelvstendingNæringsdrivendeInfo()),
+        Organisasjonsnummer.of(virksomhet.organisasjonsnummer),
+        virksomhet.navnPåVirksomheten
+    )
 }
 
 fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo {
@@ -114,7 +110,8 @@ fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrive
     return infoBuilder.build()
 }
 
-private fun Virksomhet.erEldreEnn3År() = fraOgMed.isBefore(LocalDate.now().minusYears(3)) || fraOgMed.isEqual(LocalDate.now().minusYears(3))
+private fun Virksomhet.erEldreEnn3År() =
+    fraOgMed.isBefore(LocalDate.now().minusYears(3)) || fraOgMed.isEqual(LocalDate.now().minusYears(3))
 
 private fun List<Næringstyper>.tilK9Virksomhetstyper(): List<VirksomhetType> = map {
     when (it) {
@@ -125,11 +122,7 @@ private fun List<Næringstyper>.tilK9Virksomhetstyper(): List<VirksomhetType> = 
     }
 }
 
-private fun Frilans.tilK9Frilanser(): Frilanser = Frilanser.builder()
-    .startdato(startdato)
-    .jobberFortsattSomFrilans(jobberFortsattSomFrilans.boolean)
-    .build()
-
+private fun Frilans.tilK9Frilanser(): Frilanser = Frilanser(startdato, jobberFortsattSomFrilans.boolean)
 
 private fun List<FosterBarn>.tilK9Barn(): List<Barn> {
     return map {
