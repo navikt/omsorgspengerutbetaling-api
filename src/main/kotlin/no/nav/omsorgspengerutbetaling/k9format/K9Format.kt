@@ -89,10 +89,7 @@ fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrive
 
     næringsinntekt?.let { infoBuilder.bruttoInntekt(BigDecimal.valueOf(it.toLong())) }
 
-    when (erEldreEnn3År()) {
-        true -> infoBuilder.erNyoppstartet(false)
-        false -> infoBuilder.erNyoppstartet(true)
-    }
+    infoBuilder.erNyoppstartet(erNyoppstartet)
 
     regnskapsfører?.let {
         infoBuilder
@@ -109,9 +106,6 @@ fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrive
 
     return infoBuilder.build()
 }
-
-private fun Virksomhet.erEldreEnn3År() =
-    fraOgMed.isBefore(LocalDate.now().minusYears(3)) || fraOgMed.isEqual(LocalDate.now().minusYears(3))
 
 private fun List<Næringstyper>.tilK9Virksomhetstyper(): List<VirksomhetType> = map {
     when (it) {

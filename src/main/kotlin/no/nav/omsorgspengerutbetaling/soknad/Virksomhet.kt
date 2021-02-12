@@ -56,6 +56,38 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
         violations.addAll(Periode(fraOgMed, tilOgMed).valider())
     }
 
+    val fireÅrSiden = LocalDate.now().minusYears(4)
+    when(erNyoppstartet) {
+        false -> {
+            when {
+                !fraOgMed.isAfter(fireÅrSiden) -> {
+                    violations.add(
+                        Violation(
+                            parameterName = "${felt}.erNyoppstartet",
+                            parameterType = ParameterType.ENTITY,
+                            reason = "Hvis erNyoppstartet er false så må fraOgMed være etter $fireÅrSiden",
+                            invalidValue = fraOgMed
+                        )
+                    )
+                }
+            }
+        }
+        true -> {
+            when {
+                fraOgMed.isBefore(fireÅrSiden) -> {
+                    violations.add(
+                        Violation(
+                            parameterName = "${felt}.erNyoppstartet",
+                            parameterType = ParameterType.ENTITY,
+                            reason = "Hvis erNyoppstartet er true så må fraOgMed være før $fireÅrSiden",
+                            invalidValue = fraOgMed
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     when {
         erVirksomhetIUtlandet() -> {
             when {
