@@ -96,7 +96,8 @@ internal class SerDesTest {
                     regnskapsfører = Regnskapsfører(
                         navn = "Regn",
                         telefon = "555-FILK"
-                    )
+                    ),
+                    erNyoppstartet = true
                 )
             ),
             vedlegg = listOf(
@@ -176,6 +177,7 @@ internal class SerDesTest {
                 "organisasjonsnummer": "101010",
                 "registrertINorge": false,
                 "registrertILand": "Tyskland",
+                "erNyoppstartet": true,
                 "registrertIUtlandet": {
                   "landkode": "DEU",
                   "landnavn": "Tyskland"
@@ -339,6 +341,7 @@ internal class SerDesTest {
                 "organisasjonsnummer": "111",
                 "registrertINorge": false,
                 "registrertILand": "Tyskland",
+                "erNyoppstartet": true,
                 "registrertIUtlandet": {
                   "landkode": "DEU",
                   "landnavn": "Tyskland"

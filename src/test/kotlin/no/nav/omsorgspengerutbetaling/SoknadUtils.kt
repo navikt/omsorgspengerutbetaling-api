@@ -99,7 +99,8 @@ internal object SøknadUtils {
                     inntektEtterEndring = 1337,
                     forklaring = "Fordi"
                 ),
-                fiskerErPåBladB = JaNei.Nei
+                fiskerErPåBladB = JaNei.Nei,
+                erNyoppstartet = true
             )
         ),
         erArbeidstakerOgså = true,
@@ -208,7 +209,8 @@ internal object SøknadUtils {
                     inntektEtterEndring = 1337,
                     forklaring = "Fordi"
                 ),
-                fiskerErPåBladB = JaNei.Nei
+                fiskerErPåBladB = JaNei.Nei,
+                erNyoppstartet = true
             )
         ),
         erArbeidstakerOgså = true,

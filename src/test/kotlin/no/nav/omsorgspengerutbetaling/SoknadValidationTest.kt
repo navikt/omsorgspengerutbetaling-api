@@ -24,6 +24,7 @@ internal class SøknadValideringsTest {
             navnPåVirksomheten = "TullOgTøys",
             registrertINorge = JaNei.Ja,
             organisasjonsnummer = "101010",
+            erNyoppstartet = true
         ).tilK9SelvstendingNæringsdrivendeInfo()
 
         assertTrue { k9SelvstendingNæringsdrivendeInfo.erNyoppstartet }
@@ -44,6 +45,7 @@ internal class SøknadValideringsTest {
             navnPåVirksomheten = "TullOgTøys",
             registrertINorge = JaNei.Ja,
             organisasjonsnummer = "101010",
+            erNyoppstartet = true
         ).tilK9SelvstendingNæringsdrivendeInfo()
 
         assertFalse { k9SelvstendingNæringsdrivendeInfo.erNyoppstartet }
@@ -64,6 +66,7 @@ internal class SøknadValideringsTest {
             navnPåVirksomheten = "TullOgTøys",
             registrertINorge = JaNei.Ja,
             organisasjonsnummer = "101010",
+            erNyoppstartet = true
         ).tilK9SelvstendingNæringsdrivendeInfo()
 
         assertFalse { k9SelvstendingNæringsdrivendeInfo.erNyoppstartet }

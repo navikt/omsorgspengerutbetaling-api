@@ -696,7 +696,8 @@ class ApplicationTest {
                             navn = "Kjell",
                             telefon = "84554"
                         ),
-                        fiskerErPåBladB = JaNei.Nei
+                        fiskerErPåBladB = JaNei.Nei,
+                        erNyoppstartet = true
                     )
                 )
             ).somJson()
@@ -748,7 +749,8 @@ class ApplicationTest {
                             navn = "Kjell",
                             telefon = "84554"
                         ),
-                        fiskerErPåBladB = JaNei.Nei
+                        fiskerErPåBladB = JaNei.Nei,
+                        erNyoppstartet = true
                     )
                 )
             ).somJson()
@@ -798,7 +800,8 @@ class ApplicationTest {
                             navn = "Kjell",
                             telefon = "84554"
                         ),
-                        fiskerErPåBladB = JaNei.Nei
+                        fiskerErPåBladB = JaNei.Nei,
+                        erNyoppstartet = true
                     )
                 )
             ).somJson()

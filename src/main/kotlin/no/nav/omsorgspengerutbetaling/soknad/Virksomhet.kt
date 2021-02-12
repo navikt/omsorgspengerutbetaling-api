@@ -20,7 +20,8 @@ data class Virksomhet(
     val registrertIUtlandet: Land? = null,
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeArene? = null,
     val varigEndring: VarigEndring? = null,
-    val regnskapsfører: Regnskapsfører? = null
+    val regnskapsfører: Regnskapsfører? = null,
+    val erNyoppstartet: Boolean
 )
 
 data class YrkesaktivSisteTreFerdigliknedeArene(
