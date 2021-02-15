@@ -57,35 +57,25 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
     }
 
     val fireÅrSiden = LocalDate.now().minusYears(4)
-    when(erNyoppstartet) {
-        false -> {
-            when {
-                !fraOgMed.isAfter(fireÅrSiden) -> {
-                    violations.add(
-                        Violation(
-                            parameterName = "${felt}.erNyoppstartet",
-                            parameterType = ParameterType.ENTITY,
-                            reason = "Hvis erNyoppstartet er false så må fraOgMed være etter $fireÅrSiden",
-                            invalidValue = fraOgMed
-                        )
-                    )
-                }
-            }
-        }
-        true -> {
-            when {
-                fraOgMed.isBefore(fireÅrSiden) -> {
-                    violations.add(
-                        Violation(
-                            parameterName = "${felt}.erNyoppstartet",
-                            parameterType = ParameterType.ENTITY,
-                            reason = "Hvis erNyoppstartet er true så må fraOgMed være før $fireÅrSiden",
-                            invalidValue = fraOgMed
-                        )
-                    )
-                }
-            }
-        }
+    if (erNyoppstartet && !fraOgMed.isAfter(fireÅrSiden)) {
+        violations.add(
+            Violation(
+                parameterName = "${felt}.erNyoppstartet",
+                parameterType = ParameterType.ENTITY,
+                reason = "Hvis erNyoppstartet er true så må fraOgMed være etter $fireÅrSiden",
+                invalidValue = fraOgMed
+            )
+        )
+    }
+    if (!erNyoppstartet && fraOgMed.isAfter(fireÅrSiden)) {
+        violations.add(
+            Violation(
+                parameterName = "${felt}.erNyoppstartet",
+                parameterType = ParameterType.ENTITY,
+                reason = "Hvis erNyoppstartet er false så må fraOgMed være før $fireÅrSiden",
+                invalidValue = fraOgMed
+            )
+        )
     }
 
     when {
@@ -103,7 +93,7 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
                     )
                 }
                 erRegistrertIUtlLandetGyldigSatt() -> {
-                        violations.addAll(registrertIUtlandet!!.valider("${felt}.registrertIUtlandet"))
+                    violations.addAll(registrertIUtlandet!!.valider("${felt}.registrertIUtlandet"))
                 }
                 //TODO: Aktiver dette når har frontend har vært prodsatt i mer enn 24t.
                 /*!erRegistrertIUtlLandetGyldigSatt() -> {
