@@ -237,7 +237,6 @@ class ApplicationTest {
             },
             "selvstendigVirksomheter": [{
                 "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
-               
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
                 "næringsinntekt": 100000,
@@ -245,6 +244,7 @@ class ApplicationTest {
                 "organisasjonsnummer": "111",
                 "registrertINorge": false,
                 "registrertILand": "Tyskland",
+                "erNyoppstartet": true,
                 "registrertIUtlandet": {
                   "landkode": "DEU",
                   "landnavn": "Tyskland"
