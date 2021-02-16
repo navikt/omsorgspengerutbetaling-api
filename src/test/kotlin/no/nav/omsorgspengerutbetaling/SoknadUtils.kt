@@ -83,7 +83,6 @@ internal object SøknadUtils {
                 næringsinntekt = 123123,
                 navnPåVirksomheten = "TullOgTøys",
                 registrertINorge = JaNei.Nei,
-                registrertILand = "Tyskland",
                 registrertIUtlandet = Land(
                     landkode = "DEU",
                     landnavn = "Tyskland"
@@ -99,7 +98,8 @@ internal object SøknadUtils {
                     inntektEtterEndring = 1337,
                     forklaring = "Fordi"
                 ),
-                fiskerErPåBladB = JaNei.Nei
+                fiskerErPåBladB = JaNei.Nei,
+                erNyoppstartet = true
             )
         ),
         erArbeidstakerOgså = true,
@@ -192,7 +192,6 @@ internal object SøknadUtils {
                 næringsinntekt = 123123,
                 navnPåVirksomheten = "TullOgTøys",
                 registrertINorge = JaNei.Nei,
-                registrertILand = "Tyskland",
                 registrertIUtlandet = Land(
                     landkode = "DEU",
                     landnavn = "Tyskland"
@@ -208,7 +207,8 @@ internal object SøknadUtils {
                     inntektEtterEndring = 1337,
                     forklaring = "Fordi"
                 ),
-                fiskerErPåBladB = JaNei.Nei
+                fiskerErPåBladB = JaNei.Nei,
+                erNyoppstartet = true
             )
         ),
         erArbeidstakerOgså = true,

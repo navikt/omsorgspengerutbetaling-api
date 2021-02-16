@@ -16,11 +16,11 @@ data class Virksomhet(
     val navnPåVirksomheten: String,
     val organisasjonsnummer: String? = null,
     val registrertINorge: JaNei,
-    val registrertILand: String? = null, //TODO: Kan fjernes etter at registrertIUtlandet er prodsatt og det har gått mer enn 24t.
     val registrertIUtlandet: Land? = null,
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeArene? = null,
     val varigEndring: VarigEndring? = null,
-    val regnskapsfører: Regnskapsfører? = null
+    val regnskapsfører: Regnskapsfører? = null,
+    val erNyoppstartet: Boolean
 )
 
 data class YrkesaktivSisteTreFerdigliknedeArene(
@@ -55,36 +55,26 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
         violations.addAll(Periode(fraOgMed, tilOgMed).valider())
     }
 
-    when {
-        erVirksomhetIUtlandet() -> {
-            when {
-                //TODO: Fjern case etter at frontend har vært prodatt i mer enn 24 timer.
-                !erRegistrertILandGyldigSatt() -> {
-                    violations.add(
-                        Violation(
-                            parameterName = "${felt}.registrertILand",
-                            parameterType = ParameterType.ENTITY,
-                            reason = "Hvis registrertINorge er false så må registrertILand være satt.",
-                            invalidValue = registrertILand
-                        )
-                    )
-                }
-                erRegistrertIUtlLandetGyldigSatt() -> {
-                        violations.addAll(registrertIUtlandet!!.valider("${felt}.registrertIUtlandet"))
-                }
-                //TODO: Aktiver dette når har frontend har vært prodsatt i mer enn 24t.
-                /*!erRegistrertIUtlLandetGyldigSatt() -> {
-                    violations.add(
-                        Violation(
-                            parameterName = "${felt}.registrertIUtlandet",
-                            parameterType = ParameterType.ENTITY,
-                            reason = "Hvis registrertINorge er false så må registrertIUtlandet være satt.",
-                            invalidValue = registrertIUtlandet
-                        )
-                    )
-                }*/
-            }
-        }
+    val fireÅrSiden = LocalDate.now().minusYears(4)
+    if (erNyoppstartet && !fraOgMed.isAfter(fireÅrSiden)) {
+        violations.add(
+            Violation(
+                parameterName = "${felt}.erNyoppstartet",
+                parameterType = ParameterType.ENTITY,
+                reason = "Hvis erNyoppstartet er true så må fraOgMed være etter $fireÅrSiden",
+                invalidValue = fraOgMed
+            )
+        )
+    }
+    if (!erNyoppstartet && fraOgMed.isAfter(fireÅrSiden)) {
+        violations.add(
+            Violation(
+                parameterName = "${felt}.erNyoppstartet",
+                parameterType = ParameterType.ENTITY,
+                reason = "Hvis erNyoppstartet er false så må fraOgMed være før $fireÅrSiden",
+                invalidValue = fraOgMed
+            )
+        )
     }
     return violations
 }
@@ -93,7 +83,6 @@ private fun Virksomhet.erRegistrertINorgeGyldigSatt(): Boolean {
     return !organisasjonsnummer.isNullOrBlank()
 }
 
-private fun Virksomhet.erRegistrertILandGyldigSatt(): Boolean = !registrertILand.isNullOrBlank()
 private fun Virksomhet.erRegistrertIUtlLandetGyldigSatt(): Boolean = registrertIUtlandet !== null
 private fun Virksomhet.erVirksomhetIUtlandet(): Boolean = !registrertINorge.boolean
 private fun Virksomhet.erVirksomhetINorge() = registrertINorge == JaNei.Ja && registrertIUtlandet == null

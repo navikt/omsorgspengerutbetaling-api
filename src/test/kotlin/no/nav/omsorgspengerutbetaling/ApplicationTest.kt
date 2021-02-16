@@ -237,7 +237,6 @@ class ApplicationTest {
             },
             "selvstendigVirksomheter": [{
                 "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
-               
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
                 "næringsinntekt": 100000,
@@ -245,6 +244,7 @@ class ApplicationTest {
                 "organisasjonsnummer": "111",
                 "registrertINorge": false,
                 "registrertILand": "Tyskland",
+                "erNyoppstartet": true,
                 "registrertIUtlandet": {
                   "landkode": "DEU",
                   "landnavn": "Tyskland"
@@ -573,45 +573,6 @@ class ApplicationTest {
         )
     }
 
-    @Test
-    fun `Sende søknad med ugyldig registrertIUtlandet`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = "/soknad",
-            expectedResponse =
-            //language=json
-            """
-                {
-                  "type": "/problem-details/invalid-request-parameters",
-                  "title": "invalid-request-parameters",
-                  "status": 400,
-                  "detail": "Requesten inneholder ugyldige paramtere.",
-                  "instance": "about:blank",
-                  "invalid_parameters": [
-                    {
-                      "type": "entity",
-                      "name": "selvstendigVirksomheter[0].registrertIUtlandet.landkode",
-                      "reason": "Landkode er ikke en gyldig ISO 3166-1 alpha-3 kode.",
-                      "invalid_value": "LOL"
-                    }
-                  ]
-                }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = defaultSøknad.copy(
-                selvstendigVirksomheter = listOf(
-                    defaultSøknad.selvstendigVirksomheter[0].copy(
-                        registrertINorge = JaNei.Nei,
-                        registrertIUtlandet = Land("LOL", "Laughing out loud")
-                    )
-                )
-            ).somJson()
-        )
-    }
-
     private fun requestAndAssert(
         httpMethod: HttpMethod,
         path: String,
@@ -642,7 +603,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `Sende søknad med selvstendig næringsvirksomhet som ikke er gyldig, mangler registrertILand`() {
+    fun `Sende søknad med selvstendig næringsvirksomhet som ikke er gyldig, mangler registrertIUtlandet`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
         requestAndAssert(
@@ -658,12 +619,6 @@ class ApplicationTest {
                   "detail": "Requesten inneholder ugyldige paramtere.",
                   "instance": "about:blank",
                   "invalid_parameters": [
-                    {
-                      "type": "entity",
-                      "name": "selvstendigVirksomheter[0].registrertILand",
-                      "reason": "Hvis registrertINorge er false så må registrertILand være satt.",
-                      "invalid_value": null
-                    },
                     {
                       "type": "entity",
                       "name": "aktivitet.selvstendigNæringsdrivende[0].perioder[2021-02-07/2021-02-08].valideringRegistrertUtlandet",
@@ -690,13 +645,15 @@ class ApplicationTest {
                         næringsinntekt = 1233123,
                         navnPåVirksomheten = "TullOgTøys",
                         registrertINorge = JaNei.Nei,
+                        registrertIUtlandet = null,
                         organisasjonsnummer = "101010",
                         yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
                         regnskapsfører = Regnskapsfører(
                             navn = "Kjell",
                             telefon = "84554"
                         ),
-                        fiskerErPåBladB = JaNei.Nei
+                        fiskerErPåBladB = JaNei.Nei,
+                        erNyoppstartet = true
                     )
                 )
             ).somJson()
@@ -704,8 +661,7 @@ class ApplicationTest {
     }
 
     @Test
-    @Ignore //TODO: Aktiver test når endringene har vært i prod i mer enn 24t
-    fun `Sende søknad med selvstendig næringsvirksomhet som ikke er gyldig, mangler registrertIUtLandet`() {
+    fun `Sende søknad med selvstendig næringsvirksomhet med ugyldig registrertIUtlandet`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
         requestAndAssert(
@@ -723,9 +679,15 @@ class ApplicationTest {
                   "invalid_parameters": [
                     {
                       "type": "entity",
-                      "name": "selvstendigVirksomheter[0].registrertIUtlandet",
-                      "reason": "Hvis registrertINorge er false så må registrertIUtlandet være satt.",
-                      "invalid_value": null
+                      "name": "aktivitet.selvstendigNæringsdrivende[0].perioder[2021-02-07/2021-02-08].landkode.landkode",
+                      "reason": "'ukjent' matcher ikke tillatt pattern '^[A-Z]+${'$'}'",
+                      "invalid_value": "k9-format feilkode: påkrevd"
+                    },
+                    {
+                      "type": "entity",
+                      "name": "aktivitet.selvstendigNæringsdrivende[0].perioder[2021-02-07/2021-02-08].landkode.landkode",
+                      "reason": "size must be between 0 and 3",
+                      "invalid_value": "k9-format feilkode: påkrevd"
                     }
                   ]
                 }
@@ -736,19 +698,23 @@ class ApplicationTest {
                 selvstendigVirksomheter = listOf(
                     Virksomhet(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
-                        fraOgMed = LocalDate.now().minusDays(1),
-                        tilOgMed = LocalDate.now(),
+                        fraOgMed = LocalDate.parse("2021-02-07"),
+                        tilOgMed = LocalDate.parse("2021-02-08"),
                         næringsinntekt = 1233123,
                         navnPåVirksomheten = "TullOgTøys",
                         registrertINorge = JaNei.Nei,
-                        registrertILand = "Tyskland",
+                        registrertIUtlandet = Land(
+                            landkode = "ukjent",
+                            landnavn = "ukjent"
+                        ),
                         organisasjonsnummer = "101010",
                         yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
                         regnskapsfører = Regnskapsfører(
                             navn = "Kjell",
                             telefon = "84554"
                         ),
-                        fiskerErPåBladB = JaNei.Nei
+                        fiskerErPåBladB = JaNei.Nei,
+                        erNyoppstartet = true
                     )
                 )
             ).somJson()
@@ -798,7 +764,8 @@ class ApplicationTest {
                             navn = "Kjell",
                             telefon = "84554"
                         ),
-                        fiskerErPåBladB = JaNei.Nei
+                        fiskerErPåBladB = JaNei.Nei,
+                        erNyoppstartet = true
                     )
                 )
             ).somJson()
