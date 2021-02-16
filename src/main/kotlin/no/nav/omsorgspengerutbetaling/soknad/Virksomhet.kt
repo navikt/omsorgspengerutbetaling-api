@@ -16,7 +16,6 @@ data class Virksomhet(
     val navnPåVirksomheten: String,
     val organisasjonsnummer: String? = null,
     val registrertINorge: JaNei,
-    val registrertILand: String? = null, //TODO: Kan fjernes etter at registrertIUtlandet er prodsatt og det har gått mer enn 24t.
     val registrertIUtlandet: Land? = null,
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeArene? = null,
     val varigEndring: VarigEndring? = null,
@@ -77,38 +76,6 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
             )
         )
     }
-
-    when {
-        erVirksomhetIUtlandet() -> {
-            when {
-                //TODO: Fjern case etter at frontend har vært prodatt i mer enn 24 timer.
-                !erRegistrertILandGyldigSatt() -> {
-                    violations.add(
-                        Violation(
-                            parameterName = "${felt}.registrertILand",
-                            parameterType = ParameterType.ENTITY,
-                            reason = "Hvis registrertINorge er false så må registrertILand være satt.",
-                            invalidValue = registrertILand
-                        )
-                    )
-                }
-                erRegistrertIUtlLandetGyldigSatt() -> {
-                    violations.addAll(registrertIUtlandet!!.valider("${felt}.registrertIUtlandet"))
-                }
-                //TODO: Aktiver dette når har frontend har vært prodsatt i mer enn 24t.
-                /*!erRegistrertIUtlLandetGyldigSatt() -> {
-                    violations.add(
-                        Violation(
-                            parameterName = "${felt}.registrertIUtlandet",
-                            parameterType = ParameterType.ENTITY,
-                            reason = "Hvis registrertINorge er false så må registrertIUtlandet være satt.",
-                            invalidValue = registrertIUtlandet
-                        )
-                    )
-                }*/
-            }
-        }
-    }
     return violations
 }
 
@@ -116,7 +83,6 @@ private fun Virksomhet.erRegistrertINorgeGyldigSatt(): Boolean {
     return !organisasjonsnummer.isNullOrBlank()
 }
 
-private fun Virksomhet.erRegistrertILandGyldigSatt(): Boolean = !registrertILand.isNullOrBlank()
 private fun Virksomhet.erRegistrertIUtlLandetGyldigSatt(): Boolean = registrertIUtlandet !== null
 private fun Virksomhet.erVirksomhetIUtlandet(): Boolean = !registrertINorge.boolean
 private fun Virksomhet.erVirksomhetINorge() = registrertINorge == JaNei.Ja && registrertIUtlandet == null

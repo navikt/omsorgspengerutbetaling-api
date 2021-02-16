@@ -80,7 +80,6 @@ internal class SerDesTest {
                     navnPåVirksomheten = "Test",
                     organisasjonsnummer = "111",
                     registrertINorge = JaNei.Nei,
-                    registrertILand = "Tyskland",
                     registrertIUtlandet = Land(
                         landkode = "DEU",
                         landnavn = "Tyskland"
@@ -176,7 +175,6 @@ internal class SerDesTest {
                 "navnPåVirksomheten": "TullOgTøys",
                 "organisasjonsnummer": "101010",
                 "registrertINorge": false,
-                "registrertILand": "Tyskland",
                 "erNyoppstartet": true,
                 "registrertIUtlandet": {
                   "landkode": "DEU",
@@ -340,7 +338,6 @@ internal class SerDesTest {
                 "navnPåVirksomheten": "Test",
                 "organisasjonsnummer": "111",
                 "registrertINorge": false,
-                "registrertILand": "Tyskland",
                 "erNyoppstartet": true,
                 "registrertIUtlandet": {
                   "landkode": "DEU",

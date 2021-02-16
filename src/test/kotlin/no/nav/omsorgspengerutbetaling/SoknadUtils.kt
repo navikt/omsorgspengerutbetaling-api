@@ -83,7 +83,6 @@ internal object SøknadUtils {
                 næringsinntekt = 123123,
                 navnPåVirksomheten = "TullOgTøys",
                 registrertINorge = JaNei.Nei,
-                registrertILand = "Tyskland",
                 registrertIUtlandet = Land(
                     landkode = "DEU",
                     landnavn = "Tyskland"
@@ -193,7 +192,6 @@ internal object SøknadUtils {
                 næringsinntekt = 123123,
                 navnPåVirksomheten = "TullOgTøys",
                 registrertINorge = JaNei.Nei,
-                registrertILand = "Tyskland",
                 registrertIUtlandet = Land(
                     landkode = "DEU",
                     landnavn = "Tyskland"
