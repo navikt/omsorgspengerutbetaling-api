@@ -8,6 +8,7 @@ import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
+import no.nav.omsorgspengerutbetaling.barn.BarnService
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.getCallId
 import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
@@ -25,6 +26,7 @@ private val logger: Logger = LoggerFactory.getLogger("nav.soknadApis")
 internal fun Route.søknadApis(
     søknadService: SøknadService,
     søkerService: SøkerService,
+    barnService: BarnService,
     idTokenProvider: IdTokenProvider
 ) {
 
