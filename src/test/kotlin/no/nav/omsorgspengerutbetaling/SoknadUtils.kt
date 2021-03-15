@@ -114,7 +114,7 @@ internal object SøknadUtils {
                 aleneOmOmsorgen = true
             )
         ),
-        andreBarn = listOf(
+        fosterbarn = listOf(
             FosterBarn(
                 fødselsnummer = "02119970078"
             )
@@ -232,7 +232,7 @@ internal object SøknadUtils {
                 aleneOmOmsorgen = true
             )
         ),
-        andreBarn = listOf(
+        fosterbarn = listOf(
             FosterBarn(
                 fødselsnummer = "02119970078"
             )

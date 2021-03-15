@@ -28,7 +28,7 @@ fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
         mottatt,
         søker.tilK9Søker(),
         OmsorgspengerUtbetaling(
-            andreBarn?.tilK9Barn(),
+            fosterbarn?.tilK9Barn(),
             arbeidAktivitet(),
             this.utbetalingsperioder.tilFraværsperiode(),
             this.bosteder.tilK9Bosteder(),

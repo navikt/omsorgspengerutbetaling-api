@@ -17,7 +17,7 @@ data class Søknad(
     val utbetalingsperioder: List<UtbetalingsperiodeMedVedlegg>,
     val andreUtbetalinger: List<String>?, //TODO: Fjern ? når dette er prodsatt.
     val erArbeidstakerOgså: Boolean,
-    @JsonAlias("fosterbarn", "andreBarn") val andreBarn: List<FosterBarn>? = listOf(),
+    val fosterbarn: List<FosterBarn>? = listOf(),
     val barn: List<Barn>? = listOf(),
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),

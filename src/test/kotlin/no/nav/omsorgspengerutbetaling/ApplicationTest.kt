@@ -878,7 +878,7 @@ class ApplicationTest {
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
             requestEntity = defaultSøknad.copy(
-                andreBarn = listOf(
+                fosterbarn = listOf(
                     FosterBarn(
                         fødselsnummer = "02119970078"
                     ),

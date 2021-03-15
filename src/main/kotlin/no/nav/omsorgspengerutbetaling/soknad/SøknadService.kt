@@ -61,7 +61,7 @@ internal class SøknadService(
             vedlegg = vedlegg,
             frilans = søknad.frilans,
             barn = søknad.barn,
-            andreBarn = søknad.andreBarn,
+            fosterbarn = søknad.fosterbarn,
             selvstendigVirksomheter = søknad.selvstendigVirksomheter,
             erArbeidstakerOgså = søknad.erArbeidstakerOgså,
             hjemmePgaSmittevernhensyn = søknad.hjemmePgaSmittevernhensyn,

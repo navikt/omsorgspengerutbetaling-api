@@ -208,7 +208,7 @@ internal class SerDesTest {
                 "aktørId": "123456"
               }
             ],
-            "andreBarn": [{
+            "fosterbarn": [{
                 "fødselsnummer": "02119970078"
             }],
             "vedlegg": [],
@@ -381,7 +381,7 @@ internal class SerDesTest {
                 "aktørId": "123456"
               }
             ],
-            "andreBarn": [{
+            "fosterbarn": [{
                 "fødselsnummer": "02119970078"
             }],
             "vedlegg": [
