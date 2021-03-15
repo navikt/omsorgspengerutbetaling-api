@@ -118,9 +118,7 @@ internal object SøknadUtils {
             FosterBarn(
                 fødselsnummer = "02119970078"
             )
-        ),
-        hjemmePgaSmittevernhensyn = true,
-        hjemmePgaStengtBhgSkole = true
+        )
     )
 
     val søker = Søker(
@@ -244,8 +242,6 @@ internal object SøknadUtils {
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja
         ),
-        hjemmePgaSmittevernhensyn = true,
-        hjemmePgaStengtBhgSkole = true,
         k9FormatSøknad = k9FormatSøknad(søknadId)
     )
 }

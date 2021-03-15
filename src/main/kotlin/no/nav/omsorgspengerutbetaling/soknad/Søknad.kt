@@ -22,8 +22,8 @@ data class Søknad(
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
     val vedlegg: List<URL>? = listOf(),
-    val hjemmePgaSmittevernhensyn: Boolean,
-    val hjemmePgaStengtBhgSkole: Boolean? = null // TODO låses til Boolean etter lansering.
+    val hjemmePgaSmittevernhensyn: Boolean? = null, // TODO: 15/03/2021 utgår
+    val hjemmePgaStengtBhgSkole: Boolean? = null // TODO: 15/03/2021 utgår
 ) {
     fun oppdaterBarnMedFnr(listeOverBarnOppslag: List<BarnOppslag>) {
         barn?.forEach { barn ->
