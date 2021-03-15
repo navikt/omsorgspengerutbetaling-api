@@ -21,7 +21,6 @@ import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.json.JSONObject
 import org.junit.AfterClass
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -245,7 +244,6 @@ class ApplicationTest {
             path = "/soknad",
             expectedResponse = null,
             expectedCode = HttpStatusCode.Accepted,
-            cookie = cookie,
             requestEntity =
             //language=json
             """
@@ -300,12 +298,11 @@ class ApplicationTest {
                 "navnPåVirksomheten": "Test",
                 "organisasjonsnummer": "111",
                 "registrertINorge": false,
-                "registrertILand": "Tyskland",
-                "erNyoppstartet": true,
                 "registrertIUtlandet": {
                   "landkode": "DEU",
                   "landnavn": "Tyskland"
                 },
+                "erNyoppstartet": true,
                 "yrkesaktivSisteTreFerdigliknedeÅrene": {
                     "oppstartsdato": "2018-01-01"
                 },
@@ -321,7 +318,8 @@ class ApplicationTest {
                 }
             }]
         }
-            """.trimIndent()
+            """.trimIndent(),
+            cookie = cookie
         )
     }
 
@@ -867,7 +865,7 @@ class ApplicationTest {
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
             requestEntity = defaultSøknad.copy(
-                fosterbarn = listOf(
+                andreBarn = listOf(
                     FosterBarn(
                         fødselsnummer = "02119970078"
                     ),

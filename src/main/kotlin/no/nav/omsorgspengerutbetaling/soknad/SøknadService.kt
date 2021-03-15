@@ -32,7 +32,8 @@ internal class SøknadService(
                 tilOgMed = it.tilOgMed,
                 lengde = it.lengde, //TODO: Fjerne etter prodsetting
                 antallTimerBorte = it.antallTimerBorte,
-                antallTimerPlanlagt = it.antallTimerPlanlagt
+                antallTimerPlanlagt = it.antallTimerPlanlagt,
+                årsak = it.årsak
             )
         }
 
@@ -59,7 +60,8 @@ internal class SøknadService(
             andreUtbetalinger = søknad.andreUtbetalinger,
             vedlegg = vedlegg,
             frilans = søknad.frilans,
-            fosterbarn = søknad.fosterbarn,
+            barn = søknad.barn,
+            andreBarn = søknad.andreBarn,
             selvstendigVirksomheter = søknad.selvstendigVirksomheter,
             erArbeidstakerOgså = søknad.erArbeidstakerOgså,
             hjemmePgaSmittevernhensyn = søknad.hjemmePgaSmittevernhensyn,

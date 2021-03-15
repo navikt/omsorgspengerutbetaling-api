@@ -19,7 +19,8 @@ data class KomplettSoknad(
     val andreUtbetalinger: List<String>?, //TODO: Fjern ? når dette er prodsatt.
     val erArbeidstakerOgså: Boolean,
     val vedlegg: List<Vedlegg> = listOf(),
-    val fosterbarn: List<FosterBarn>? = listOf(),
+    val andreBarn: List<FosterBarn>? = listOf(),
+    val barn: List<Barn>? = null,
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
     val hjemmePgaSmittevernhensyn: Boolean,

@@ -44,7 +44,8 @@ internal class SerDesTest {
                 UtbetalingsperiodeMedVedlegg(
                     fraOgMed = start,
                     tilOgMed = start.plusDays(10),
-                    legeerklæringer = listOf(URI("http://localhost:8080/vedlegg/1"))
+                    legeerklæringer = listOf(URI("http://localhost:8080/vedlegg/1")),
+                    årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE
                 ),
                 UtbetalingsperiodeMedVedlegg(
                     fraOgMed = start.plusDays(20),
@@ -54,11 +55,13 @@ internal class SerDesTest {
                     legeerklæringer = listOf(
                         URI("http://localhost:8080/vedlegg/2"),
                         URI("http://localhost:8080/vedlegg/3")
-                    )
+                    ),
+                    årsak = FraværÅrsak.SMITTEVERNHENSYN
                 ),
                 UtbetalingsperiodeMedVedlegg(
                     fraOgMed = start.plusDays(30),
-                    tilOgMed = start.plusDays(35)
+                    tilOgMed = start.plusDays(35),
+                    årsak = FraværÅrsak.ANNET
                 )
             ),
             frilans = Frilans(
@@ -147,19 +150,22 @@ internal class SerDesTest {
                 "tilOgMed": "2020-01-11",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
-                "lengde": "PT7H"
+                "lengde": "PT7H",
+                "årsak": "stengtSkoleBhg"
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
-                "lengde": "PT5H"
+                "lengde": "PT5H",
+                "årsak": "smittevernhensyn"
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
-                "lengde": null
+                "lengde": null,
+                "årsak": "annet"
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "frilans": {
@@ -194,7 +200,15 @@ internal class SerDesTest {
                 }
             }],
             "erArbeidstakerOgså": true,
-            "fosterbarn": [{
+            "barn": [
+              {
+                "identitetsnummer": "02119970078",
+                "aleneOmOmsorgen": true,
+                "navn": "Barn Barnesen",
+                "aktørId": "123456"
+              }
+            ],
+            "andreBarn": [{
                 "fødselsnummer": "02119970078"
             }],
             "vedlegg": [],
@@ -274,7 +288,6 @@ internal class SerDesTest {
             }
         }
         """.trimIndent()
-
         //language=json
         fun søknadJson(søknadId: String) = """
         {
@@ -308,21 +321,24 @@ internal class SerDesTest {
                 "antallTimerBorte": null,
                 "antallTimerPlanlagt": null,
                 "lengde": null,
-                "legeerklæringer": ["http://localhost:8080/vedlegg/1"]
+                "legeerklæringer": ["http://localhost:8080/vedlegg/1"],
+                "årsak": "stengtSkoleBhg"
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
                 "antallTimerBorte": "PT7H30M",
                 "antallTimerPlanlagt": "PT7H30M",
                 "lengde": null,
-                "legeerklæringer": ["http://localhost:8080/vedlegg/2", "http://localhost:8080/vedlegg/3"]
+                "legeerklæringer": ["http://localhost:8080/vedlegg/2", "http://localhost:8080/vedlegg/3"],
+                "årsak": "smittevernhensyn"
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
                 "antallTimerBorte": null,
                 "antallTimerPlanlagt": null,
                 "lengde": null,
-                "legeerklæringer": []
+                "legeerklæringer": [],
+                "årsak": "annet"
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger", "midlertidigkompensasjonsnfri"],
             "frilans": {
@@ -357,7 +373,15 @@ internal class SerDesTest {
                 }
             }],
             "erArbeidstakerOgså": true,
-            "fosterbarn": [{
+            "barn": [
+              {
+                "identitetsnummer": "02119970078",
+                "aleneOmOmsorgen": true,
+                "navn": "Barn Barnesen",
+                "aktørId": "123456"
+              }
+            ],
+            "andreBarn": [{
                 "fødselsnummer": "02119970078"
             }],
             "vedlegg": [
@@ -369,6 +393,7 @@ internal class SerDesTest {
             "hjemmePgaStengtBhgSkole": true
         }
         """.trimIndent()
+
 
     }
 }
