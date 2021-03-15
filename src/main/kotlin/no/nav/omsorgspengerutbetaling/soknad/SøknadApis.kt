@@ -40,6 +40,11 @@ internal fun Route.søknadApis(
         val idToken = idTokenProvider.getIdToken(call)
         val callId = call.getCallId()
 
+        logger.trace("Oppdaterer barn med identitetsnummer")
+        val listeOverBarnMedFnr = barnService.hentNåværendeBarn(idToken, callId)
+        søknad.oppdaterBarnMedFnr(listeOverBarnMedFnr)
+        logger.info("Oppdatering av identitetsnummer på barn OK")
+
         logger.trace("Registrerer søknad. Henter søker")
 
         val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
@@ -80,6 +85,9 @@ internal fun Route.søknadApis(
         val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
         val idToken = idTokenProvider.getIdToken(call)
         val callId = call.getCallId()
+
+        val listeOverBarnMedFnr = barnService.hentNåværendeBarn(idToken, callId)
+        søknad.oppdaterBarnMedFnr(listeOverBarnMedFnr)
 
         val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
 

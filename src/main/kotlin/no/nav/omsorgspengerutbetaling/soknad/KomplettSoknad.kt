@@ -20,7 +20,7 @@ data class KomplettSoknad(
     val erArbeidstakerOgså: Boolean,
     val vedlegg: List<Vedlegg> = listOf(),
     val andreBarn: List<FosterBarn>? = listOf(),
-    val barn: List<Barn>? = null,
+    val barn: List<Barn>? = listOf(),
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
     val hjemmePgaSmittevernhensyn: Boolean,

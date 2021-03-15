@@ -23,6 +23,8 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
         addAll(k9FormatSøknad.valider())
 
+        barn?.mapIndexed { i, b -> addAll(b.valider(i)) }
+
     }.sortedBy { it.reason }.toSet()
 
     if (violations.isNotEmpty()) {
