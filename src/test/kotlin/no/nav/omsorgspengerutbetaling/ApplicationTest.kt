@@ -288,10 +288,12 @@ class ApplicationTest {
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
                 "antallTimerBorte": "PT3H",
-                "antallTimerPlanlagt": "PT5H"
+                "antallTimerPlanlagt": "PT5H",
+                "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE"
             }, {
                 "fraOgMed": "2020-01-21",
-                "tilOgMed": "2020-01-21"
+                "tilOgMed": "2020-01-21",
+                "årsak": "SMITTEVERNHENSYN"
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
