@@ -275,7 +275,7 @@ class ApplicationTest {
                 "aktørId": "123456"
               }
             ],
-            "andreBarn": [
+            "fosterbarn": [
               {
                 "fødselsnummer": "12125012345"
               }
