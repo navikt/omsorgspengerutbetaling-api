@@ -65,3 +65,11 @@ data class Barn(
         return mangler
     }
 }
+
+fun List<Barn>.valider(): MutableSet<Violation> {
+    val mangler: MutableSet<Violation> = mutableSetOf()
+
+    forEachIndexed { index, barn -> mangler.addAll(barn.valider(index)) }
+
+    return mangler
+}

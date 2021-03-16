@@ -19,11 +19,10 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         addAll(bosteder.valider("bosteder"))
         addAll(spørsmål.valider())
         addAll(bekreftelser.valider())
+        addAll(barn.valider())
         addAll(validerInntektsopplysninger())
         addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
         addAll(k9FormatSøknad.valider())
-
-        barn?.mapIndexed { i, b -> addAll(b.valider(i)) }
 
     }.sortedBy { it.reason }.toSet()
 
