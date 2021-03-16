@@ -151,21 +151,21 @@ internal class SerDesTest {
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
                 "lengde": "PT7H",
-                "årsak": "stengtSkoleBhg"
+                "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE"
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
                 "lengde": "PT5H",
-                "årsak": "smittevernhensyn"
+                "årsak": "SMITTEVERNHENSYN"
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
                 "lengde": null,
-                "årsak": "annet"
+                "årsak": "ANNET"
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "frilans": {
@@ -322,7 +322,7 @@ internal class SerDesTest {
                 "antallTimerPlanlagt": null,
                 "lengde": null,
                 "legeerklæringer": ["http://localhost:8080/vedlegg/1"],
-                "årsak": "stengtSkoleBhg"
+                "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE"
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
@@ -330,7 +330,7 @@ internal class SerDesTest {
                 "antallTimerPlanlagt": "PT7H30M",
                 "lengde": null,
                 "legeerklæringer": ["http://localhost:8080/vedlegg/2", "http://localhost:8080/vedlegg/3"],
-                "årsak": "smittevernhensyn"
+                "årsak": "SMITTEVERNHENSYN"
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
@@ -338,7 +338,7 @@ internal class SerDesTest {
                 "antallTimerPlanlagt": null,
                 "lengde": null,
                 "legeerklæringer": [],
-                "årsak": "annet"
+                "årsak": "ANNET"
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger", "midlertidigkompensasjonsnfri"],
             "frilans": {

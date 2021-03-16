@@ -34,10 +34,10 @@ data class UtbetalingsperiodeMedVedlegg(
     val årsak: FraværÅrsak? = null // TODO: 15/03/2021 Fjern nullable etter prodsetting.
 )
 
-enum class FraværÅrsak(@JsonValue val verdi: String) {
-    STENGT_SKOLE_ELLER_BARNEHAGE("stengtSkoleBhg"),
-    SMITTEVERNHENSYN("smittevernhensyn"),
-    ANNET("annet"),
+enum class FraværÅrsak {
+    STENGT_SKOLE_ELLER_BARNEHAGE,
+    SMITTEVERNHENSYN,
+    ANNET,
 }
 
 internal fun UtbetalingsperiodeMedVedlegg.somPeriode() = Periode(
