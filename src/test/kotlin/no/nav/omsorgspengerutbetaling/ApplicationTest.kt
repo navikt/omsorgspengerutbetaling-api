@@ -244,6 +244,7 @@ class ApplicationTest {
             path = "/soknad",
             expectedResponse = null,
             expectedCode = HttpStatusCode.Accepted,
+            cookie = cookie,
             requestEntity =
             //language=json
             """
@@ -333,8 +334,7 @@ class ApplicationTest {
                 }
             }]
         }
-            """.trimIndent(),
-            cookie = cookie
+            """.trimIndent()
         )
     }
 
