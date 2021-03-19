@@ -34,21 +34,24 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(10),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = Duration.ofHours(7)
+                lengde = Duration.ofHours(7),
+                årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE
             ),
             UtbetalingsperiodeMedVedlegg(
                 fraOgMed = start.plusDays(20),
                 tilOgMed = start.plusDays(20),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = Duration.ofHours(5)
+                lengde = Duration.ofHours(5),
+                årsak = FraværÅrsak.SMITTEVERNHENSYN
             ),
             UtbetalingsperiodeMedVedlegg(
                 fraOgMed = start.plusDays(30),
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = null
+                lengde = null,
+                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
             )
         ),
         opphold = listOf(
@@ -103,13 +106,19 @@ internal object SøknadUtils {
             )
         ),
         erArbeidstakerOgså = true,
+        barn = listOf(
+            Barn(
+                identitetsnummer = "02119970078",
+                aktørId = "123456",
+                navn = "Barn Barnesen",
+                aleneOmOmsorgen = true
+            )
+        ),
         fosterbarn = listOf(
             FosterBarn(
                 fødselsnummer = "02119970078"
             )
-        ),
-        hjemmePgaSmittevernhensyn = true,
-        hjemmePgaStengtBhgSkole = true
+        )
     )
 
     val søker = Søker(
@@ -162,21 +171,24 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(10),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = Duration.ofHours(7)
+                lengde = Duration.ofHours(7),
+                årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE
             ),
             UtbetalingsperiodeUtenVedlegg(
                 fraOgMed = start.plusDays(20),
                 tilOgMed = start.plusDays(20),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = Duration.ofHours(5)
+                lengde = Duration.ofHours(5),
+                årsak = FraværÅrsak.SMITTEVERNHENSYN
             ),
             UtbetalingsperiodeUtenVedlegg(
                 fraOgMed = start.plusDays(30),
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = null
+                lengde = null,
+                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
             )
         ),
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
@@ -212,6 +224,14 @@ internal object SøknadUtils {
             )
         ),
         erArbeidstakerOgså = true,
+        barn = listOf(
+            Barn(
+                identitetsnummer = "02119970078",
+                aktørId = "123456",
+                navn = "Barn Barnesen",
+                aleneOmOmsorgen = true
+            )
+        ),
         fosterbarn = listOf(
             FosterBarn(
                 fødselsnummer = "02119970078"
@@ -222,8 +242,6 @@ internal object SøknadUtils {
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja
         ),
-        hjemmePgaSmittevernhensyn = true,
-        hjemmePgaStengtBhgSkole = true,
         k9FormatSøknad = k9FormatSøknad(søknadId)
     )
 }

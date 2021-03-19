@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val dusseldorfKtorVersion = "1.5.0.ae98b7c"
 val ktorVersion = ext.get("ktorVersion").toString()
-val k9FormatVersion = "5.1.11"
+val k9FormatVersion = "5.1.18"
 val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
 val lettuceVersion = "5.3.5.RELEASE"
 

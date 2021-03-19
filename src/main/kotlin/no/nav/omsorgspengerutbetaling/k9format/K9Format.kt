@@ -14,7 +14,6 @@ import no.nav.k9.søknad.felles.type.Periode
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.omsorgspengerutbetaling.soknad.*
 import java.math.BigDecimal
-import java.time.LocalDate
 import java.time.ZonedDateTime
 import no.nav.omsorgspengerutbetaling.soknad.Søknad as OmsorgspengerutbetalingSoknadSøknad
 

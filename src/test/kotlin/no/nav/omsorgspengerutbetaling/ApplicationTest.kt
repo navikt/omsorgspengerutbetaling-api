@@ -21,7 +21,6 @@ import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.json.JSONObject
 import org.junit.AfterClass
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -147,7 +146,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `Hente barn og sjekk eksplisit at identitetsnummer ikke blir med ved get kall`(){
+    fun `Hente barn og sjekk eksplisit at identitetsnummer ikke blir med ved get kall`() {
 
         val respons = requestAndAssert(
             httpMethod = HttpMethod.Get,
@@ -269,6 +268,19 @@ class ApplicationTest {
                 "spørsmål": "Et spørsmål",
                 "svar": false
             }],
+             "barn": [
+              {
+                "identitetsnummer": "02119970078",
+                "aleneOmOmsorgen": true,
+                "navn": "Barn Barnesen",
+                "aktørId": "123456"
+              }
+            ],
+            "fosterbarn": [
+              {
+                "fødselsnummer": "12125012345"
+              }
+            ],
             "bekreftelser": {
                 "harBekreftetOpplysninger": true,
                 "harForståttRettigheterOgPlikter": true
@@ -277,10 +289,12 @@ class ApplicationTest {
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
                 "antallTimerBorte": "PT3H",
-                "antallTimerPlanlagt": "PT5H"
+                "antallTimerPlanlagt": "PT5H",
+                "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE"
             }, {
                 "fraOgMed": "2020-01-21",
-                "tilOgMed": "2020-01-21"
+                "tilOgMed": "2020-01-21",
+                "årsak": "SMITTEVERNHENSYN"
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
@@ -300,12 +314,11 @@ class ApplicationTest {
                 "navnPåVirksomheten": "Test",
                 "organisasjonsnummer": "111",
                 "registrertINorge": false,
-                "registrertILand": "Tyskland",
-                "erNyoppstartet": true,
                 "registrertIUtlandet": {
                   "landkode": "DEU",
                   "landnavn": "Tyskland"
                 },
+                "erNyoppstartet": true,
                 "yrkesaktivSisteTreFerdigliknedeÅrene": {
                     "oppstartsdato": "2018-01-01"
                 },
@@ -873,6 +886,65 @@ class ApplicationTest {
                     ),
                     FosterBarn(
                         fødselsnummer = "ugyldig fødselsnummer"
+                    )
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
+    fun `Sende søknad ugyldig fødselsnummer på barn, gir feilmelding`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse =
+            //language=json
+            """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "barn[1].aleneOmOmsorgen",
+                      "reason": "Barn.aleneOmOmsorgen kan ikke være null",
+                      "invalid_value": null
+                    },
+                    {
+                      "type": "entity",
+                      "name": "barn[1].identitetsnummer",
+                      "reason": "Barn.identitetsnummer kan ikke være null eller blank",
+                      "invalid_value": null
+                    },
+                    {
+                      "type": "entity",
+                      "name": "barn[1].navn",
+                      "reason": "Barn.navn kan ikke være tom eller bare inneholde mellomrom",
+                      "invalid_value": "  "
+                    }
+                  ]
+                }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = defaultSøknad.copy(
+                barn = listOf(
+                    Barn(
+                        identitetsnummer = "02119970078",
+                        aktørId = "123456",
+                        navn = "Barn Barnesen",
+                        aleneOmOmsorgen = true
+                    ),
+                    Barn(
+                        identitetsnummer = null,
+                        aktørId = "123456",
+                        navn = "  ",
+                        aleneOmOmsorgen = null
                     )
                 )
             ).somJson()

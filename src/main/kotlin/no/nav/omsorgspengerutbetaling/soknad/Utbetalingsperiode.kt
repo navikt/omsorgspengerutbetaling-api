@@ -1,7 +1,9 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonValue
 import no.nav.helse.dusseldorf.ktor.core.*
+import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold
 import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import java.net.URI
 import java.net.URL
@@ -28,8 +30,15 @@ data class UtbetalingsperiodeMedVedlegg(
     val antallTimerBorte: Duration? = null,
     val antallTimerPlanlagt: Duration? = null,
     val lengde: Duration? = null, //TODO: beholde lengde i en periode slik at vi ikke mister info i overgangen
-    val legeerklæringer: List<URI> = listOf()
+    val legeerklæringer: List<URI> = listOf(),
+    val årsak: FraværÅrsak? = null // TODO: 15/03/2021 Fjern nullable etter prodsetting.
 )
+
+enum class FraværÅrsak {
+    STENGT_SKOLE_ELLER_BARNEHAGE,
+    SMITTEVERNHENSYN,
+    ORDINÆRT_FRAVÆR,
+}
 
 internal fun UtbetalingsperiodeMedVedlegg.somPeriode() = Periode(
     fraOgMed = fraOgMed,
@@ -41,7 +50,8 @@ data class UtbetalingsperiodeUtenVedlegg(
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
     val lengde: Duration? = null, //TODO: Fjerne etter prodsetting
     val antallTimerBorte: Duration? = null,
-    val antallTimerPlanlagt: Duration? = null
+    val antallTimerPlanlagt: Duration? = null,
+    val årsak: FraværÅrsak? = null // TODO: 15/03/2021 Fjern nullable etter prodsetting.
 )
 
 internal fun List<UtbetalingsperiodeMedVedlegg>.valider() : Set<Violation> {
