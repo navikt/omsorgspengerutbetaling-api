@@ -37,7 +37,7 @@ data class UtbetalingsperiodeMedVedlegg(
 enum class FraværÅrsak {
     STENGT_SKOLE_ELLER_BARNEHAGE,
     SMITTEVERNHENSYN,
-    ANNET,
+    ORDINÆRT_FRAVÆR,
 }
 
 internal fun UtbetalingsperiodeMedVedlegg.somPeriode() = Periode(

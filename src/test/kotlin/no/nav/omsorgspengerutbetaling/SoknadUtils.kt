@@ -51,7 +51,7 @@ internal object SøknadUtils {
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
                 lengde = null,
-                årsak = FraværÅrsak.ANNET
+                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
             )
         ),
         opphold = listOf(
@@ -188,7 +188,7 @@ internal object SøknadUtils {
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
                 lengde = null,
-                årsak = FraværÅrsak.ANNET
+                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
             )
         ),
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),

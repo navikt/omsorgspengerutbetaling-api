@@ -61,7 +61,7 @@ internal class SerDesTest {
                 UtbetalingsperiodeMedVedlegg(
                     fraOgMed = start.plusDays(30),
                     tilOgMed = start.plusDays(35),
-                    årsak = FraværÅrsak.ANNET
+                    årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
                 )
             ),
             frilans = Frilans(
@@ -165,7 +165,7 @@ internal class SerDesTest {
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
                 "lengde": null,
-                "årsak": "ANNET"
+                "årsak": "ORDINÆRT_FRAVÆR"
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "frilans": {
@@ -338,7 +338,7 @@ internal class SerDesTest {
                 "antallTimerPlanlagt": null,
                 "lengde": null,
                 "legeerklæringer": [],
-                "årsak": "ANNET"
+                "årsak": "ORDINÆRT_FRAVÆR"
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger", "midlertidigkompensasjonsnfri"],
             "frilans": {
