@@ -40,10 +40,12 @@ internal fun Route.søknadApis(
         val idToken = idTokenProvider.getIdToken(call)
         val callId = call.getCallId()
 
-        logger.trace("Oppdaterer barn med identitetsnummer")
-        val listeOverBarnMedFnr = barnService.hentNåværendeBarn(idToken, callId)
-        søknad.oppdaterBarnMedFnr(listeOverBarnMedFnr)
-        logger.info("Oppdatering av identitetsnummer på barn OK")
+        if (søknad.barn.isNotEmpty()) {
+            logger.trace("Oppdaterer barn med identitetsnummer")
+            val listeOverBarnMedFnr = barnService.hentNåværendeBarn(idToken, callId)
+            søknad.oppdaterBarnMedFnr(listeOverBarnMedFnr)
+            logger.info("Oppdatering av identitetsnummer på barn OK")
+        }
 
         logger.trace("Registrerer søknad. Henter søker")
 
