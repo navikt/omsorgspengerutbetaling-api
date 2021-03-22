@@ -11,11 +11,11 @@ data class  Frilans(
     val jobberFortsattSomFrilans: JaNei
 ) {
 
-    fun valider(jsonPath: String): MutableSet<Violation> = mutableSetOf<Violation>().apply {
+    fun valider(): MutableSet<Violation> = mutableSetOf<Violation>().apply {
         if (jobberFortsattSomFrilans == JaNei.Nei && sluttdato == null) {
             add(
                 Violation(
-                    parameterName = "$jsonPath.sluttdato",
+                    parameterName = "frilans.sluttdato",
                     parameterType = ParameterType.ENTITY,
                     reason = "Sluttdato kan ikke være null dersom jobberFortsattSomFrilans er false.",
                     invalidValue = sluttdato
@@ -26,7 +26,7 @@ data class  Frilans(
         if (sluttdato != null && startdato.isAfter(sluttdato)) {
             add(
                 Violation(
-                    parameterName = "$jsonPath.startdato",
+                    parameterName = "frilans.startdato",
                     parameterType = ParameterType.ENTITY,
                     reason = "Startdato kan ikke være etter sluttdato",
                     invalidValue = startdato
