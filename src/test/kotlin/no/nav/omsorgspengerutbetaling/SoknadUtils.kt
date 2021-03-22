@@ -76,6 +76,7 @@ internal object SøknadUtils {
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER, MIDLERTIDIG_KOMPENSASJON_SN_FRI),
         frilans = Frilans(
             startdato = start,
+            sluttdato = null,
             jobberFortsattSomFrilans = JaNei.Ja
         ),
         selvstendigVirksomheter = listOf(
