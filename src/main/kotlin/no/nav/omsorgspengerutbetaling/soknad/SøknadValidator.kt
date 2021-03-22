@@ -1,7 +1,6 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
 import no.nav.helse.dusseldorf.ktor.core.*
-import no.nav.k9.søknad.ValideringsFeil
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetalingValidator
 import java.time.format.DateTimeFormatter
@@ -21,6 +20,7 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         addAll(bekreftelser.valider())
         addAll(barn.valider())
         addAll(validerInntektsopplysninger())
+        frilans?.let { addAll(frilans.valider()) }
         addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
         addAll(k9FormatSøknad.valider())
 

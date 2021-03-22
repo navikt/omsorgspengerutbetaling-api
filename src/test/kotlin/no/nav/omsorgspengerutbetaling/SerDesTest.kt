@@ -66,6 +66,7 @@ internal class SerDesTest {
             ),
             frilans = Frilans(
                 startdato = start,
+                sluttdato = null,
                 jobberFortsattSomFrilans = JaNei.Ja
             ),
             selvstendigVirksomheter = listOf(
@@ -170,6 +171,7 @@ internal class SerDesTest {
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "frilans": {
                 "startdato": "2020-01-01",
+                "sluttdato": null,
                 "jobberFortsattSomFrilans": true
             },
             "selvstendigVirksomheter": [{
@@ -343,6 +345,7 @@ internal class SerDesTest {
             "andreUtbetalinger": ["dagpenger", "sykepenger", "midlertidigkompensasjonsnfri"],
             "frilans": {
                 "startdato": "2020-01-01",
+                "sluttdato": null,
                 "jobberFortsattSomFrilans": true
             },
             "selvstendigVirksomheter": [{
