@@ -893,6 +893,82 @@ class ApplicationTest {
     }
 
     @Test
+    fun `Sende søknad med frilanser som har sluttet, uten sluttdato, gir feilmelding`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse =
+            //language=json
+            """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "frilans.sluttdato",
+                      "reason": "Sluttdato kan ikke være null dersom jobberFortsattSomFrilans er false.",
+                      "invalid_value": null
+                    }
+                  ]
+                }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = defaultSøknad.copy(
+                frilans = Frilans(
+                    startdato = LocalDate.now(),
+                    sluttdato = null,
+                    jobberFortsattSomFrilans = JaNei.Nei
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
+    fun `Sende søknad med frilanser der startdato er etter sluttdato, gir feilmelding`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse =
+            //language=json
+            """
+                {
+                  "type": "/problem-details/invalid-request-parameters",
+                  "title": "invalid-request-parameters",
+                  "status": 400,
+                  "detail": "Requesten inneholder ugyldige paramtere.",
+                  "instance": "about:blank",
+                  "invalid_parameters": [
+                    {
+                      "type": "entity",
+                      "name": "frilans.startdato",
+                      "reason": "Startdato kan ikke være etter sluttdato",
+                      "invalid_value": "2021-02-01"
+                    }
+                  ]
+                }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = defaultSøknad.copy(
+                frilans = Frilans(
+                    startdato = LocalDate.parse("2021-02-01"),
+                    sluttdato = LocalDate.parse("2021-01-01"),
+                    jobberFortsattSomFrilans = JaNei.Nei
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
     fun `Sende søknad ugyldig fødselsnummer på barn, gir feilmelding`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 

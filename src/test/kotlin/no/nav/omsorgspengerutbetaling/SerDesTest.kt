@@ -260,7 +260,6 @@ internal class SerDesTest {
                       ],
                       "frilanser": {
                         "startdato": "2020-01-01",
-                        "sluttdato": null,
                         "jobberFortsattSomFrilans": true
                       }
                     },
