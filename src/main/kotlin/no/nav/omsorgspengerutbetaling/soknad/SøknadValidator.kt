@@ -19,7 +19,6 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         addAll(spørsmål.valider())
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
-        frilans?.let { addAll(frilans.valider()) }
         addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
         addAll(k9FormatSøknad.valider())
 
