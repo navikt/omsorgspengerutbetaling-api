@@ -20,6 +20,7 @@ import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.json.JSONObject
 import org.junit.AfterClass
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -839,6 +840,7 @@ class ApplicationTest {
     }
 
     @Test
+    @Ignore // TODO: 24/03/2021 Bør aktiveres igjen når frilans.sluttdato er prodsatt i søknadsdialogen.
     fun `Sende søknad med frilanser som har sluttet, uten sluttdato, gir feilmelding`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
@@ -877,6 +879,7 @@ class ApplicationTest {
     }
 
     @Test
+    @Ignore // TODO: 24/03/2021 Bør aktiveres igjen når frilans.sluttdato er prodsatt i søknadsdialogen.
     fun `Sende søknad med frilanser der startdato er etter sluttdato, gir feilmelding`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
