@@ -109,6 +109,7 @@ internal class SerDesTest {
                 URL("http://localhost:8080/vedlegg/3")
             )
         )
+
         //language=json
         fun komplettSøknadJson(søknadId: String) = """
         {
@@ -252,21 +253,25 @@ internal class SerDesTest {
                       ],
                       "frilanser": {
                         "startdato": "2020-01-01",
+                        "sluttdato": null,
                         "jobberFortsattSomFrilans": true
                       }
                     },
                     "fraværsperioder": [
                       {
                         "periode": "2020-01-01/2020-01-11",
-                        "duration": "PT7H"
+                        "duration": "PT7H", 
+                        "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE"
                       },
                       {
                         "periode": "2020-01-21/2020-01-21",
-                        "duration": "PT5H"
+                        "duration": "PT5H", 
+                        "årsak": "SMITTEVERNHENSYN"
                       },
                       {
                         "periode": "2020-01-31/2020-02-05",
-                        "duration": null
+                        "duration": null, 
+                        "årsak": "ORDINÆRT_FRAVÆR"
                       }
                     ],
                     "bosteder": null,
@@ -282,6 +287,7 @@ internal class SerDesTest {
             }
         }
         """.trimIndent()
+
         //language=json
         fun søknadJson(søknadId: String) = """
         {

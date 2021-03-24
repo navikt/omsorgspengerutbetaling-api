@@ -855,11 +855,11 @@ class ApplicationTest {
                   "detail": "Requesten inneholder ugyldige paramtere.",
                   "instance": "about:blank",
                   "invalid_parameters": [
-                    {
+                  {
                       "type": "entity",
-                      "name": "frilans.sluttdato",
-                      "reason": "Sluttdato kan ikke være null dersom jobberFortsattSomFrilans er false.",
-                      "invalid_value": null
+                      "name": "frilanser.sluttdato",
+                      "reason": "'sluttdato' kan ikke være null, dersom 'jobberFortsattSomFrilans' er false.",
+                      "invalid_value": "k9-format feilkode: påkrevd"
                     }
                   ]
                 }
@@ -895,9 +895,9 @@ class ApplicationTest {
                   "invalid_parameters": [
                     {
                       "type": "entity",
-                      "name": "frilans.startdato",
-                      "reason": "Startdato kan ikke være etter sluttdato",
-                      "invalid_value": "2021-02-01"
+                      "name": "frilanser.startdato",
+                      "reason": "'startdato' kan ikke være etter 'sluttdato'",
+                      "invalid_value": "k9-format feilkode: ugyldig argument"
                     }
                   ]
                 }

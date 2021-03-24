@@ -4,6 +4,7 @@ import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.Versjon
 import no.nav.k9.søknad.felles.aktivitet.*
 import no.nav.k9.søknad.felles.fravær.FraværPeriode
+import no.nav.k9.søknad.felles.fravær.FraværÅrsak
 import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Søker
@@ -59,8 +60,12 @@ private fun List<Bosted>.tilK9Bosteder(): Bosteder {
     return Bosteder(perioder)
 }
 
-fun List<UtbetalingsperiodeMedVedlegg>.tilFraværsperiode(): List<FraværPeriode> = map {
-    FraværPeriode(Periode(it.fraOgMed, it.tilOgMed), it.lengde)
+fun List<UtbetalingsperiodeMedVedlegg>.tilFraværsperiode(): List<FraværPeriode> = map { utbetalingsperiode ->
+    FraværPeriode(
+        Periode(utbetalingsperiode.fraOgMed, utbetalingsperiode.tilOgMed),
+        utbetalingsperiode.lengde,
+        utbetalingsperiode.årsak?.let { FraværÅrsak.valueOf(it.name) } ?: FraværÅrsak.ORDINÆRT_FRAVÆR
+    )
 }
 
 fun OmsorgspengerutbetalingSoknadSøknad.arbeidAktivitet() = ArbeidAktivitet(
@@ -115,7 +120,10 @@ private fun List<Næringstyper>.tilK9Virksomhetstyper(): List<VirksomhetType> = 
     }
 }
 
-private fun Frilans.tilK9Frilanser(): Frilanser = Frilanser(startdato, jobberFortsattSomFrilans.boolean)
+private fun Frilans.tilK9Frilanser(): Frilanser = Frilanser()
+    .medStartDato(startdato)
+    .medSluttDato(sluttdato)
+    .medJobberFortsattSomFrilans(jobberFortsattSomFrilans.boolean)
 
 private fun List<FosterBarn>.tilK9Barn(): List<Barn> {
     return map {
