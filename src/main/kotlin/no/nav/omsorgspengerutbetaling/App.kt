@@ -30,9 +30,6 @@ import no.nav.helse.dusseldorf.ktor.jackson.JacksonStatusPages
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.dusseldorf.ktor.metrics.init
-import no.nav.omsorgspengerutbetaling.barn.BarnGateway
-import no.nav.omsorgspengerutbetaling.barn.BarnService
-import no.nav.omsorgspengerutbetaling.barn.barnApis
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenStatusPages
 import no.nav.omsorgspengerutbetaling.general.systemauth.AccessTokenClientResolver
@@ -137,25 +134,10 @@ fun Application.omsorgpengesoknadapi() {
             søkerGateway = sokerGateway
         )
 
-        val barnGateway = BarnGateway(
-            baseUrl = configuration.getK9OppslagUrl(),
-            apiGatewayApiKey = apiGatewayApiKey
-        )
-
-        val barnService = BarnService(
-            barnGateway = barnGateway,
-            cache = configuration.cache()
-        )
-
         authenticate(*issuers.allIssuers()) {
 
             søkerApis(
                 søkerService = søkerService,
-                idTokenProvider = idTokenProvider
-            )
-
-            barnApis(
-                barnService = barnService,
                 idTokenProvider = idTokenProvider
             )
 
@@ -183,8 +165,7 @@ fun Application.omsorgpengesoknadapi() {
                     omsorgpengesøknadMottakGateway = omsorgpengesoknadMottakGateway,
                     vedleggService = vedleggService
                 ),
-                søkerService = søkerService,
-                barnService = barnService
+                søkerService = søkerService
             )
         }
 

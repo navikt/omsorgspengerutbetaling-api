@@ -14,7 +14,6 @@ import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.SøknadUtils.defaultSøknad
-import no.nav.omsorgspengerutbetaling.barn.BARN_URL
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.wiremock.*
@@ -143,59 +142,6 @@ class ApplicationTest {
             ),
             cookie = getAuthCookie(ikkeMyndigFnr)
         )
-    }
-
-    @Test
-    fun `Hente barn og sjekk eksplisit at identitetsnummer ikke blir med ved get kall`() {
-
-        val respons = requestAndAssert(
-            httpMethod = HttpMethod.Get,
-            path = BARN_URL,
-            expectedCode = HttpStatusCode.OK,
-            //language=json
-            expectedResponse = """
-                {
-                  "barnOppslag": [
-                    {
-                      "fødselsdato": "2000-08-27",
-                      "fornavn": "BARN",
-                      "mellomnavn": "EN",
-                      "etternavn": "BARNESEN",
-                      "aktørId": "1000000000001"
-                    },
-                    {
-                      "fødselsdato": "2001-04-10",
-                      "fornavn": "BARN",
-                      "mellomnavn": "TO",
-                      "etternavn": "BARNESEN",
-                      "aktørId": "1000000000002"
-                    }
-                  ]
-                }
-            """.trimIndent()
-        )
-
-        val responsSomJSONArray = JSONObject(respons).getJSONArray("barnOppslag")
-
-        assertFalse(responsSomJSONArray.getJSONObject(0).has("identitetsnummer"))
-        assertFalse(responsSomJSONArray.getJSONObject(1).has("identitetsnummer"))
-    }
-
-    @Test
-    fun `Feil ved henting av barn skal returnere tom liste`() {
-        wireMockServer.stubK9OppslagBarn(simulerFeil = true)
-        requestAndAssert(
-            httpMethod = HttpMethod.Get,
-            path = BARN_URL,
-            expectedCode = HttpStatusCode.OK,
-            expectedResponse = """
-            {
-                "barnOppslag": []
-            }
-            """.trimIndent(),
-            cookie = getAuthCookie("25118921464")
-        )
-        wireMockServer.stubK9OppslagBarn()
     }
 
     @Test
@@ -967,66 +913,6 @@ class ApplicationTest {
             ).somJson()
         )
     }
-
-    @Test
-    fun `Sende søknad ugyldig fødselsnummer på barn, gir feilmelding`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = "/soknad",
-            expectedResponse =
-            //language=json
-            """
-                {
-                  "type": "/problem-details/invalid-request-parameters",
-                  "title": "invalid-request-parameters",
-                  "status": 400,
-                  "detail": "Requesten inneholder ugyldige paramtere.",
-                  "instance": "about:blank",
-                  "invalid_parameters": [
-                    {
-                      "type": "entity",
-                      "name": "barn[1].aleneOmOmsorgen",
-                      "reason": "Barn.aleneOmOmsorgen kan ikke være null",
-                      "invalid_value": null
-                    },
-                    {
-                      "type": "entity",
-                      "name": "barn[1].identitetsnummer",
-                      "reason": "Barn.identitetsnummer kan ikke være null eller blank",
-                      "invalid_value": null
-                    },
-                    {
-                      "type": "entity",
-                      "name": "barn[1].navn",
-                      "reason": "Barn.navn kan ikke være tom eller bare inneholde mellomrom",
-                      "invalid_value": "  "
-                    }
-                  ]
-                }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = defaultSøknad.copy(
-                barn = listOf(
-                    Barn(
-                        identitetsnummer = "02119970078",
-                        aktørId = "123456",
-                        navn = "Barn Barnesen",
-                        aleneOmOmsorgen = true
-                    ),
-                    Barn(
-                        identitetsnummer = null,
-                        aktørId = "123456",
-                        navn = "  ",
-                        aleneOmOmsorgen = null
-                    )
-                )
-            ).somJson()
-        )
-    }
-
 
     private fun expectedGetSokerJson(
         fodselsnummer: String,

@@ -202,14 +202,6 @@ internal class SerDesTest {
                 }
             }],
             "erArbeidstakerOgså": true,
-            "barn": [
-              {
-                "identitetsnummer": "02119970078",
-                "aleneOmOmsorgen": true,
-                "navn": "Barn Barnesen",
-                "aktørId": "123456"
-              }
-            ],
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
             }],
@@ -376,14 +368,6 @@ internal class SerDesTest {
                 }
             }],
             "erArbeidstakerOgså": true,
-            "barn": [
-              {
-                "identitetsnummer": "02119970078",
-                "aleneOmOmsorgen": true,
-                "navn": "Barn Barnesen",
-                "aktørId": "123456"
-              }
-            ],
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
             }],

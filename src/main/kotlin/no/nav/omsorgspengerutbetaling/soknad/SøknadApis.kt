@@ -8,7 +8,6 @@ import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
-import no.nav.omsorgspengerutbetaling.barn.BarnService
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.getCallId
 import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
@@ -26,7 +25,6 @@ private val logger: Logger = LoggerFactory.getLogger("nav.soknadApis")
 internal fun Route.søknadApis(
     søknadService: SøknadService,
     søkerService: SøkerService,
-    barnService: BarnService,
     idTokenProvider: IdTokenProvider
 ) {
 
@@ -39,13 +37,6 @@ internal fun Route.søknadApis(
         val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
         val idToken = idTokenProvider.getIdToken(call)
         val callId = call.getCallId()
-
-        if (søknad.barn.isNotEmpty()) {
-            logger.trace("Oppdaterer barn med identitetsnummer")
-            val listeOverBarnMedFnr = barnService.hentNåværendeBarn(idToken, callId)
-            søknad.oppdaterBarnMedFnr(listeOverBarnMedFnr)
-            logger.info("Oppdatering av identitetsnummer på barn OK")
-        }
 
         logger.trace("Registrerer søknad. Henter søker")
 
@@ -87,9 +78,6 @@ internal fun Route.søknadApis(
         val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
         val idToken = idTokenProvider.getIdToken(call)
         val callId = call.getCallId()
-
-        val listeOverBarnMedFnr = barnService.hentNåværendeBarn(idToken, callId)
-        søknad.oppdaterBarnMedFnr(listeOverBarnMedFnr)
 
         val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
 
