@@ -107,14 +107,6 @@ internal object SøknadUtils {
             )
         ),
         erArbeidstakerOgså = true,
-        barn = listOf(
-            Barn(
-                identitetsnummer = "02119970078",
-                aktørId = "123456",
-                navn = "Barn Barnesen",
-                aleneOmOmsorgen = true
-            )
-        ),
         fosterbarn = listOf(
             FosterBarn(
                 fødselsnummer = "02119970078"
@@ -225,14 +217,6 @@ internal object SøknadUtils {
             )
         ),
         erArbeidstakerOgså = true,
-        barn = listOf(
-            Barn(
-                identitetsnummer = "02119970078",
-                aktørId = "123456",
-                navn = "Barn Barnesen",
-                aleneOmOmsorgen = true
-            )
-        ),
         fosterbarn = listOf(
             FosterBarn(
                 fødselsnummer = "02119970078"

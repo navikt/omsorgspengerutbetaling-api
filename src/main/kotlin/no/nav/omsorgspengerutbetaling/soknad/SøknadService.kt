@@ -60,7 +60,6 @@ internal class SøknadService(
             andreUtbetalinger = søknad.andreUtbetalinger,
             vedlegg = vedlegg,
             frilans = søknad.frilans,
-            barn = søknad.barn,
             fosterbarn = søknad.fosterbarn,
             selvstendigVirksomheter = søknad.selvstendigVirksomheter,
             erArbeidstakerOgså = søknad.erArbeidstakerOgså,
