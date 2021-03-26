@@ -1,5 +1,7 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
+import com.fasterxml.jackson.annotation.JsonAlias
+
 data class FosterBarn(
-    val fødselsnummer: String
+    @JsonAlias("identitetsnummer", "fødselsnummer") val fødselsnummer: String
 )
