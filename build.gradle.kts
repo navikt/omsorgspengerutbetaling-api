@@ -1,20 +1,20 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "1.5.0.ae98b7c"
+val dusseldorfKtorVersion = "1.5.2.1303b90"
 val ktorVersion = ext.get("ktorVersion").toString()
 val k9FormatVersion = "5.1.23"
 val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
 val lettuceVersion = "5.3.5.RELEASE"
 
 plugins {
-    kotlin("jvm") version "1.4.30"
+    kotlin("jvm") version "1.4.32"
     id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/ae98b7cfa4b75bf15d8d5bb5a7e19a7432b69c47/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/1303b90c37ad3d94905c6eb7f6b47b6312d19aba/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -97,5 +97,5 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "6.7.1"
+    gradleVersion = "6.8.3"
 }
