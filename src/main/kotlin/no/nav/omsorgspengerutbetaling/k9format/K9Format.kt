@@ -2,9 +2,10 @@ package no.nav.omsorgspengerutbetaling.k9format
 
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.Versjon
-import no.nav.k9.søknad.felles.aktivitet.*
+import no.nav.k9.søknad.felles.fravær.AktivitetFravær as K9AktivitetFravær
 import no.nav.k9.søknad.felles.fravær.FraværPeriode
 import no.nav.k9.søknad.felles.fravær.FraværÅrsak
+import no.nav.k9.søknad.felles.opptjening.*
 import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Søker
@@ -30,7 +31,7 @@ fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
         søker.tilK9Søker(),
         OmsorgspengerUtbetaling(
             fosterbarn?.tilK9Barn(),
-            arbeidAktivitet(),
+            opptjeningAktivitet(),
             this.utbetalingsperioder.tilFraværsperiode(),
             this.bosteder.tilK9Bosteder(),
             this.opphold.tilK9Utenlandsopphold()
@@ -60,15 +61,21 @@ private fun List<Bosted>.tilK9Bosteder(): Bosteder {
     return Bosteder(perioder)
 }
 
-fun List<UtbetalingsperiodeMedVedlegg>.tilFraværsperiode(): List<FraværPeriode> = map { utbetalingsperiode ->
+fun List<Utbetalingsperiode>.tilFraværsperiode(): List<FraværPeriode> = map { utbetalingsperiode ->
     FraværPeriode(
         Periode(utbetalingsperiode.fraOgMed, utbetalingsperiode.tilOgMed),
         utbetalingsperiode.lengde,
-        utbetalingsperiode.årsak?.let { FraværÅrsak.valueOf(it.name) } ?: FraværÅrsak.ORDINÆRT_FRAVÆR
+        utbetalingsperiode.årsak?.let { FraværÅrsak.valueOf(it.name) } ?: FraværÅrsak.ORDINÆRT_FRAVÆR,
+        utbetalingsperiode.aktivitetFravær.map {
+            when(it) {
+                AktivitetFravær.FRILANSER -> K9AktivitetFravær.FRILANSER
+                AktivitetFravær.SELVSTENDIG_VIRKSOMHET -> K9AktivitetFravær.SELVSTENDIG_VIRKSOMHET
+            }
+        }
     )
 }
 
-fun OmsorgspengerutbetalingSoknadSøknad.arbeidAktivitet() = ArbeidAktivitet(
+fun OmsorgspengerutbetalingSoknadSøknad.opptjeningAktivitet() = OpptjeningAktivitet(
     null,
     selvstendigVirksomheter.tilK9SelvstendingNæringsdrivende(),
     frilans?.tilK9Frilanser()

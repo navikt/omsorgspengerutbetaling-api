@@ -29,29 +29,32 @@ internal object SøknadUtils {
             )
         ),
         utbetalingsperioder = listOf(
-            UtbetalingsperiodeMedVedlegg(
+            Utbetalingsperiode(
                 fraOgMed = start,
                 tilOgMed = start.plusDays(10),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
                 lengde = Duration.ofHours(7),
-                årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE
+                årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE,
+                aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
             ),
-            UtbetalingsperiodeMedVedlegg(
+            Utbetalingsperiode(
                 fraOgMed = start.plusDays(20),
                 tilOgMed = start.plusDays(20),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
                 lengde = Duration.ofHours(5),
-                årsak = FraværÅrsak.SMITTEVERNHENSYN
+                årsak = FraværÅrsak.SMITTEVERNHENSYN,
+                aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
             ),
-            UtbetalingsperiodeMedVedlegg(
+            Utbetalingsperiode(
                 fraOgMed = start.plusDays(30),
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
                 lengde = null,
-                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
+                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR,
+                aktivitetFravær = listOf(AktivitetFravær.FRILANSER, AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
             )
         ),
         opphold = listOf(
@@ -159,29 +162,32 @@ internal object SøknadUtils {
             )
         ),
         utbetalingsperioder = listOf(
-            UtbetalingsperiodeUtenVedlegg(
+            Utbetalingsperiode(
                 fraOgMed = start,
                 tilOgMed = start.plusDays(10),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
                 lengde = Duration.ofHours(7),
-                årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE
+                årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE,
+                aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
             ),
-            UtbetalingsperiodeUtenVedlegg(
+            Utbetalingsperiode(
                 fraOgMed = start.plusDays(20),
                 tilOgMed = start.plusDays(20),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
                 lengde = Duration.ofHours(5),
-                årsak = FraværÅrsak.SMITTEVERNHENSYN
+                årsak = FraværÅrsak.SMITTEVERNHENSYN,
+                aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
             ),
-            UtbetalingsperiodeUtenVedlegg(
+            Utbetalingsperiode(
                 fraOgMed = start.plusDays(30),
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
                 lengde = null,
-                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
+                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR,
+                aktivitetFravær = listOf(AktivitetFravær.FRILANSER, AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
             )
         ),
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
