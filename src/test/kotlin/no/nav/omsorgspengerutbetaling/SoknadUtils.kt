@@ -34,7 +34,6 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(10),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = Duration.ofHours(7),
                 årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE,
                 aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
             ),
@@ -43,7 +42,6 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(20),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = Duration.ofHours(5),
                 årsak = FraværÅrsak.SMITTEVERNHENSYN,
                 aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
             ),
@@ -52,7 +50,6 @@ internal object SøknadUtils {
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = null,
                 årsak = FraværÅrsak.ORDINÆRT_FRAVÆR,
                 aktivitetFravær = listOf(AktivitetFravær.FRILANSER, AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
             )
@@ -167,7 +164,6 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(10),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = Duration.ofHours(7),
                 årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE,
                 aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
             ),
@@ -176,7 +172,6 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(20),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = Duration.ofHours(5),
                 årsak = FraværÅrsak.SMITTEVERNHENSYN,
                 aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
             ),
@@ -185,7 +180,6 @@ internal object SøknadUtils {
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                lengde = null,
                 årsak = FraværÅrsak.ORDINÆRT_FRAVÆR,
                 aktivitetFravær = listOf(AktivitetFravær.FRILANSER, AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
             )

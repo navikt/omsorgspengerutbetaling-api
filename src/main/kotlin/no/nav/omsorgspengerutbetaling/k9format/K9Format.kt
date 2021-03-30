@@ -16,6 +16,7 @@ import no.nav.k9.søknad.felles.type.Periode
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.omsorgspengerutbetaling.soknad.*
 import java.math.BigDecimal
+import java.time.Duration
 import java.time.ZonedDateTime
 import no.nav.omsorgspengerutbetaling.soknad.Søknad as OmsorgspengerutbetalingSoknadSøknad
 
@@ -64,7 +65,7 @@ private fun List<Bosted>.tilK9Bosteder(): Bosteder {
 fun List<Utbetalingsperiode>.tilFraværsperiode(): List<FraværPeriode> = map { utbetalingsperiode ->
     FraværPeriode(
         Periode(utbetalingsperiode.fraOgMed, utbetalingsperiode.tilOgMed),
-        utbetalingsperiode.lengde,
+        utbetalingsperiode.antallTimerBorte?: Duration.ofHours(7).plusMinutes(30),
         utbetalingsperiode.årsak?.let { FraværÅrsak.valueOf(it.name) } ?: FraværÅrsak.ORDINÆRT_FRAVÆR,
         utbetalingsperiode.aktivitetFravær.map {
             when(it) {

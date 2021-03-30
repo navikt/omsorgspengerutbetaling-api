@@ -27,7 +27,6 @@ internal fun Utbetalingsperiode.somPeriode() = Periode(
 data class Utbetalingsperiode(
     @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
-    val lengde: Duration? = null, //TODO: Fjerne etter prodsetting
     val antallTimerBorte: Duration? = null,
     val antallTimerPlanlagt: Duration? = null,
     val årsak: FraværÅrsak? = null, // TODO: 15/03/2021 Fjern nullable etter prodsetting.

@@ -150,7 +150,6 @@ internal class SerDesTest {
                 "tilOgMed": "2020-01-11",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
-                "lengde": "PT7H",
                 "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE",
                 "aktivitetFravær": ["FRILANSER"]
             }, {
@@ -158,7 +157,6 @@ internal class SerDesTest {
                 "tilOgMed": "2020-01-21",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
-                "lengde": "PT5H",
                 "årsak": "SMITTEVERNHENSYN",
                 "aktivitetFravær": ["SELVSTENDIG_VIRKSOMHET"]
             }, {
@@ -166,7 +164,6 @@ internal class SerDesTest {
                 "tilOgMed": "2020-02-05",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
-                "lengde": null,
                 "årsak": "ORDINÆRT_FRAVÆR",
                 "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
             }],
@@ -261,19 +258,19 @@ internal class SerDesTest {
                     "fraværsperioder": [
                       {
                         "periode": "2020-01-01/2020-01-11",
-                        "duration": "PT7H", 
+                        "duration": "PT3H", 
                         "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE",
                         "aktivitetFravær": ["FRILANSER"]
                       },
                       {
                         "periode": "2020-01-21/2020-01-21",
-                        "duration": "PT5H", 
+                        "duration": "PT3H", 
                         "årsak": "SMITTEVERNHENSYN",
                         "aktivitetFravær": ["SELVSTENDIG_VIRKSOMHET"]
                       },
                       {
                         "periode": "2020-01-31/2020-02-05",
-                        "duration": null, 
+                        "duration": "PT3H", 
                         "årsak": "ORDINÆRT_FRAVÆR",
                         "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
                       }
@@ -324,7 +321,6 @@ internal class SerDesTest {
                 "tilOgMed": "2020-01-11",
                 "antallTimerBorte": null,
                 "antallTimerPlanlagt": null,
-                "lengde": null,
                 "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE",
                 "aktivitetFravær": ["FRILANSER"]
             }, {
@@ -332,7 +328,6 @@ internal class SerDesTest {
                 "tilOgMed": "2020-01-21",
                 "antallTimerBorte": "PT7H30M",
                 "antallTimerPlanlagt": "PT7H30M",
-                "lengde": null,
                 "årsak": "SMITTEVERNHENSYN",
                 "aktivitetFravær": ["SELVSTENDIG_VIRKSOMHET"]
             }, {
@@ -340,7 +335,6 @@ internal class SerDesTest {
                 "tilOgMed": "2020-02-05",
                 "antallTimerBorte": null,
                 "antallTimerPlanlagt": null,
-                "lengde": null,
                 "årsak": "ORDINÆRT_FRAVÆR",
                 "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
             }],
