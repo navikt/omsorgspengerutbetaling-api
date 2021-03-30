@@ -400,6 +400,45 @@ class ApplicationTest {
     }
 
     @Test
+    fun `Gitt at ingen aktivitetFravær er oppgitt på utbetalingsperiode, forvent valideringsfeil`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse =
+            //language=json
+            """
+            {
+              "type": "/problem-details/invalid-request-parameters",
+              "title": "invalid-request-parameters",
+              "status": 400,
+              "detail": "Requesten inneholder ugyldige paramtere.",
+              "instance": "about:blank",
+              "invalid_parameters": [
+                {
+                  "type": "entity",
+                  "name": "fraværsperioder[0].aktivitetFravær",
+                  "reason": "size must be between 1 and 2",
+                  "invalid_value": "k9-format feilkode: påkrevd"
+                }
+              ]
+            }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = SøknadUtils.defaultSøknad.copy(
+                utbetalingsperioder = listOf(
+                    Utbetalingsperiode(
+                        fraOgMed = LocalDate.now(),
+                        tilOgMed = LocalDate.now().plusDays(1)
+                    )
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
     fun `Sende soknad hvor antallTimerPlanlagt er mindre enn antallTimerBorte`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
