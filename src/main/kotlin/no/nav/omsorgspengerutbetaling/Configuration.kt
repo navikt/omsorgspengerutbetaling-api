@@ -4,6 +4,10 @@ import io.ktor.config.ApplicationConfig
 import io.ktor.util.KtorExperimentalAPI
 import no.finn.unleash.FakeUnleash
 import no.finn.unleash.Unleash
+import no.finn.unleash.event.UnleashReady
+import no.finn.unleash.event.UnleashSubscriber
+import no.finn.unleash.repository.FeatureToggleResponse
+import no.finn.unleash.repository.ToggleCollection
 import no.nav.helse.dusseldorf.ktor.auth.EnforceEqualsOrContains
 import no.nav.helse.dusseldorf.ktor.auth.issuers
 import no.nav.helse.dusseldorf.ktor.auth.withAdditionalClaimRules
@@ -12,13 +16,34 @@ import no.nav.helse.dusseldorf.ktor.core.getRequiredList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredString
 import no.nav.helse.dusseldorf.ktor.unleash.unleashConfig
 import no.nav.omsorgspengerutbetaling.general.auth.ApiGatewayApiKey
+import org.slf4j.LoggerFactory
 import java.net.URI
 
 @KtorExperimentalAPI
 data class Configuration(val config : ApplicationConfig) {
 
+    companion object {
+        private val logger = LoggerFactory.getLogger(Configuration::class.java)
+    }
+
     internal fun unleash(): Unleash {
-        val unleash = config.unleashConfig()
+        val unleash = config.unleashConfig(subscriber = object : UnleashSubscriber {
+            override fun onReady(ready: UnleashReady) {
+                logger.info("Unleash is ready")
+            }
+
+            override fun togglesFetched(response: FeatureToggleResponse) {
+                when(response.status) {
+                    FeatureToggleResponse.Status.CHANGED -> logger.info("Feature toggles changed: {}", response.toggleCollection.features)
+                    FeatureToggleResponse.Status.UNAVAILABLE -> logger.warn("Feature toggles is not available. HTTP status code = {}", response.httpStatusCode)
+                    else -> {}
+                }
+            }
+
+            override fun togglesBackedUp(toggleCollection: ToggleCollection) {
+                logger.info("Backup stored.")
+            }
+        })
         if (unleash is FakeUnleash) unleash.enableAll()
         return unleash
     }

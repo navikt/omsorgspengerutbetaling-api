@@ -57,7 +57,7 @@ internal fun Route.søknadApis(
             søker = søker
         )
 
-        if (unleash.erAktiv(FeatureFlag.OMP_UT_SNF_SOKNAD_VALIDERING)) {
+        if (unleash.erAktiv(FeatureFlag.OMP_UT_SNF_SOKNAD_VALIDERING, true)) {
             søknad.valider(k9FormatSøknad)
             logger.trace("Validering OK. Registrerer søknad.")
         } else logger.info("Validering av søknad er deaktivert.")
