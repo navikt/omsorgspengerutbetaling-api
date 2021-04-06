@@ -8,6 +8,9 @@ import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
+import no.finn.unleash.Unleash
+import no.nav.omsorgspengerutbetaling.FeatureFlag
+import no.nav.omsorgspengerutbetaling.erAktiv
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.getCallId
 import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
@@ -25,13 +28,14 @@ private val logger: Logger = LoggerFactory.getLogger("nav.soknadApis")
 internal fun Route.søknadApis(
     søknadService: SøknadService,
     søkerService: SøkerService,
-    idTokenProvider: IdTokenProvider
+    idTokenProvider: IdTokenProvider,
+    unleash: Unleash
 ) {
 
     @Location("/soknad")
     class sendSoknad
 
-    post { _ : sendSoknad ->
+    post { _: sendSoknad ->
         logger.trace("Mottatt ny søknad. Mapper søknad.")
         val søknad = call.receive<Søknad>()
         val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
@@ -53,8 +57,10 @@ internal fun Route.søknadApis(
             søker = søker
         )
 
-        søknad.valider(k9FormatSøknad)
-        logger.trace("Validering OK. Registrerer søknad.")
+        if (unleash.erAktiv(FeatureFlag.OMP_UT_SNF_SOKNAD_VALIDERING)) {
+            søknad.valider(k9FormatSøknad)
+            logger.trace("Validering OK. Registrerer søknad.")
+        } else logger.info("Validering av søknad er deaktivert.")
 
         søknadService.registrer(
             søknad = søknad,
@@ -72,7 +78,7 @@ internal fun Route.søknadApis(
     @Location("/soknad/valider")
     class validerSoknad
 
-    post { _ : validerSoknad ->
+    post { _: validerSoknad ->
         val søknad = call.receive<Søknad>()
         logger.info("Validerer søknad...")
         val mottatt = ZonedDateTime.now(ZoneOffset.UTC)

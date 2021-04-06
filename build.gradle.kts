@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "1.5.2.1303b90"
+val dusseldorfKtorVersion = "1.5.2.012b5da"
 val ktorVersion = ext.get("ktorVersion").toString()
 val k9FormatVersion = "5.1.28"
 val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
@@ -24,6 +24,7 @@ dependencies {
     implementation ( "no.nav.helse:dusseldorf-ktor-metrics:$dusseldorfKtorVersion")
     implementation ( "no.nav.helse:dusseldorf-ktor-health:$dusseldorfKtorVersion")
     implementation ( "no.nav.helse:dusseldorf-ktor-auth:$dusseldorfKtorVersion")
+    implementation ( "no.nav.helse:dusseldorf-ktor-unleash:$dusseldorfKtorVersion")
     implementation ("io.ktor:ktor-locations:$ktorVersion")
 
     implementation ( "no.nav.k9:soknad:$k9FormatVersion")
