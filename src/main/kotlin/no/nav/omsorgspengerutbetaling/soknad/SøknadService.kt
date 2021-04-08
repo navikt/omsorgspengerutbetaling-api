@@ -42,6 +42,7 @@ internal class SøknadService(
             språk = søknad.språk,
             mottatt = mottatt,
             søker = søker,
+            harDekketTiFørsteDagerSelv = søknad.harDekketTiFørsteDagerSelv,
             bosteder = søknad.bosteder,
             opphold = søknad.opphold,
             spørsmål = søknad.spørsmål,

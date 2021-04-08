@@ -19,6 +19,7 @@ internal object SøknadUtils {
 
     internal val defaultSøknad = Søknad(
         språk = Språk.BOKMÅL,
+        harDekketTiFørsteDagerSelv = true,
         bosteder = listOf(
             Bosted(
                 fraOgMed = start.minusDays(20),
@@ -134,6 +135,7 @@ internal object SøknadUtils {
         språk = Språk.BOKMÅL,
         mottatt = mottatt,
         søker = søker,
+        harDekketTiFørsteDagerSelv = true,
         bosteder = listOf(
             Bosted(
                 fraOgMed = start.minusDays(20),

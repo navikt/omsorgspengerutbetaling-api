@@ -8,6 +8,7 @@ import java.util.*
 data class Søknad(
     val søknadId: SøknadId = SøknadId(UUID.randomUUID().toString()),
     val språk: Språk,
+    val harDekketTiFørsteDagerSelv: Boolean? = null, // TODO: 08/04/2021 Fjern nullable etter prodsetting.
     val bosteder: List<Bosted>,
     val opphold: List<Opphold>,
     val spørsmål: List<SpørsmålOgSvar>,

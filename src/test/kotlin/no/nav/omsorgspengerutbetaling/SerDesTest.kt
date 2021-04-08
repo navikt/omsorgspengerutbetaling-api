@@ -114,6 +114,7 @@ internal class SerDesTest {
             "søknadId": "$søknadId",
             "mottatt": "2018-01-02T03:04:05.000000006Z",
             "språk": "nb",
+            "harDekketTiFørsteDagerSelv": true,
             "søker": {
                 "aktørId": "123456",
                 "fødselsdato": "1999-11-02",
@@ -294,6 +295,7 @@ internal class SerDesTest {
         {
             "søknadId": "$søknadId",
             "språk": "nb",
+            "harDekketTiFørsteDagerSelv": true,
             "bosteder": [{
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
