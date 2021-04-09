@@ -1,21 +1,15 @@
 package no.nav.omsorgspengerutbetaling
 
-import io.ktor.config.ApplicationConfig
-import io.ktor.util.KtorExperimentalAPI
-import no.finn.unleash.FakeUnleash
-import no.finn.unleash.Unleash
-import no.finn.unleash.event.UnleashReady
-import no.finn.unleash.event.UnleashSubscriber
-import no.finn.unleash.repository.FeatureToggleResponse
-import no.finn.unleash.repository.ToggleCollection
+import io.ktor.config.*
+import io.ktor.util.*
+import no.finn.unleash.util.UnleashConfig
 import no.nav.helse.dusseldorf.ktor.auth.EnforceEqualsOrContains
 import no.nav.helse.dusseldorf.ktor.auth.issuers
 import no.nav.helse.dusseldorf.ktor.auth.withAdditionalClaimRules
 import no.nav.helse.dusseldorf.ktor.core.getOptionalList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredString
-import no.nav.helse.dusseldorf.ktor.unleash.IsNotProdStrategy
-import no.nav.helse.dusseldorf.ktor.unleash.unleashConfig
+import no.nav.helse.dusseldorf.ktor.unleash.unleashConfigBuilder
 import no.nav.omsorgspengerutbetaling.general.auth.ApiGatewayApiKey
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -27,37 +21,7 @@ data class Configuration(val config: ApplicationConfig) {
         private val logger = LoggerFactory.getLogger(Configuration::class.java)
     }
 
-    internal fun unleash(): Unleash {
-        val unleash = config.unleashConfig(
-            subscriber = object : UnleashSubscriber {
-                override fun onReady(ready: UnleashReady) {
-                    logger.info("Unleash is ready")
-                }
-
-                override fun togglesFetched(response: FeatureToggleResponse) {
-                    when (response.status) {
-                        FeatureToggleResponse.Status.CHANGED -> logger.info(
-                            "Feature toggles changed: {}",
-                            response.toggleCollection.features
-                        )
-                        FeatureToggleResponse.Status.UNAVAILABLE -> logger.warn(
-                            "Feature toggles is not available. HTTP status code = {}",
-                            response.httpStatusCode
-                        )
-                        else -> {
-                        }
-                    }
-                }
-
-                override fun togglesBackedUp(toggleCollection: ToggleCollection) {
-                    logger.info("Backup stored.")
-                }
-            }
-        )
-
-        if (unleash is FakeUnleash) unleash.enableAll()
-        return unleash
-    }
+    internal fun unleashConfigBuilder(): UnleashConfig.Builder = config.unleashConfigBuilder()
 
     private val loginServiceClaimRules = setOf(
         EnforceEqualsOrContains("acr", "Level4")

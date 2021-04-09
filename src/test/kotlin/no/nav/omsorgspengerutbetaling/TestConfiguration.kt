@@ -21,7 +21,9 @@ object TestConfiguration {
         omsorgpengerutbetalingsoknadMottakUrl : String? = wireMockServer?.getOmsorgpengerutbetalingsoknadMottakUrl(),
         k9DokumentUrl : String? = wireMockServer?.getK9DokumentUrl(),
         corsAdresses : String = "http://localhost:8080",
-        redisServer: RedisServer
+        redisServer: RedisServer,
+        cluster: String = "test",
+        unleashAPI: String = "http://localhost:8080/unleash/api/"
     ) : Map<String, String> {
 
         val map = mutableMapOf(
@@ -31,7 +33,14 @@ object TestConfiguration {
             Pair("nav.gateways.omsorgpengesoknad_mottak_base_url", "$omsorgpengerutbetalingsoknadMottakUrl"),
             Pair("nav.gateways.k9_dokument_url", "$k9DokumentUrl"),
             Pair("nav.cors.addresses", corsAdresses),
-            Pair("nav.authorization.api_gateway.api_key", "verysecret")
+            Pair("nav.authorization.api_gateway.api_key", "verysecret"),
+            Pair("nav.unleash.appName", "omsorgspengerutbetaling-api-test-app"),
+            Pair("nav.unleash.instanceId", "omsorgspengerutbetaling-api-test-app-1"),
+            Pair("nav.unleash.unleashAPI", unleashAPI),
+            Pair("nav.unleash.synchronousFetchOnInitialisation", "false"),
+            Pair("nav.unleash.fetchTogglesInterval", "2"),
+            Pair("nav.unleash.sendMetricsInterval", "3"),
+            Pair("nav.unleash.environment", cluster)
         )
 
         if (wireMockServer != null) {
@@ -53,8 +62,6 @@ object TestConfiguration {
         map["nav.redis.host"] = redisServer.host
         map["nav.redis.port"] = "${redisServer.bindPort}"
         map["nav.storage.passphrase"] = "verySecret"
-
-        map["nav.unleash.cluster"] = "test"
 
         return map.toMap()
     }
