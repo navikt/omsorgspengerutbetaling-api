@@ -236,7 +236,7 @@ fun Application.omsorgpengesoknadapi() {
 
     environment.monitor.subscribe(ApplicationStopping) {
         logger.info("Stopper RedisClient...")
-        redisClient.shutdownAsync()
+        redisClient.shutdown()
         logger.info("RedisClient Stoppet.")
     }
 }
