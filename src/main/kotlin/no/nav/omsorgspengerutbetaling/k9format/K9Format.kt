@@ -65,7 +65,7 @@ private fun List<Bosted>.tilK9Bosteder(): Bosteder {
 fun List<Utbetalingsperiode>.tilFraværsperiode(): List<FraværPeriode> = map { utbetalingsperiode ->
     FraværPeriode(
         Periode(utbetalingsperiode.fraOgMed, utbetalingsperiode.tilOgMed),
-        utbetalingsperiode.antallTimerBorte?: Duration.ofHours(7).plusMinutes(30),
+        utbetalingsperiode.antallTimerBorte,
         utbetalingsperiode.årsak?.let { FraværÅrsak.valueOf(it.name) } ?: FraværÅrsak.ORDINÆRT_FRAVÆR,
         utbetalingsperiode.aktivitetFravær.map {
             when(it) {
