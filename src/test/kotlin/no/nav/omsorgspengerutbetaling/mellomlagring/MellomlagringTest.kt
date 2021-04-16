@@ -23,7 +23,7 @@ class MellomlagringTest {
         val logger = LoggerFactory.getLogger(MellomlagringTest::class.java)
 
         val redisServer: RedisServer = RedisServer
-            .newRedisServer(6379)
+            .newRedisServer()
             .started()
 
         val redisClient = RedisConfig.redisClient(
