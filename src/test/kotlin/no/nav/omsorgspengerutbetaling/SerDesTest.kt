@@ -283,7 +283,8 @@ internal class SerDesTest {
                           "land": "GB",
                           "årsak": null
                         }
-                      }
+                      },
+                      "perioderSomSkalSlettes": {}
                     }
                   }
             }

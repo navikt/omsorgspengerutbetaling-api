@@ -16,7 +16,6 @@ import no.nav.k9.søknad.felles.type.Periode
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.omsorgspengerutbetaling.soknad.*
 import java.math.BigDecimal
-import java.time.Duration
 import java.time.ZonedDateTime
 import no.nav.omsorgspengerutbetaling.soknad.Søknad as OmsorgspengerutbetalingSoknadSøknad
 
@@ -43,23 +42,21 @@ fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
 fun List<Opphold>.tilK9Utenlandsopphold(): Utenlandsopphold {
     val perioder = mutableMapOf<Periode, Utenlandsopphold.UtenlandsoppholdPeriodeInfo>()
     forEach {
-
         val periode = Periode(it.fraOgMed, it.tilOgMed)
-        perioder[periode] = Utenlandsopphold.UtenlandsoppholdPeriodeInfo.builder()
-            .land(Landkode.of(it.landkode))
-            .build()
+        perioder[periode] = Utenlandsopphold.UtenlandsoppholdPeriodeInfo()
+            .medLand(Landkode.of(it.landkode))
     }
-    return Utenlandsopphold(perioder)
+    return Utenlandsopphold().medPerioder(perioder)
 }
 
 private fun List<Bosted>.tilK9Bosteder(): Bosteder {
     val perioder = mutableMapOf<Periode, Bosteder.BostedPeriodeInfo>()
     forEach {
         val periode = Periode(it.fraOgMed, it.tilOgMed)
-        perioder[periode] = Bosteder.BostedPeriodeInfo(Landkode.of(it.landkode))
+        perioder[periode] = Bosteder.BostedPeriodeInfo().medLand(Landkode.of(it.landkode))
     }
 
-    return Bosteder(perioder)
+    return Bosteder().medPerioder(perioder)
 }
 
 fun List<Utbetalingsperiode>.tilFraværsperiode(): List<FraværPeriode> = map { utbetalingsperiode ->
