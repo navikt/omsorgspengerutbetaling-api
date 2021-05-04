@@ -10,8 +10,7 @@ import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Søker
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold
-import no.nav.k9.søknad.felles.type.Landkode
-import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
+import no.nav.k9.søknad.felles.type.*
 import no.nav.k9.søknad.felles.type.Periode
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.omsorgspengerutbetaling.soknad.*

@@ -276,7 +276,14 @@ internal class SerDesTest {
                         "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
                       }
                     ],
-                    "bosteder": null,
+                    "bosteder": {
+                      "perioder": {
+                        "2019-12-12/2019-12-22": {
+                          "land": "GB"
+                        }
+                      },
+                      "perioderSomSkalSlettes": {}
+                    },
                     "utenlandsopphold": {
                       "perioder": {
                         "2019-12-12/2019-12-22": {
