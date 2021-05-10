@@ -167,7 +167,7 @@ fun Application.omsorgpengesoknadapi() {
                     omsorgpengesøknadMottakGateway = omsorgpengesoknadMottakGateway,
                     vedleggService = vedleggService
                 ),
-                søkerService = søkerService,
+                søkerService = søkerService
             )
         }
 
