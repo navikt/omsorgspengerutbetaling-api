@@ -21,9 +21,7 @@ object TestConfiguration {
         omsorgpengerutbetalingsoknadMottakUrl : String? = wireMockServer?.getOmsorgpengerutbetalingsoknadMottakUrl(),
         k9DokumentUrl : String? = wireMockServer?.getK9DokumentUrl(),
         corsAdresses : String = "http://localhost:8080",
-        redisServer: RedisServer,
-        cluster: String = "test",
-        unleashAPI: String = "http://localhost:8080/unleash/api/"
+        redisServer: RedisServer
     ) : Map<String, String> {
 
         val map = mutableMapOf(
