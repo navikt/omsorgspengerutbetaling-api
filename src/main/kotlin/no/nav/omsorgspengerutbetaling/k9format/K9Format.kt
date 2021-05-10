@@ -106,7 +106,6 @@ fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrive
     }
 
     varigEndring?.let {
-        infoBuilder.bruttoInntekt(BigDecimal.valueOf(it.inntektEtterEndring.toLong()))
         infoBuilder
             .erVarigEndring(true)
             .bruttoInntekt(BigDecimal.valueOf(it.inntektEtterEndring.toLong()))
