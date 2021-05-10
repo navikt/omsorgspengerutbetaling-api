@@ -33,14 +33,7 @@ object TestConfiguration {
             Pair("nav.gateways.omsorgpengesoknad_mottak_base_url", "$omsorgpengerutbetalingsoknadMottakUrl"),
             Pair("nav.gateways.k9_dokument_url", "$k9DokumentUrl"),
             Pair("nav.cors.addresses", corsAdresses),
-            Pair("nav.authorization.api_gateway.api_key", "verysecret"),
-            Pair("nav.unleash.appName", "omsorgspengerutbetaling-api-test-app"),
-            Pair("nav.unleash.instanceId", "omsorgspengerutbetaling-api-test-app-1"),
-            Pair("nav.unleash.unleashAPI", unleashAPI),
-            Pair("nav.unleash.synchronousFetchOnInitialisation", "false"),
-            Pair("nav.unleash.fetchTogglesInterval", "2"),
-            Pair("nav.unleash.sendMetricsInterval", "3"),
-            Pair("nav.unleash.environment", cluster)
+            Pair("nav.authorization.api_gateway.api_key", "verysecret")
         )
 
         if (wireMockServer != null) {

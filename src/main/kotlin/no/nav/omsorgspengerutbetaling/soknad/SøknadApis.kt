@@ -8,8 +8,6 @@ import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
-import no.nav.helse.dusseldorf.ktor.unleash.UnleashService
-import no.nav.omsorgspengerutbetaling.FeatureFlag
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.getCallId
 import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
@@ -27,8 +25,7 @@ private val logger: Logger = LoggerFactory.getLogger("nav.soknadApis")
 internal fun Route.søknadApis(
     søknadService: SøknadService,
     søkerService: SøkerService,
-    idTokenProvider: IdTokenProvider,
-    unleashService: UnleashService
+    idTokenProvider: IdTokenProvider
 ) {
 
     @Location("/soknad")
@@ -56,10 +53,8 @@ internal fun Route.søknadApis(
             søker = søker
         )
 
-        if (unleashService.isEnabled(FeatureFlag.OMP_UT_SNF_SOKNAD_VALIDERING, true)) {
-            søknad.valider(k9FormatSøknad)
-            logger.trace("Validering OK. Registrerer søknad.")
-        } else logger.info("Validering av søknad er deaktivert.")
+        søknad.valider(k9FormatSøknad)
+        logger.trace("Validering OK. Registrerer søknad.")
 
         søknadService.registrer(
             søknad = søknad,

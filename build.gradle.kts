@@ -24,7 +24,6 @@ dependencies {
     implementation ( "no.nav.helse:dusseldorf-ktor-metrics:$dusseldorfKtorVersion")
     implementation ( "no.nav.helse:dusseldorf-ktor-health:$dusseldorfKtorVersion")
     implementation ( "no.nav.helse:dusseldorf-ktor-auth:$dusseldorfKtorVersion")
-    implementation ( "no.nav.helse:dusseldorf-ktor-unleash:$dusseldorfKtorVersion")
     implementation ("io.ktor:ktor-locations:$ktorVersion")
 
     implementation ( "no.nav.k9:soknad:$k9FormatVersion")

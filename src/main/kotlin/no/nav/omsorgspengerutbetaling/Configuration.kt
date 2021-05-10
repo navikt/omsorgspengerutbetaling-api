@@ -2,14 +2,12 @@ package no.nav.omsorgspengerutbetaling
 
 import io.ktor.config.*
 import io.ktor.util.*
-import no.finn.unleash.util.UnleashConfig
 import no.nav.helse.dusseldorf.ktor.auth.EnforceEqualsOrContains
 import no.nav.helse.dusseldorf.ktor.auth.issuers
 import no.nav.helse.dusseldorf.ktor.auth.withAdditionalClaimRules
 import no.nav.helse.dusseldorf.ktor.core.getOptionalList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredString
-import no.nav.helse.dusseldorf.ktor.unleash.unleashConfigBuilder
 import no.nav.omsorgspengerutbetaling.general.auth.ApiGatewayApiKey
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -20,8 +18,6 @@ data class Configuration(val config: ApplicationConfig) {
     companion object {
         private val logger = LoggerFactory.getLogger(Configuration::class.java)
     }
-
-    internal fun unleashConfigBuilder(): UnleashConfig.Builder = config.unleashConfigBuilder()
 
     private val loginServiceClaimRules = setOf(
         EnforceEqualsOrContains("acr", "Level4")

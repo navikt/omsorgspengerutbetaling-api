@@ -30,7 +30,6 @@ import no.nav.helse.dusseldorf.ktor.jackson.JacksonStatusPages
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.dusseldorf.ktor.metrics.init
-import no.nav.helse.dusseldorf.ktor.unleash.UnleashService
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenStatusPages
 import no.nav.omsorgspengerutbetaling.general.systemauth.AccessTokenClientResolver
@@ -139,8 +138,6 @@ fun Application.omsorgpengesoknadapi() {
             søkerGateway = sokerGateway
         )
 
-        val unleashService = UnleashService(configuration.unleashConfigBuilder())
-
         authenticate(*issuers.allIssuers()) {
 
             søkerApis(
@@ -171,14 +168,12 @@ fun Application.omsorgpengesoknadapi() {
                     vedleggService = vedleggService
                 ),
                 søkerService = søkerService,
-                unleashService = unleashService
             )
         }
 
         val healthService = HealthService(
             healthChecks = setOf(
                 omsorgpengesoknadMottakGateway,
-                unleashService,
                 HttpRequestHealthCheck(
                     mapOf(
                         Url.buildURL(
