@@ -8,7 +8,7 @@ import java.util.*
 data class Søknad(
     val søknadId: SøknadId = SøknadId(UUID.randomUUID().toString()),
     val språk: Språk,
-    val harDekketTiFørsteDagerSelv: Boolean,
+    val harDekketTiFørsteDagerSelv: Boolean? = null,
     val bosteder: List<Bosted>,
     val opphold: List<Opphold>,
     val spørsmål: List<SpørsmålOgSvar>,

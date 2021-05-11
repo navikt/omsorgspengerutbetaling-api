@@ -200,6 +200,7 @@ class ApplicationTest {
             """
             {
             "språk": "nb",
+            "harDekketTiFørsteDagerSelv": true,
             "bosteder": [{
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
