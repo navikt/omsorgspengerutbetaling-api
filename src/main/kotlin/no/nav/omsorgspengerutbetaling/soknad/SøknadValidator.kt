@@ -3,12 +3,23 @@ package no.nav.omsorgspengerutbetaling.soknad
 import no.nav.helse.dusseldorf.ktor.core.*
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetalingValidator
+import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
+import java.net.URL
 import java.time.format.DateTimeFormatter
 
 private const val MAX_FRITEKST_TEGN = 1000
+private const val MAX_VEDLEGG_SIZE = 24 * 1024 * 1024
 internal val vekttallProviderFnr1: (Int) -> Int = { arrayOf(3, 7, 6, 1, 8, 9, 4, 5, 2).reversedArray()[it] }
 internal val vekttallProviderFnr2: (Int) -> Int = { arrayOf(5, 4, 3, 2, 7, 6, 5, 4, 3, 2).reversedArray()[it] }
 private val fnrDateFormat = DateTimeFormatter.ofPattern("ddMMyy")
+
+internal val VedleggUrlRegex = Regex("/vedlegg/.*")
+
+internal val VedleggTooLargeProblemDetails = DefaultProblemDetails(
+    title = "attachments-too-large",
+    status = 413,
+    detail = "Totale størreslsen på alle vedlegg overstiger maks på 24 MB."
+)
 
 internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
     val violations = mutableSetOf<Violation>().apply {
@@ -129,5 +140,30 @@ internal object Mod11 {
             1 -> '-'
             else -> "${11 - rest}"[0]
         }
+    }
+}
+
+
+internal fun List<Vedlegg>.valider(vedleggReferanser: List<URL>) {
+
+    if (vedleggReferanser.size != size) {
+        throw Throwblem(
+            ValidationProblemDetails(
+                violations = setOf(
+                    Violation(
+                        parameterName = "vedlegg",
+                        parameterType = ParameterType.ENTITY,
+                        reason = "Mottok referanse til ${vedleggReferanser.size} vedlegg, men fant kun $size vedlegg.",
+                        invalidValue = vedleggReferanser
+                    )
+                )
+            )
+        )
+    }
+
+    val totalSize = sumBy { it.content.size }
+
+    if (totalSize > MAX_VEDLEGG_SIZE) {
+        throw Throwblem(VedleggTooLargeProblemDetails)
     }
 }

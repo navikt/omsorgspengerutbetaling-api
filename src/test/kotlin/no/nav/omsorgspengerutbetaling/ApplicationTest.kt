@@ -165,19 +165,20 @@ class ApplicationTest {
                     )
                 ),
                 utbetalingsperioder = listOf(
-                    UtbetalingsperiodeMedVedlegg(
+                    Utbetalingsperiode(
                         fraOgMed = LocalDate.now(),
                         tilOgMed = LocalDate.now(),
                         antallTimerPlanlagt = Duration.ofHours(3),
                         antallTimerBorte = Duration.ofHours(2),
-                        legeerklæringer = listOf(URI(jpegUrl), URI(pdfUrl))
+                        aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
                     ),
-                    UtbetalingsperiodeMedVedlegg(
+                    Utbetalingsperiode(
                         fraOgMed = LocalDate.now().plusDays(10),
                         tilOgMed = LocalDate.now().plusDays(15),
-                        legeerklæringer = listOf()
+                        aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
                     )
-                )
+                ),
+                vedlegg = listOf(URL(jpegUrl), URL(pdfUrl))
             ).somJson()
         )
     }
@@ -237,17 +238,19 @@ class ApplicationTest {
                 "tilOgMed": "2020-01-11",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
-                "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE"
+                "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE",
+                "aktivitetFravær": ["FRILANSER"]
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
-                "årsak": "SMITTEVERNHENSYN"
+                "årsak": "SMITTEVERNHENSYN",
+                "aktivitetFravær": ["SELVSTENDIG_VIRKSOMHET"]
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
-                "legeerklæringer": []
+                "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
             }],
             "frilans": {
                 "startdato": "2020-01-01",
@@ -341,7 +344,7 @@ class ApplicationTest {
                 "instance": "about:blank",
                 "invalid_parameters": [{
                     "type": "entity",
-                    "name": "utbetalingsperioder",
+                    "name": "vedlegg",
                     "reason": "Mottok referanse til 2 vedlegg, men fant kun 1 vedlegg.",
                     "invalid_value": ["$jpegUrl", "$finnesIkkeUrl"]
                 }]
@@ -358,7 +361,6 @@ class ApplicationTest {
     @Test
     fun `Sende soknad hvor antallTimerPlanlagt er satt men ikke antallTimerBorte`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
-        val jpegUrl = engine.jpegUrl(cookie)
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
@@ -386,10 +388,50 @@ class ApplicationTest {
             cookie = cookie,
             requestEntity = SøknadUtils.defaultSøknad.copy(
                 utbetalingsperioder = listOf(
-                    UtbetalingsperiodeMedVedlegg(
+                    Utbetalingsperiode(
                         fraOgMed = LocalDate.now(),
                         tilOgMed = LocalDate.now().plusDays(1),
-                        antallTimerPlanlagt = Duration.ofHours(7)
+                        antallTimerPlanlagt = Duration.ofHours(7),
+                        aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
+                    )
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
+    fun `Gitt at ingen aktivitetFravær er oppgitt på utbetalingsperiode, forvent valideringsfeil`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = "/soknad",
+            expectedResponse =
+            //language=json
+            """
+            {
+              "type": "/problem-details/invalid-request-parameters",
+              "title": "invalid-request-parameters",
+              "status": 400,
+              "detail": "Requesten inneholder ugyldige paramtere.",
+              "instance": "about:blank",
+              "invalid_parameters": [
+                {
+                  "type": "entity",
+                  "name": "fraværsperioder[0].aktivitetFravær",
+                  "reason": "size must be between 1 and 2",
+                  "invalid_value": "k9-format feilkode: påkrevd"
+                }
+              ]
+            }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = SøknadUtils.defaultSøknad.copy(
+                utbetalingsperioder = listOf(
+                    Utbetalingsperiode(
+                        fraOgMed = LocalDate.now(),
+                        tilOgMed = LocalDate.now().plusDays(1)
                     )
                 )
             ).somJson()
@@ -399,7 +441,6 @@ class ApplicationTest {
     @Test
     fun `Sende soknad hvor antallTimerPlanlagt er mindre enn antallTimerBorte`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
-        val jpegUrl = engine.jpegUrl(cookie)
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
@@ -427,11 +468,12 @@ class ApplicationTest {
             cookie = cookie,
             requestEntity = SøknadUtils.defaultSøknad.copy(
                 utbetalingsperioder = listOf(
-                    UtbetalingsperiodeMedVedlegg(
+                    Utbetalingsperiode(
                         fraOgMed = LocalDate.now(),
                         tilOgMed = LocalDate.now().plusDays(1),
                         antallTimerPlanlagt = Duration.ofHours(7),
-                        antallTimerBorte = Duration.ofHours(8)
+                        antallTimerBorte = Duration.ofHours(8),
+                        aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
                     )
                 )
             ).somJson()

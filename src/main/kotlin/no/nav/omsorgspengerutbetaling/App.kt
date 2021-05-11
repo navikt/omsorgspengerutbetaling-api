@@ -66,6 +66,10 @@ fun Application.omsorgpengesoknadapi() {
     val configuration = Configuration(environment.config)
     val apiGatewayApiKey = configuration.getApiGatewayApiKey()
     val accessTokenClientResolver = AccessTokenClientResolver(environment.config.clients())
+    val redisClient = RedisConfig.redisClient(
+        redisHost = configuration.getRedisHost(),
+        redisPort = configuration.getRedisPort()
+    )
 
     install(ContentNegotiation) {
         jackson {
@@ -141,13 +145,11 @@ fun Application.omsorgpengesoknadapi() {
                 idTokenProvider = idTokenProvider
             )
 
+
             mellomlagringApis(
                 mellomlagringService = MellomlagringService(
                     redisStore = RedisStore(
-                        redisClient = RedisConfig.redisClient(
-                            redisHost = configuration.getRedisHost(),
-                            redisPort = configuration.getRedisPort()
-                        )
+                        redisClient = redisClient
                     ),
                     passphrase = configuration.getStoragePassphrase()
                 ),
@@ -225,6 +227,12 @@ fun Application.omsorgpengesoknadapi() {
                 null
             }
         }
+    }
+
+    environment.monitor.subscribe(ApplicationStopping) {
+        logger.info("Stopper RedisClient...")
+        redisClient.shutdown()
+        logger.info("RedisClient Stoppet.")
     }
 }
 

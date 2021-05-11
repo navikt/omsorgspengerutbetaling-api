@@ -26,17 +26,6 @@ internal class SøknadService(
         k9FormatSøknad: no.nav.k9.søknad.Søknad
     ) {
 
-        val utbetalingsperioder = søknad.utbetalingsperioder.map {
-            UtbetalingsperiodeUtenVedlegg(
-                fraOgMed = it.fraOgMed,
-                tilOgMed = it.tilOgMed,
-                lengde = it.lengde, //TODO: Fjerne etter prodsetting
-                antallTimerBorte = it.antallTimerBorte,
-                antallTimerPlanlagt = it.antallTimerPlanlagt,
-                årsak = it.årsak
-            )
-        }
-
         logger.trace("Henter ${søknad.vedlegg?.size ?: 0} vedlegg.")
         val vedlegg = vedleggService.hentVedlegg(
             idToken = idToken,
@@ -53,10 +42,11 @@ internal class SøknadService(
             språk = søknad.språk,
             mottatt = mottatt,
             søker = søker,
+            harDekketTiFørsteDagerSelv = søknad.harDekketTiFørsteDagerSelv,
             bosteder = søknad.bosteder,
             opphold = søknad.opphold,
             spørsmål = søknad.spørsmål,
-            utbetalingsperioder = utbetalingsperioder,
+            utbetalingsperioder = søknad.utbetalingsperioder,
             andreUtbetalinger = søknad.andreUtbetalinger,
             vedlegg = vedlegg,
             frilans = søknad.frilans,

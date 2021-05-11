@@ -2,15 +2,15 @@ package no.nav.omsorgspengerutbetaling.k9format
 
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.Versjon
-import no.nav.k9.søknad.felles.aktivitet.*
+import no.nav.k9.søknad.felles.fravær.AktivitetFravær as K9AktivitetFravær
 import no.nav.k9.søknad.felles.fravær.FraværPeriode
 import no.nav.k9.søknad.felles.fravær.FraværÅrsak
+import no.nav.k9.søknad.felles.opptjening.*
 import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Søker
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold
-import no.nav.k9.søknad.felles.type.Landkode
-import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
+import no.nav.k9.søknad.felles.type.*
 import no.nav.k9.søknad.felles.type.Periode
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.omsorgspengerutbetaling.soknad.*
@@ -30,7 +30,7 @@ fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
         søker.tilK9Søker(),
         OmsorgspengerUtbetaling(
             fosterbarn?.tilK9Barn(),
-            arbeidAktivitet(),
+            opptjeningAktivitet(),
             this.utbetalingsperioder.tilFraværsperiode(),
             this.bosteder.tilK9Bosteder(),
             this.opphold.tilK9Utenlandsopphold()
@@ -41,34 +41,38 @@ fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
 fun List<Opphold>.tilK9Utenlandsopphold(): Utenlandsopphold {
     val perioder = mutableMapOf<Periode, Utenlandsopphold.UtenlandsoppholdPeriodeInfo>()
     forEach {
-
         val periode = Periode(it.fraOgMed, it.tilOgMed)
-        perioder[periode] = Utenlandsopphold.UtenlandsoppholdPeriodeInfo.builder()
-            .land(Landkode.of(it.landkode))
-            .build()
+        perioder[periode] = Utenlandsopphold.UtenlandsoppholdPeriodeInfo()
+            .medLand(Landkode.of(it.landkode))
     }
-    return Utenlandsopphold(perioder)
+    return Utenlandsopphold().medPerioder(perioder)
 }
 
 private fun List<Bosted>.tilK9Bosteder(): Bosteder {
     val perioder = mutableMapOf<Periode, Bosteder.BostedPeriodeInfo>()
     forEach {
         val periode = Periode(it.fraOgMed, it.tilOgMed)
-        perioder[periode] = Bosteder.BostedPeriodeInfo(Landkode.of(it.landkode))
+        perioder[periode] = Bosteder.BostedPeriodeInfo().medLand(Landkode.of(it.landkode))
     }
 
-    return Bosteder(perioder)
+    return Bosteder().medPerioder(perioder)
 }
 
-fun List<UtbetalingsperiodeMedVedlegg>.tilFraværsperiode(): List<FraværPeriode> = map { utbetalingsperiode ->
+fun List<Utbetalingsperiode>.tilFraværsperiode(): List<FraværPeriode> = map { utbetalingsperiode ->
     FraværPeriode(
         Periode(utbetalingsperiode.fraOgMed, utbetalingsperiode.tilOgMed),
-        utbetalingsperiode.lengde,
-        utbetalingsperiode.årsak?.let { FraværÅrsak.valueOf(it.name) } ?: FraværÅrsak.ORDINÆRT_FRAVÆR
+        utbetalingsperiode.antallTimerBorte,
+        utbetalingsperiode.årsak?.let { FraværÅrsak.valueOf(it.name) } ?: FraværÅrsak.ORDINÆRT_FRAVÆR,
+        utbetalingsperiode.aktivitetFravær.map {
+            when(it) {
+                AktivitetFravær.FRILANSER -> K9AktivitetFravær.FRILANSER
+                AktivitetFravær.SELVSTENDIG_VIRKSOMHET -> K9AktivitetFravær.SELVSTENDIG_VIRKSOMHET
+            }
+        }
     )
 }
 
-fun OmsorgspengerutbetalingSoknadSøknad.arbeidAktivitet() = ArbeidAktivitet(
+fun OmsorgspengerutbetalingSoknadSøknad.opptjeningAktivitet() = OpptjeningAktivitet(
     null,
     selvstendigVirksomheter.tilK9SelvstendingNæringsdrivende(),
     frilans?.tilK9Frilanser()
@@ -104,6 +108,7 @@ fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrive
     varigEndring?.let {
         infoBuilder
             .erVarigEndring(true)
+            .bruttoInntekt(BigDecimal.valueOf(it.inntektEtterEndring.toLong()))
             .endringDato(it.dato)
             .endringBegrunnelse(it.forklaring)
     } ?: infoBuilder.erVarigEndring(false)

@@ -31,7 +31,7 @@ internal fun Route.søknadApis(
     @Location("/soknad")
     class sendSoknad
 
-    post { _ : sendSoknad ->
+    post { _: sendSoknad ->
         logger.trace("Mottatt ny søknad. Mapper søknad.")
         val søknad = call.receive<Søknad>()
         val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
@@ -72,7 +72,7 @@ internal fun Route.søknadApis(
     @Location("/soknad/valider")
     class validerSoknad
 
-    post { _ : validerSoknad ->
+    post { _: validerSoknad ->
         val søknad = call.receive<Søknad>()
         logger.info("Validerer søknad...")
         val mottatt = ZonedDateTime.now(ZoneOffset.UTC)

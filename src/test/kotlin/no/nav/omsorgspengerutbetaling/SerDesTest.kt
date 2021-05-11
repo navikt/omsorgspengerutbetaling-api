@@ -41,27 +41,25 @@ internal class SerDesTest {
 
         val søknad = SøknadUtils.defaultSøknad.copy(
             utbetalingsperioder = listOf(
-                UtbetalingsperiodeMedVedlegg(
+                Utbetalingsperiode(
                     fraOgMed = start,
                     tilOgMed = start.plusDays(10),
-                    legeerklæringer = listOf(URI("http://localhost:8080/vedlegg/1")),
-                    årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE
+                    årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE,
+                    aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
                 ),
-                UtbetalingsperiodeMedVedlegg(
+                Utbetalingsperiode(
                     fraOgMed = start.plusDays(20),
                     tilOgMed = start.plusDays(20),
                     antallTimerPlanlagt = Duration.ofHours(7).plusMinutes(30),
                     antallTimerBorte = Duration.ofHours(7).plusMinutes(30),
-                    legeerklæringer = listOf(
-                        URI("http://localhost:8080/vedlegg/2"),
-                        URI("http://localhost:8080/vedlegg/3")
-                    ),
-                    årsak = FraværÅrsak.SMITTEVERNHENSYN
+                    årsak = FraværÅrsak.SMITTEVERNHENSYN,
+                    aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
                 ),
-                UtbetalingsperiodeMedVedlegg(
+                Utbetalingsperiode(
                     fraOgMed = start.plusDays(30),
                     tilOgMed = start.plusDays(35),
-                    årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
+                    årsak = FraværÅrsak.ORDINÆRT_FRAVÆR,
+                    aktivitetFravær = listOf(AktivitetFravær.FRILANSER, AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
                 )
             ),
             frilans = Frilans(
@@ -116,6 +114,7 @@ internal class SerDesTest {
             "søknadId": "$søknadId",
             "mottatt": "2018-01-02T03:04:05.000000006Z",
             "språk": "nb",
+            "harDekketTiFørsteDagerSelv": true,
             "søker": {
                 "aktørId": "123456",
                 "fødselsdato": "1999-11-02",
@@ -152,22 +151,22 @@ internal class SerDesTest {
                 "tilOgMed": "2020-01-11",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
-                "lengde": "PT7H",
-                "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE"
+                "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE",
+                "aktivitetFravær": ["FRILANSER"]
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
-                "lengde": "PT5H",
-                "årsak": "SMITTEVERNHENSYN"
+                "årsak": "SMITTEVERNHENSYN",
+                "aktivitetFravær": ["SELVSTENDIG_VIRKSOMHET"]
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
                 "antallTimerBorte": "PT3H",
                 "antallTimerPlanlagt": "PT5H",
-                "lengde": null,
-                "årsak": "ORDINÆRT_FRAVÆR"
+                "årsak": "ORDINÆRT_FRAVÆR",
+                "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger"],
             "frilans": {
@@ -241,7 +240,7 @@ internal class SerDesTest {
                               "erVarigEndring": true,
                               "endringDato": "2020-01-01",
                               "endringBegrunnelse": "Fordi",
-                              "bruttoInntekt": 123123,
+                              "bruttoInntekt": 1337,
                               "erNyoppstartet": true,
                               "registrertIUtlandet": true,
                               "landkode": "DEU"
@@ -260,28 +259,39 @@ internal class SerDesTest {
                     "fraværsperioder": [
                       {
                         "periode": "2020-01-01/2020-01-11",
-                        "duration": "PT7H", 
-                        "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE"
+                        "duration": "PT3H", 
+                        "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE",
+                        "aktivitetFravær": ["FRILANSER"]
                       },
                       {
                         "periode": "2020-01-21/2020-01-21",
-                        "duration": "PT5H", 
-                        "årsak": "SMITTEVERNHENSYN"
+                        "duration": "PT3H", 
+                        "årsak": "SMITTEVERNHENSYN",
+                        "aktivitetFravær": ["SELVSTENDIG_VIRKSOMHET"]
                       },
                       {
                         "periode": "2020-01-31/2020-02-05",
-                        "duration": null, 
-                        "årsak": "ORDINÆRT_FRAVÆR"
+                        "duration": "PT3H", 
+                        "årsak": "ORDINÆRT_FRAVÆR",
+                        "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
                       }
                     ],
-                    "bosteder": null,
+                    "bosteder": {
+                      "perioder": {
+                        "2019-12-12/2019-12-22": {
+                          "land": "GB"
+                        }
+                      },
+                      "perioderSomSkalSlettes": {}
+                    },
                     "utenlandsopphold": {
                       "perioder": {
                         "2019-12-12/2019-12-22": {
                           "land": "GB",
                           "årsak": null
                         }
-                      }
+                      },
+                      "perioderSomSkalSlettes": {}
                     }
                   }
             }
@@ -293,6 +303,7 @@ internal class SerDesTest {
         {
             "søknadId": "$søknadId",
             "språk": "nb",
+            "harDekketTiFørsteDagerSelv": true,
             "bosteder": [{
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
@@ -320,25 +331,22 @@ internal class SerDesTest {
                 "tilOgMed": "2020-01-11",
                 "antallTimerBorte": null,
                 "antallTimerPlanlagt": null,
-                "lengde": null,
-                "legeerklæringer": ["http://localhost:8080/vedlegg/1"],
-                "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE"
+                "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE",
+                "aktivitetFravær": ["FRILANSER"]
             }, {
                 "fraOgMed": "2020-01-21",
                 "tilOgMed": "2020-01-21",
                 "antallTimerBorte": "PT7H30M",
                 "antallTimerPlanlagt": "PT7H30M",
-                "lengde": null,
-                "legeerklæringer": ["http://localhost:8080/vedlegg/2", "http://localhost:8080/vedlegg/3"],
-                "årsak": "SMITTEVERNHENSYN"
+                "årsak": "SMITTEVERNHENSYN",
+                "aktivitetFravær": ["SELVSTENDIG_VIRKSOMHET"]
             }, {
                 "fraOgMed": "2020-01-31",
                 "tilOgMed": "2020-02-05",
                 "antallTimerBorte": null,
                 "antallTimerPlanlagt": null,
-                "lengde": null,
-                "legeerklæringer": [],
-                "årsak": "ORDINÆRT_FRAVÆR"
+                "årsak": "ORDINÆRT_FRAVÆR",
+                "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
             }],
             "andreUtbetalinger": ["dagpenger", "sykepenger", "midlertidigkompensasjonsnfri"],
             "frilans": {
