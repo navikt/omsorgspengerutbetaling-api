@@ -24,7 +24,7 @@ internal val VedleggTooLargeProblemDetails = DefaultProblemDetails(
 internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
     val violations = mutableSetOf<Violation>().apply {
         addAll(utbetalingsperioder.valider())
-        andreUtbetalinger?.let { addAll(it.valider()) } // TODO: Fjen optional når prodsatt.
+        addAll(andreUtbetalinger.valider())
         addAll(opphold.valider("opphold"))
         addAll(bosteder.valider("bosteder"))
         addAll(spørsmål.valider())

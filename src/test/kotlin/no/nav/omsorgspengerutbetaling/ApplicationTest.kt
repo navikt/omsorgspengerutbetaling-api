@@ -170,12 +170,14 @@ class ApplicationTest {
                         tilOgMed = LocalDate.now(),
                         antallTimerPlanlagt = Duration.ofHours(3),
                         antallTimerBorte = Duration.ofHours(2),
-                        aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
+                        aktivitetFravær = listOf(AktivitetFravær.FRILANSER),
+                        årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
                     ),
                     Utbetalingsperiode(
                         fraOgMed = LocalDate.now().plusDays(10),
                         tilOgMed = LocalDate.now().plusDays(15),
-                        aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
+                        aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET),
+                        årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
                     )
                 ),
                 vedlegg = listOf(URL(jpegUrl), URL(pdfUrl))
@@ -392,7 +394,8 @@ class ApplicationTest {
                         fraOgMed = LocalDate.now(),
                         tilOgMed = LocalDate.now().plusDays(1),
                         antallTimerPlanlagt = Duration.ofHours(7),
-                        aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
+                        aktivitetFravær = listOf(AktivitetFravær.FRILANSER),
+                        årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
                     )
                 )
             ).somJson()
@@ -431,7 +434,8 @@ class ApplicationTest {
                 utbetalingsperioder = listOf(
                     Utbetalingsperiode(
                         fraOgMed = LocalDate.now(),
-                        tilOgMed = LocalDate.now().plusDays(1)
+                        tilOgMed = LocalDate.now().plusDays(1),
+                        årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
                     )
                 )
             ).somJson()
@@ -473,7 +477,8 @@ class ApplicationTest {
                         tilOgMed = LocalDate.now().plusDays(1),
                         antallTimerPlanlagt = Duration.ofHours(7),
                         antallTimerBorte = Duration.ofHours(8),
-                        aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
+                        aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET),
+                        årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
                     )
                 )
             ).somJson()
@@ -882,7 +887,6 @@ class ApplicationTest {
     }
 
     @Test
-    @Ignore // TODO: 24/03/2021 Bør aktiveres igjen når frilans.sluttdato er prodsatt i søknadsdialogen.
     fun `Sende søknad med frilanser som har sluttet, uten sluttdato, gir feilmelding`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
@@ -921,7 +925,6 @@ class ApplicationTest {
     }
 
     @Test
-    @Ignore // TODO: 24/03/2021 Bør aktiveres igjen når frilans.sluttdato er prodsatt i søknadsdialogen.
     fun `Sende søknad med frilanser der startdato er etter sluttdato, gir feilmelding`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
