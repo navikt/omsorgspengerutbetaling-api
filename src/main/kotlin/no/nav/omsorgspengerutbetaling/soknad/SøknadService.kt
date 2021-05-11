@@ -42,7 +42,7 @@ internal class SøknadService(
             språk = søknad.språk,
             mottatt = mottatt,
             søker = søker,
-            harDekketTiFørsteDagerSelv = søknad.harDekketTiFørsteDagerSelv,
+            harDekketTiFørsteDagerSelv = søknad.harDekketTiFørsteDagerSelv!!,
             bosteder = søknad.bosteder,
             opphold = søknad.opphold,
             spørsmål = søknad.spørsmål,
@@ -53,8 +53,6 @@ internal class SøknadService(
             fosterbarn = søknad.fosterbarn,
             selvstendigVirksomheter = søknad.selvstendigVirksomheter,
             erArbeidstakerOgså = søknad.erArbeidstakerOgså,
-            hjemmePgaSmittevernhensyn = søknad.hjemmePgaSmittevernhensyn,
-            hjemmePgaStengtBhgSkole = søknad.hjemmePgaStengtBhgSkole,
             bekreftelser = søknad.bekreftelser,
             k9FormatSøknad = k9FormatSøknad
         )

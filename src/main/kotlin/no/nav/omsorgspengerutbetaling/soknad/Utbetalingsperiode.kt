@@ -29,7 +29,7 @@ data class Utbetalingsperiode(
     @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
     val antallTimerBorte: Duration? = null,
     val antallTimerPlanlagt: Duration? = null,
-    val årsak: FraværÅrsak? = null, // TODO: 15/03/2021 Fjern nullable etter prodsetting.
+    val årsak: FraværÅrsak,
     val aktivitetFravær: List<AktivitetFravær> = listOf()
 )
 

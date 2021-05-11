@@ -62,9 +62,9 @@ fun List<Utbetalingsperiode>.tilFraværsperiode(): List<FraværPeriode> = map { 
     FraværPeriode(
         Periode(utbetalingsperiode.fraOgMed, utbetalingsperiode.tilOgMed),
         utbetalingsperiode.antallTimerBorte,
-        utbetalingsperiode.årsak?.let { FraværÅrsak.valueOf(it.name) } ?: FraværÅrsak.ORDINÆRT_FRAVÆR,
+        FraværÅrsak.valueOf(utbetalingsperiode.årsak.name),
         utbetalingsperiode.aktivitetFravær.map {
-            when(it) {
+            when (it) {
                 AktivitetFravær.FRILANSER -> K9AktivitetFravær.FRILANSER
                 AktivitetFravær.SELVSTENDIG_VIRKSOMHET -> K9AktivitetFravær.SELVSTENDIG_VIRKSOMHET
             }

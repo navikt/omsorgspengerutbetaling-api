@@ -206,8 +206,6 @@ internal class SerDesTest {
                 "fødselsnummer": "02119970078"
             }],
             "vedlegg": [],
-            "hjemmePgaSmittevernhensyn": null,
-            "hjemmePgaStengtBhgSkole": null,
             "k9FormatSøknad": {
                 "søknadId": "$søknadId",
                 "mottattDato": "2018-01-02T03:04:05.000Z",
@@ -389,9 +387,7 @@ internal class SerDesTest {
               "http://localhost:8080/vedlegg/1",
               "http://localhost:8080/vedlegg/2",
               "http://localhost:8080/vedlegg/3"
-            ],
-            "hjemmePgaSmittevernhensyn": null,
-            "hjemmePgaStengtBhgSkole": null
+            ]
         }
         """.trimIndent()
 
