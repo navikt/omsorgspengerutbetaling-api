@@ -69,6 +69,7 @@ internal class SerDesTest {
             ),
             selvstendigVirksomheter = listOf(
                 Virksomhet(
+                    harFlereAktiveVirksomheter = true,
                     næringstyper = listOf(
                         Næringstyper.JORDBRUK_SKOGBRUK,
                         Næringstyper.FISKE,
@@ -175,6 +176,7 @@ internal class SerDesTest {
                 "jobberFortsattSomFrilans": true
             },
             "selvstendigVirksomheter": [{
+                "harFlereAktiveVirksomheter": true,
                 "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
                 "fiskerErPåBladB": false,
                 "fraOgMed": "2019-12-31",
@@ -353,6 +355,7 @@ internal class SerDesTest {
                 "jobberFortsattSomFrilans": true
             },
             "selvstendigVirksomheter": [{
+                "harFlereAktiveVirksomheter": true,
                 "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
                 "fiskerErPåBladB": true,
                 "fraOgMed": "2020-01-01",

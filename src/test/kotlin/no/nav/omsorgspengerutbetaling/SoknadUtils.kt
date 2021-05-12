@@ -193,6 +193,7 @@ internal object SøknadUtils {
         ),
         selvstendigVirksomheter = listOf(
             Virksomhet(
+                harFlereAktiveVirksomheter = true,
                 næringstyper = listOf(JORDBRUK_SKOGBRUK, FISKE, DAGMAMMA, ANNEN),
                 fraOgMed = start.minusDays(1),
                 tilOgMed = start,
