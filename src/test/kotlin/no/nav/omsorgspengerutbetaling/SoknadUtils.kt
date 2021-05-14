@@ -104,7 +104,8 @@ internal object SøknadUtils {
                     forklaring = "Fordi"
                 ),
                 fiskerErPåBladB = JaNei.Nei,
-                erNyoppstartet = true
+                erNyoppstartet = true,
+                harFlereAktiveVirksomheter = true
             )
         ),
         erArbeidstakerOgså = true,

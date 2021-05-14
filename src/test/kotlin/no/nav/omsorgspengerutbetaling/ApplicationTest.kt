@@ -261,6 +261,7 @@ class ApplicationTest {
                 "jobberFortsattSomFrilans": true
             },
             "selvstendigVirksomheter": [{
+                "harFlereAktiveVirksomheter": true,
                 "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
                 "fraOgMed": "2020-01-01",
                 "tilOgMed": "2020-01-11",
@@ -723,7 +724,8 @@ class ApplicationTest {
                             telefon = "84554"
                         ),
                         fiskerErPåBladB = JaNei.Nei,
-                        erNyoppstartet = true
+                        erNyoppstartet = true,
+                        harFlereAktiveVirksomheter = true
                     )
                 )
             ).somJson()
@@ -784,7 +786,8 @@ class ApplicationTest {
                             telefon = "84554"
                         ),
                         fiskerErPåBladB = JaNei.Nei,
-                        erNyoppstartet = true
+                        erNyoppstartet = true,
+                        harFlereAktiveVirksomheter = true
                     )
                 )
             ).somJson()
@@ -835,7 +838,8 @@ class ApplicationTest {
                             telefon = "84554"
                         ),
                         fiskerErPåBladB = JaNei.Nei,
-                        erNyoppstartet = true
+                        erNyoppstartet = true,
+                        harFlereAktiveVirksomheter = true
                     )
                 )
             ).somJson()
