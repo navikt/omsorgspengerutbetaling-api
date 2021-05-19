@@ -5,18 +5,18 @@ import com.github.tomakehurst.wiremock.common.FileSource
 import com.github.tomakehurst.wiremock.extension.Parameters
 import com.github.tomakehurst.wiremock.extension.ResponseTransformer
 import com.github.tomakehurst.wiremock.http.*
-import no.nav.omsorgspengerutbetaling.k9DokumentKonfigurert
+import no.nav.omsorgspengerutbetaling.k9SelvbetjeningOppslagKonfigurert
 import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import no.nav.omsorgspengerutbetaling.vedlegg.VedleggId
 import java.util.*
 
-class K9DokumentResponseTransformer() : ResponseTransformer() {
+class K9MellomlagringResponseTransformer() : ResponseTransformer() {
 
     val storage = mutableMapOf<VedleggId, Vedlegg>()
-    val objectMapper = k9DokumentKonfigurert()
+    val objectMapper = k9SelvbetjeningOppslagKonfigurert()
 
     override fun getName(): String {
-        return "K9DokumentResponseTransformer"
+        return "K9MellomlagringResponseTransformer"
     }
 
     override fun applyGlobally(): Boolean {
@@ -31,7 +31,8 @@ class K9DokumentResponseTransformer() : ResponseTransformer() {
     ): Response {
         return when {
             request == null -> throw IllegalStateException("request == null")
-            request.method == RequestMethod.GET -> {
+            request.erHealthCheck() -> Response.Builder.like(response).status(200).build()
+            request.erHenteDokument() -> {
 
                 val vedleggId = request.getVedleggId()
                 return if (storage.containsKey(vedleggId)) {
@@ -49,7 +50,7 @@ class K9DokumentResponseTransformer() : ResponseTransformer() {
                 }
             }
 
-            request.method == RequestMethod.POST -> {
+            request.erLagreDokument() -> {
                 val vedlegg = objectMapper.readValue<Vedlegg>(request.bodyAsString)
                 val vedleggId = VedleggId(UUID.randomUUID().toString())
                 storage[vedleggId] = vedlegg
@@ -67,6 +68,31 @@ class K9DokumentResponseTransformer() : ResponseTransformer() {
                     .build()
 
             }
+
+            request.method == RequestMethod.PUT -> {
+                val vedleggId = VedleggId(UUID.randomUUID().toString())
+                Response.Builder.like(response)
+                    .status(201)
+                    .headers(
+                        HttpHeaders(
+                            HttpHeader.httpHeader(
+                                "Location",
+                                "http://localhost:8080/v1/dokument/${vedleggId.value}/persister"
+                            ),
+                            HttpHeader.httpHeader("Content-Type", "application/json")
+                        )
+                    )
+                    .body(
+                        """
+                        {
+                            "id" : "${vedleggId.value}"
+                        }
+                    """.trimIndent()
+                    )
+                    .build()
+
+            }
+
             request.method == RequestMethod.DELETE -> {
                 val vedleggId = request.getVedleggId()
                 if (storage.containsKey(vedleggId)) {
@@ -85,4 +111,7 @@ class K9DokumentResponseTransformer() : ResponseTransformer() {
     }
 }
 
+private fun Request.erLagreDokument() = method == RequestMethod.POST && url.substringAfterLast("/") == "dokument"
+private fun Request.erHenteDokument() = method == RequestMethod.POST && url.substringAfterLast("/") != "dokument"
+private fun Request.erHealthCheck() = method == RequestMethod.GET && url.substringAfterLast("/") == "health"
 private fun Request.getVedleggId() : VedleggId = VedleggId(url.substringAfterLast("/"))
