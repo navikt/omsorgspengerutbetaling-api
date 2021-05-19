@@ -119,7 +119,6 @@ internal class VirksomhetValideringsTest {
     }
 
     @Test
-    @Ignore // TODO: 18/05/2021 - Skru på
     internal fun `harFlereAktiveVirksomheter må settes, ved null skal det gis feil`() {
         val feil = defaultVirksomhet.copy(
             harFlereAktiveVirksomheter = null
