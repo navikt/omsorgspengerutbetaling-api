@@ -17,21 +17,18 @@ import no.nav.omsorgspengerutbetaling.SøknadUtils.defaultSøknad
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.wiremock.*
-import org.json.JSONObject
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Ignore
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URI
 import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 private const val fnr = "290990123456"
@@ -59,7 +56,7 @@ class ApplicationTest {
             .stubOppslagHealth()
             .stubLeggSoknadTilProsessering()
             .stubK9OppslagSoker()
-            .stubK9Dokument()
+            .stubK9Mellomlagring()
             .stubK9OppslagBarn()
 
         val redisServer: RedisServer = RedisServer

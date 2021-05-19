@@ -5,6 +5,8 @@ metadata:
   namespace: {{namespace}}
   labels:
     team: {{team}}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "100M"
 spec:
   image: {{ image }}
   port: 8080
@@ -36,20 +38,23 @@ spec:
   prometheus:
     enabled: true
     path: /metrics
-  vault:
-    enabled: true
-    paths:
-      - mountPath: /var/run/secrets/nais.io/vault
-        kvPath: {{vaultKvPath}}
-      - mountPath: /var/run/secrets/nais.io/azuread
-        kvPath: {{azureadKvPath}}
-      - mountPath: /var/run/secrets/nais.io/apigw
-        kvPath: {{apigwKvPath}}
-  webproxy: true
+  azure:
+    application:
+      enabled: true
+  accessPolicy:
+    outbound:
+      rules:
+        - application: {{app}}-redis
+        - application: k9-mellomlagring
+      external:
+      {{ #each externalHosts as |host|}}
+          - host: {{host }}
+      {{/each}}
   env:
   {{#each env}}
     - name: {{@key}}
-      value: "{{this}}"
+      value: {{this}}
   {{/each}}
   envFrom:
+    - secret: {{app}}
     - configmap: loginservice-idporten

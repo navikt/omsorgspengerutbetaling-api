@@ -43,7 +43,7 @@ import no.nav.omsorgspengerutbetaling.soker.søkerApis
 import no.nav.omsorgspengerutbetaling.soknad.OmsorgpengesøknadMottakGateway
 import no.nav.omsorgspengerutbetaling.soknad.SøknadService
 import no.nav.omsorgspengerutbetaling.soknad.søknadApis
-import no.nav.omsorgspengerutbetaling.vedlegg.K9DokumentGateway
+import no.nav.omsorgspengerutbetaling.vedlegg.K9MellomlagringGateway
 import no.nav.omsorgspengerutbetaling.vedlegg.VedleggService
 import no.nav.omsorgspengerutbetaling.vedlegg.vedleggApis
 import org.slf4j.Logger
@@ -64,7 +64,6 @@ fun Application.omsorgpengesoknadapi() {
     System.setProperty("dusseldorf.ktor.serializeProblemDetailsWithContentNegotiation", "true")
 
     val configuration = Configuration(environment.config)
-    val apiGatewayApiKey = configuration.getApiGatewayApiKey()
     val accessTokenClientResolver = AccessTokenClientResolver(environment.config.clients())
     val redisClient = RedisConfig.redisClient(
         redisHost = configuration.getRedisHost(),
@@ -114,23 +113,24 @@ fun Application.omsorgpengesoknadapi() {
     install(Locations)
 
     install(Routing) {
+        val k9MellomlagringGateway = K9MellomlagringGateway(
+            baseUrl = configuration.getK9MellomlagringUrl(),
+            accessTokenClient = accessTokenClientResolver.accessTokenClient(),
+            k9MellomlagringScope = configuration.getK9MellomlagringScopes()
+        )
 
         val vedleggService = VedleggService(
-            k9DokumentGateway = K9DokumentGateway(
-                baseUrl = configuration.getK9DokumentUrl()
-            )
+            k9MellomlagringGateway = k9MellomlagringGateway
         )
 
         val omsorgpengesoknadMottakGateway = OmsorgpengesøknadMottakGateway(
             baseUrl = configuration.getOmsorgpengesoknadMottakBaseUrl(),
             accessTokenClient = accessTokenClientResolver.accessTokenClient(),
-            sendeSoknadTilProsesseringScopes = configuration.getSendSoknadTilProsesseringScopes(),
-            apiGatewayApiKey = apiGatewayApiKey
+            omsorgspengerutbetalingMottakClientId = configuration.getOmsorgspengerutbetalingMottakScopes()
         )
 
         val sokerGateway = SøkerGateway(
-            baseUrl = configuration.getK9OppslagUrl(),
-            apiGatewayApiKey = apiGatewayApiKey
+            baseUrl = configuration.getK9OppslagUrl()
         )
 
 
@@ -177,15 +177,14 @@ fun Application.omsorgpengesoknadapi() {
                 HttpRequestHealthCheck(
                     mapOf(
                         Url.buildURL(
-                            baseUrl = configuration.getK9DokumentUrl(),
+                            baseUrl = configuration.getK9MellomlagringUrl(),
                             pathParts = listOf("health")
                         ) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
                         Url.buildURL(
                             baseUrl = configuration.getOmsorgpengesoknadMottakBaseUrl(),
                             pathParts = listOf("health")
                         ) to HttpRequestHealthConfig(
-                            expectedStatus = HttpStatusCode.OK,
-                            httpHeaders = mapOf(apiGatewayApiKey.headerKey to apiGatewayApiKey.value)
+                            expectedStatus = HttpStatusCode.OK
                         )
                     )
                 )
@@ -238,11 +237,6 @@ fun Application.omsorgpengesoknadapi() {
 
 internal fun ObjectMapper.omsorgspengerKonfiguert() = dusseldorfConfigured()
     .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
-
-internal fun k9DokumentKonfigurert() = jacksonObjectMapper().dusseldorfConfigured().apply {
-    configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
-    propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
-}
 
 internal fun k9SelvbetjeningOppslagKonfigurert() = jacksonObjectMapper().apply {
     configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
