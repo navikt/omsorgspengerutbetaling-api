@@ -8,13 +8,12 @@ import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.general.auth.IdToken
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URI
 import java.net.URL
 
 private val logger: Logger = LoggerFactory.getLogger("nav.VedleggService")
 
 class VedleggService(
-    private val k9DokumentGateway: K9DokumentGateway
+    private val k9MellomlagringGateway: K9MellomlagringGateway
 ) {
     suspend fun lagreVedlegg(
         vedlegg: Vedlegg,
@@ -22,7 +21,7 @@ class VedleggService(
         callId: CallId
     ) : VedleggId {
 
-        return k9DokumentGateway.lagreVedlegg(
+        return k9MellomlagringGateway.lagreVedlegg(
             vedlegg = vedlegg,
             idToken = idToken,
             callId = callId
@@ -33,20 +32,23 @@ class VedleggService(
     suspend fun hentVedlegg(
         vedleggId: VedleggId,
         idToken: IdToken,
-        callId: CallId
+        callId: CallId,
+        eier: DokumentEier
     ) : Vedlegg? {
 
-        return k9DokumentGateway.hentVedlegg(
+        return k9MellomlagringGateway.hentVedlegg(
             vedleggId = vedleggId,
             idToken = idToken,
-            callId = callId
+            callId = callId,
+            eier = eier
         )
     }
 
     suspend fun hentVedlegg(
         vedleggUrls: List<URL>,
         idToken: IdToken,
-        callId: CallId
+        callId: CallId,
+        eier: DokumentEier
     ) : List<Vedlegg> {
         val vedlegg = coroutineScope {
             val futures = mutableListOf<Deferred<Vedlegg?>>()
@@ -54,7 +56,8 @@ class VedleggService(
                 futures.add(async { hentVedlegg(
                     vedleggId = vedleggIdFromUrl(it),
                     idToken = idToken,
-                    callId = callId
+                    callId = callId,
+                    eier = eier
                 )})
 
             }
@@ -66,32 +69,15 @@ class VedleggService(
     suspend fun slettVedleg(
         vedleggId: VedleggId,
         idToken: IdToken,
-        callId: CallId
-    ) {
-        k9DokumentGateway.slettVedlegg(
+        callId: CallId,
+        eier: DokumentEier
+    ): Boolean {
+        return k9MellomlagringGateway.slettVedlegg(
             vedleggId = vedleggId,
             idToken = idToken,
-            callId = callId
+            callId = callId,
+            eier = eier
         )
-    }
-
-    suspend fun slettVedleg(
-        vedleggUrls: List<URL>,
-        idToken: IdToken,
-        callId: CallId
-    ) {
-        coroutineScope {
-            val futures = mutableListOf<Deferred<Unit>>()
-            vedleggUrls.forEach {
-                futures.add(async { slettVedleg(
-                    vedleggId = vedleggIdFromUrl(it),
-                    idToken = idToken,
-                    callId = callId
-                )})
-
-            }
-            futures.awaitAll()
-        }
     }
 
     private fun vedleggIdFromUrl(url: URL) : VedleggId {

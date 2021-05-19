@@ -3,6 +3,7 @@ package no.nav.omsorgspengerutbetaling.soknad
 import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.general.auth.IdToken
 import no.nav.omsorgspengerutbetaling.soker.Søker
+import no.nav.omsorgspengerutbetaling.vedlegg.DokumentEier
 import no.nav.omsorgspengerutbetaling.vedlegg.VedleggService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -30,7 +31,8 @@ internal class SøknadService(
         val vedlegg = vedleggService.hentVedlegg(
             idToken = idToken,
             vedleggUrls = søknad.vedlegg ?: listOf(),
-            callId = callId
+            callId = callId,
+            eier = DokumentEier(søker.fødselsnummer)
         )
 
         logger.trace("${vedlegg.size} vedlegg hentet. Validerer dem.")
@@ -62,13 +64,7 @@ internal class SøknadService(
             callId = callId
         )
 
-        logger.trace("Søknad lagt til prosessering. Sletter vedlegg.")
-        vedleggService.slettVedleg(
-            vedleggUrls = søknad.vedlegg ?: listOf(),
-            callId = callId,
-            idToken = idToken
-        )
-        logger.trace("Vedlegg slettet.")
+        logger.trace("Søknad lagt til prosessering.")
     }
 }
 
