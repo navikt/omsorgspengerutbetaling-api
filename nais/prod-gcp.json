@@ -22,7 +22,7 @@
     "COOKIE_NAME": "selvbetjening-idtoken",
     "K9_OPPSLAG_REGISTER_URL": "https://k9-selvbetjening-oppslag.prod-fss-pub.nais.io",
     "OMSORGSPENGERUTBETALINGSOKNAD_MOTTAK_BASE_URL": "https://omsorgspengerutbetalingsoknad-mottak.prod-fss-pub.nais.io",
-    "OMSORGSPENGERUTBETALINGSOKNAD_MOTTAK_CLIENT_ID": "524fb8a5-4e30-457c-9a4e-4128fd3b26dc/.default",
+    "OMSORGSPENGERUTBETALINGSOKNAD_MOTTAK_CLIENT_ID": "05c01005-6ee2-4d9d-9cd6-735c014071b6/.default",
     "K9_MELLOMLAGRING_SERVICE_DISCOVERY": "http://k9-mellomlagring",
     "K9_MELLOMLAGRING_CLIENT_ID": "19aaf0b2-f40a-4a64-bf7f-fd2dd62f0552/.default"
   },
