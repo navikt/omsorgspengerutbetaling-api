@@ -78,6 +78,7 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
         )
     }
 
+    /* //TODO 20/05/2021 - Skru på validering når frontend er prodsatt
     if(harFlereAktiveVirksomheter == null){
         violations.add(
             Violation(
@@ -88,6 +89,7 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
             )
         )
     }
+     */
 
     return violations
 }
