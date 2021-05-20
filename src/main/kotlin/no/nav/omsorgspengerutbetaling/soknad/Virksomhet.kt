@@ -20,7 +20,8 @@ data class Virksomhet(
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeArene? = null,
     val varigEndring: VarigEndring? = null,
     val regnskapsfører: Regnskapsfører? = null,
-    val erNyoppstartet: Boolean
+    val erNyoppstartet: Boolean,
+    val harFlereAktiveVirksomheter: Boolean? = null
 )
 
 data class YrkesaktivSisteTreFerdigliknedeArene(
@@ -76,14 +77,19 @@ internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
             )
         )
     }
+
+    /* //TODO 20/05/2021 - Skru på validering når frontend er prodsatt
+    if(harFlereAktiveVirksomheter == null){
+        violations.add(
+            Violation(
+                parameterName = "${felt}.harFlereAktiveVirksomheter",
+                parameterType = ParameterType.ENTITY,
+                reason = "harFlereAktiveVirksomheter må være satt til true eller false, ikke null",
+                invalidValue = harFlereAktiveVirksomheter
+            )
+        )
+    }
+     */
+
     return violations
 }
-
-private fun Virksomhet.erRegistrertINorgeGyldigSatt(): Boolean {
-    return !organisasjonsnummer.isNullOrBlank()
-}
-
-private fun Virksomhet.erRegistrertIUtlLandetGyldigSatt(): Boolean = registrertIUtlandet !== null
-private fun Virksomhet.erVirksomhetIUtlandet(): Boolean = !registrertINorge.boolean
-private fun Virksomhet.erVirksomhetINorge() = registrertINorge == JaNei.Ja && registrertIUtlandet == null
-
