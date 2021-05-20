@@ -72,8 +72,6 @@ class OmsorgpengesøknadMottakGateway(
                 HttpHeaders.Authorization to authorizationHeader
             )
 
-        logger.info("DEBUG - harFlereAktiveVirksomheter = ${soknad.selvstendigVirksomheter[0].harFlereAktiveVirksomheter}") // TODO: 20/05/2021 FJERNE
-
         val (request, _, result) = Operation.monitored(
             app = "omsorgspengerutbetaling-api",
             operation = "sende-soknad-til-prosessering",
