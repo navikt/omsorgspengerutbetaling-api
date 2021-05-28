@@ -8,8 +8,8 @@ val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
 val lettuceVersion = "5.3.5.RELEASE"
 
 plugins {
-    kotlin("jvm") version "1.4.32"
-    id("com.github.johnrengelman.shadow") version "6.1.0"
+    kotlin("jvm") version "1.5.10"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 buildscript {
@@ -38,14 +38,14 @@ dependencies {
     implementation ("io.lettuce:lettuce-core:$lettuceVersion")
 
     // Test
-    testImplementation("com.github.fppt:jedis-mock:0.1.16")
+    testImplementation("com.github.fppt:jedis-mock:0.1.20")
     testImplementation("no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
     }
 
     testImplementation ("org.skyscreamer:jsonassert:1.5.0")
-    testImplementation("org.awaitility:awaitility-kotlin:4.0.3")
+    testImplementation("org.awaitility:awaitility-kotlin:4.1.0")
 
 }
 
@@ -66,7 +66,7 @@ repositories {
 
     maven("https://dl.bintray.com/kotlin/ktor")
     maven("https://kotlin.bintray.com/kotlinx")
-    maven("http://packages.confluent.io/maven/")
+    maven("https://packages.confluent.io/maven/")
 }
 
 
@@ -97,5 +97,5 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "6.8.3"
+    gradleVersion = "7.0.1"
 }
