@@ -38,7 +38,7 @@ dependencies {
     implementation ("io.lettuce:lettuce-core:$lettuceVersion")
 
     // Test
-    testImplementation("com.github.fppt:jedis-mock:0.1.20")
+    testImplementation("com.github.fppt:jedis-mock:0.1.21")
     testImplementation("no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
