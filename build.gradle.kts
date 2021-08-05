@@ -1,20 +1,21 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "1.5.3.20076c0"
+val dusseldorfKtorVersion = "2.1.6.2-6ce5eaa"
 val ktorVersion = ext.get("ktorVersion").toString()
 val k9FormatVersion = "5.1.38"
 val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
 val lettuceVersion = "5.3.5.RELEASE"
+val fuelVersion = "2.3.1"
 
 plugins {
-    kotlin("jvm") version "1.5.10"
+    kotlin("jvm") version "1.5.21"
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/20076c0afbae38e40f33d5fff9677107212aa822/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/6ce5eaa4666595bb6b550fca5ca8bbdc242961a0/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -24,7 +25,10 @@ dependencies {
     implementation ( "no.nav.helse:dusseldorf-ktor-metrics:$dusseldorfKtorVersion")
     implementation ( "no.nav.helse:dusseldorf-ktor-health:$dusseldorfKtorVersion")
     implementation ( "no.nav.helse:dusseldorf-ktor-auth:$dusseldorfKtorVersion")
-    implementation ("io.ktor:ktor-locations:$ktorVersion")
+    implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
+    implementation("com.github.kittinunf.fuel:fuel-coroutines:$fuelVersion"){
+        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+    }
 
     implementation ( "no.nav.k9:soknad:$k9FormatVersion")
     implementation ( "org.glassfish:jakarta.el:3.0.3")
@@ -38,12 +42,12 @@ dependencies {
     implementation ("io.lettuce:lettuce-core:$lettuceVersion")
 
     // Test
-    testImplementation("com.github.fppt:jedis-mock:0.1.20")
+    testImplementation("com.github.fppt:jedis-mock:0.1.22")
     testImplementation("no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
     }
-
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation ("org.skyscreamer:jsonassert:1.5.0")
     testImplementation("org.awaitility:awaitility-kotlin:4.1.0")
 
@@ -98,4 +102,8 @@ tasks.withType<ShadowJar> {
 
 tasks.withType<Wrapper> {
     gradleVersion = "7.0.1"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

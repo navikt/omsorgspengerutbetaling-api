@@ -1,7 +1,6 @@
 package no.nav.omsorgspengerutbetaling
 
 import io.ktor.config.*
-import io.ktor.util.*
 import no.nav.helse.dusseldorf.ktor.auth.EnforceEqualsOrContains
 import no.nav.helse.dusseldorf.ktor.auth.issuers
 import no.nav.helse.dusseldorf.ktor.auth.withAdditionalClaimRules
@@ -11,7 +10,6 @@ import no.nav.helse.dusseldorf.ktor.core.getRequiredString
 import org.slf4j.LoggerFactory
 import java.net.URI
 
-@KtorExperimentalAPI
 data class Configuration(val config: ApplicationConfig) {
 
     companion object {

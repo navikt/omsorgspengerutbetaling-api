@@ -1,12 +1,9 @@
 package no.nav.omsorgspengerutbetaling.mellomlagring
 
-import io.ktor.util.KtorExperimentalAPI
 import no.nav.omsorgspengerutbetaling.redis.RedisStore
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.*
 
-class MellomlagringService @KtorExperimentalAPI constructor(
+class MellomlagringService constructor(
     private val redisStore: RedisStore,
     private val passphrase: String
 ) {
