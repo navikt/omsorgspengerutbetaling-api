@@ -3,23 +3,20 @@ package no.nav.omsorgspengerutbetaling
 import com.github.fppt.jedismock.RedisServer
 import com.github.tomakehurst.wiremock.http.Cookie
 import com.typesafe.config.ConfigFactory
-import io.ktor.config.ApplicationConfig
-import io.ktor.config.HoconApplicationConfig
+import io.ktor.config.*
 import io.ktor.http.*
-import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.createTestEnvironment
-import io.ktor.server.testing.handleRequest
-import io.ktor.server.testing.setBody
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.server.testing.*
+import io.ktor.util.*
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.SøknadUtils.defaultSøknad
+import no.nav.omsorgspengerutbetaling.felles.SØKER_URL
+import no.nav.omsorgspengerutbetaling.felles.SØKNAD_URL
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.junit.AfterClass
-import org.junit.BeforeClass
-import org.junit.Ignore
+import org.junit.jupiter.api.Disabled
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -80,13 +77,8 @@ class ApplicationTest {
 
         val engine = TestApplicationEngine(createTestEnvironment {
             config = getConfig()
-        })
-
-
-        @BeforeClass
-        @JvmStatic
-        fun buildUp() {
-            engine.start(wait = true)
+        }).apply {
+            start(wait = true)
         }
 
         @AfterClass
@@ -121,7 +113,7 @@ class ApplicationTest {
     fun `Hente søker`() {
         requestAndAssert(
             httpMethod = HttpMethod.Get,
-            path = "/soker",
+            path = SØKER_URL,
             expectedCode = HttpStatusCode.OK,
             expectedResponse = expectedGetSokerJson(fnr)
         )
@@ -131,7 +123,7 @@ class ApplicationTest {
     fun `Hente søker som ikke er myndig`() {
         requestAndAssert(
             httpMethod = HttpMethod.Get,
-            path = "/soker",
+            path = SØKER_URL,
             expectedCode = HttpStatusCode.OK,
             expectedResponse = expectedGetSokerJson(
                 fodselsnummer = ikkeMyndigFnr,
@@ -150,7 +142,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse = null,
             expectedCode = HttpStatusCode.Accepted,
             cookie = cookie,
@@ -188,7 +180,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse = null,
             expectedCode = HttpStatusCode.Accepted,
             cookie = cookie,
@@ -295,7 +287,7 @@ class ApplicationTest {
     fun `Sende søknad ikke innlogget`() {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedCode = HttpStatusCode.Unauthorized,
             expectedResponse = null,
             requestEntity = defaultSøknad.somJson(),
@@ -309,7 +301,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """
@@ -335,7 +327,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """
@@ -367,7 +359,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """
@@ -409,7 +401,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """
@@ -449,7 +441,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """
@@ -490,7 +482,7 @@ class ApplicationTest {
     fun `Sende soknad med ugylidge parametre gir feil`() {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedCode = HttpStatusCode.BadRequest,
             requestEntity = defaultSøknad.copy(
                 bekreftelser = Bekreftelser(
@@ -588,7 +580,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """
@@ -676,7 +668,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """
@@ -735,7 +727,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """
@@ -797,7 +789,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """
@@ -849,7 +841,7 @@ class ApplicationTest {
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """
@@ -891,13 +883,13 @@ class ApplicationTest {
     }
 
     @Test
-    @Ignore // TODO: 11/05/2021 Aktiveres igjen når validering av frilanser er aktivert på k9Format.
+    @Disabled // TODO: 11/05/2021 Aktiveres igjen når validering av frilanser er aktivert på k9Format.
     fun `Sende søknad med frilanser som har sluttet, uten sluttdato, gir feilmelding`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """
@@ -930,13 +922,13 @@ class ApplicationTest {
     }
 
     @Test
-    @Ignore // TODO: 11/05/2021 Aktiveres igjen når validering av frilanser er aktivert på k9Format.
+    @Disabled // TODO: 11/05/2021 Aktiveres igjen når validering av frilanser er aktivert på k9Format.
     fun `Sende søknad med frilanser der startdato er etter sluttdato, gir feilmelding`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
-            path = "/soknad",
+            path = SØKNAD_URL,
             expectedResponse =
             //language=json
             """

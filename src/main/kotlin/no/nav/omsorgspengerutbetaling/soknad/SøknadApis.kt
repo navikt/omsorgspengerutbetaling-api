@@ -1,13 +1,12 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
-import io.ktor.application.call
-import io.ktor.http.HttpStatusCode
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Location
-import io.ktor.locations.post
-import io.ktor.request.receive
-import io.ktor.response.respond
-import io.ktor.routing.Route
+import io.ktor.application.*
+import io.ktor.http.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import no.nav.omsorgspengerutbetaling.felles.SØKNAD_URL
+import no.nav.omsorgspengerutbetaling.felles.VALIDER_URL
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.getCallId
 import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
@@ -21,69 +20,64 @@ import java.time.ZonedDateTime
 
 private val logger: Logger = LoggerFactory.getLogger("nav.soknadApis")
 
-@KtorExperimentalLocationsAPI
 internal fun Route.søknadApis(
     søknadService: SøknadService,
     søkerService: SøkerService,
     idTokenProvider: IdTokenProvider
 ) {
 
-    @Location("/soknad")
-    class sendSoknad
+    route(SØKNAD_URL) {
+        post {
+            logger.trace("Mottatt ny søknad. Mapper søknad.")
+            val søknad = call.receive<Søknad>()
+            val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
+            val idToken = idTokenProvider.getIdToken(call)
+            val callId = call.getCallId()
 
-    post { _: sendSoknad ->
-        logger.trace("Mottatt ny søknad. Mapper søknad.")
-        val søknad = call.receive<Søknad>()
-        val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
-        val idToken = idTokenProvider.getIdToken(call)
-        val callId = call.getCallId()
+            logger.trace("Registrerer søknad. Henter søker")
 
-        logger.trace("Registrerer søknad. Henter søker")
+            val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
 
-        val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
+            logger.trace("Søker hentet. Validerer søker.")
+            søker.validate()
+            logger.trace("Søker Validert.")
 
-        logger.trace("Søker hentet. Validerer søker.")
-        søker.validate()
-        logger.trace("Søker Validert.")
+            logger.trace("Søknad mappet. Validerer")
+            logger.info("Mapper om søknad til k9format.")
+            val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(
+                mottatt = mottatt,
+                søker = søker
+            )
 
-        logger.trace("Søknad mappet. Validerer")
-        logger.info("Mapper om søknad til k9format.")
-        val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(
-            mottatt = mottatt,
-            søker = søker
-        )
+            søknad.valider(k9FormatSøknad)
+            logger.trace("Validering OK. Registrerer søknad.")
 
-        søknad.valider(k9FormatSøknad)
-        logger.trace("Validering OK. Registrerer søknad.")
+            søknadService.registrer(
+                søknad = søknad,
+                k9FormatSøknad = k9FormatSøknad,
+                mottatt = mottatt,
+                søker = søker,
+                callId = callId,
+                idToken = idToken
+            )
 
-        søknadService.registrer(
-            søknad = søknad,
-            k9FormatSøknad = k9FormatSøknad,
-            mottatt = mottatt,
-            søker = søker,
-            callId = callId,
-            idToken = idToken
-        )
+            logger.trace("Søknad registrert.")
+            call.respond(HttpStatusCode.Accepted)
+        }
 
-        logger.trace("Søknad registrert.")
-        call.respond(HttpStatusCode.Accepted)
-    }
+        post(VALIDER_URL) {
+            val søknad = call.receive<Søknad>()
+            logger.info("Validerer søknad...")
+            val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
+            val idToken = idTokenProvider.getIdToken(call)
+            val callId = call.getCallId()
 
-    @Location("/soknad/valider")
-    class validerSoknad
+            val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
 
-    post { _: validerSoknad ->
-        val søknad = call.receive<Søknad>()
-        logger.info("Validerer søknad...")
-        val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
-        val idToken = idTokenProvider.getIdToken(call)
-        val callId = call.getCallId()
-
-        val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
-
-        val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(mottatt, søker)
-        søknad.valider(k9FormatSøknad)
-        logger.trace("Validering OK.")
-        call.respond(HttpStatusCode.Accepted)
+            val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(mottatt, søker)
+            søknad.valider(k9FormatSøknad)
+            logger.trace("Validering OK.")
+            call.respond(HttpStatusCode.Accepted)
+        }
     }
 }
