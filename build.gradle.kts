@@ -5,7 +5,7 @@ val dusseldorfKtorVersion = "2.1.6.2-6ce5eaa"
 val ktorVersion = ext.get("ktorVersion").toString()
 val k9FormatVersion = "5.1.38"
 val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
-val lettuceVersion = "5.3.5.RELEASE"
+val lettuceVersion = "6.1.5.RELEASE"
 val fuelVersion = "2.3.1"
 
 plugins {
