@@ -3,13 +3,12 @@ package no.nav.omsorgspengerutbetaling
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.k9.søknad.felles.type.SøknadId
 import no.nav.omsorgspengerutbetaling.soknad.*
-import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
-import java.net.URI
 import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
 import java.util.*
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class SerDesTest {
@@ -183,7 +182,7 @@ internal class SerDesTest {
                 "tilOgMed": "2020-01-01",
                 "næringsinntekt": 123123,
                 "navnPåVirksomheten": "TullOgTøys",
-                "organisasjonsnummer": "101010",
+                "organisasjonsnummer": "916974574",
                 "registrertINorge": false,
                 "erNyoppstartet": true,
                 "registrertIUtlandet": {
@@ -242,18 +241,18 @@ internal class SerDesTest {
                               "endringBegrunnelse": "Fordi",
                               "bruttoInntekt": 1337,
                               "erNyoppstartet": true,
+                              "erNyIArbeidslivet": true,
                               "registrertIUtlandet": true,
                               "landkode": "DEU"
                             }
                           },
-                          "organisasjonsnummer": "101010",
+                          "organisasjonsnummer": "916974574",
                           "virksomhetNavn": "TullOgTøys"
                         }
                       ],
                       "frilanser": {
                         "startdato": "2020-01-01",
-                        "sluttdato": null,
-                        "jobberFortsattSomFrilans": true
+                        "sluttdato": null
                       }
                     },
                     "fraværsperioder": [
@@ -261,19 +260,25 @@ internal class SerDesTest {
                         "periode": "2020-01-01/2020-01-11",
                         "duration": "PT3H", 
                         "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE",
-                        "aktivitetFravær": ["FRILANSER"]
+                        "aktivitetFravær": ["FRILANSER"],
+                        "arbeidsgiverOrgNr": null,
+                        "søknadÅrsak": null
                       },
                       {
                         "periode": "2020-01-21/2020-01-21",
                         "duration": "PT3H", 
                         "årsak": "SMITTEVERNHENSYN",
-                        "aktivitetFravær": ["SELVSTENDIG_VIRKSOMHET"]
+                        "aktivitetFravær": ["SELVSTENDIG_VIRKSOMHET"],
+                        "arbeidsgiverOrgNr": null,
+                        "søknadÅrsak": null
                       },
                       {
                         "periode": "2020-01-31/2020-02-05",
                         "duration": "PT3H", 
                         "årsak": "ORDINÆRT_FRAVÆR",
-                        "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
+                        "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"],
+                        "arbeidsgiverOrgNr": null,
+                        "søknadÅrsak": null
                       }
                     ],
                     "bosteder": {
@@ -293,7 +298,8 @@ internal class SerDesTest {
                       },
                       "perioderSomSkalSlettes": {}
                     }
-                  }
+                  },
+              "journalposter": []
             }
         }
         """.trimIndent()

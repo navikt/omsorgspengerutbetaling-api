@@ -2,10 +2,11 @@ package no.nav.omsorgspengerutbetaling.k9format
 
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.Versjon
-import no.nav.k9.søknad.felles.fravær.AktivitetFravær as K9AktivitetFravær
 import no.nav.k9.søknad.felles.fravær.FraværPeriode
 import no.nav.k9.søknad.felles.fravær.FraværÅrsak
-import no.nav.k9.søknad.felles.opptjening.*
+import no.nav.k9.søknad.felles.opptjening.Frilanser
+import no.nav.k9.søknad.felles.opptjening.OpptjeningAktivitet
+import no.nav.k9.søknad.felles.opptjening.SelvstendigNæringsdrivende
 import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Søker
@@ -16,6 +17,7 @@ import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.omsorgspengerutbetaling.soknad.*
 import java.math.BigDecimal
 import java.time.ZonedDateTime
+import no.nav.k9.søknad.felles.fravær.AktivitetFravær as K9AktivitetFravær
 import no.nav.omsorgspengerutbetaling.soknad.Søknad as OmsorgspengerutbetalingSoknadSøknad
 
 fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
@@ -63,19 +65,22 @@ fun List<Utbetalingsperiode>.tilFraværsperiode(): List<FraværPeriode> = map { 
         Periode(utbetalingsperiode.fraOgMed, utbetalingsperiode.tilOgMed),
         utbetalingsperiode.antallTimerBorte,
         FraværÅrsak.valueOf(utbetalingsperiode.årsak.name),
+        null,
         utbetalingsperiode.aktivitetFravær.map {
             when (it) {
                 AktivitetFravær.FRILANSER -> K9AktivitetFravær.FRILANSER
                 AktivitetFravær.SELVSTENDIG_VIRKSOMHET -> K9AktivitetFravær.SELVSTENDIG_VIRKSOMHET
             }
-        }
+        },
+        null
     )
 }
 
 fun OmsorgspengerutbetalingSoknadSøknad.opptjeningAktivitet() = OpptjeningAktivitet(
-    null,
     selvstendigVirksomheter.tilK9SelvstendingNæringsdrivende(),
-    frilans?.tilK9Frilanser()
+    frilans?.tilK9Frilanser(),
+    null,
+    null
 )
 
 private fun List<Virksomhet>.tilK9SelvstendingNæringsdrivende(): List<SelvstendigNæringsdrivende> = map { virksomhet ->
@@ -113,6 +118,7 @@ fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrive
             .endringBegrunnelse(it.forklaring)
     } ?: infoBuilder.erVarigEndring(false)
 
+    yrkesaktivSisteTreFerdigliknedeÅrene?.let { infoBuilder.erNyIArbeidslivet(true) }
     return infoBuilder.build()
 }
 
@@ -128,7 +134,6 @@ private fun List<Næringstyper>.tilK9Virksomhetstyper(): List<VirksomhetType> = 
 private fun Frilans.tilK9Frilanser(): Frilanser = Frilanser()
     .medStartDato(startdato)
     .medSluttDato(sluttdato)
-    .medJobberFortsattSomFrilans(jobberFortsattSomFrilans.boolean)
 
 private fun List<FosterBarn>.tilK9Barn(): List<Barn> {
     return map {

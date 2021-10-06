@@ -6,9 +6,8 @@ import no.nav.omsorgspengerutbetaling.soknad.JaNei
 import no.nav.omsorgspengerutbetaling.soknad.Næringstyper
 import no.nav.omsorgspengerutbetaling.soknad.Virksomhet
 import no.nav.omsorgspengerutbetaling.soknad.validate
-import org.junit.Ignore
-import org.junit.Test
 import java.time.LocalDate
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class VirksomhetValideringsTest {
