@@ -256,7 +256,7 @@ class ApplicationTest {
                 "tilOgMed": "2020-01-11",
                 "næringsinntekt": 100000,
                 "navnPåVirksomheten": "Test",
-                "organisasjonsnummer": "111",
+                "organisasjonsnummer": "916974574",
                 "registrertINorge": false,
                 "registrertIUtlandet": {
                   "landkode": "DEU",
@@ -706,7 +706,7 @@ class ApplicationTest {
                         navnPåVirksomheten = "TullOgTøys",
                         registrertINorge = JaNei.Nei,
                         registrertIUtlandet = null,
-                        organisasjonsnummer = "101010",
+                        organisasjonsnummer = "916974574",
                         yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
                         regnskapsfører = Regnskapsfører(
                             navn = "Kjell",
@@ -742,6 +742,12 @@ class ApplicationTest {
                       "type": "entity",
                       "name": "aktivitet.selvstendigNæringsdrivende[0].perioder[2021-02-07/2021-02-08].landkode.landkode",
                       "reason": "'ukjent' matcher ikke tillatt pattern '^[A-Z]+${'$'}'",
+                      "invalid_value": "k9-format feilkode: påkrevd"
+                    },
+                    {
+                      "type": "entity",
+                      "name": "aktivitet.selvstendigNæringsdrivende[0].organisasjonsnummer.valid",
+                      "reason": "[ugyldigOrgNummer] Organisasjonsnummer må være gyldig.",
                       "invalid_value": "k9-format feilkode: påkrevd"
                     },
                     {

@@ -92,7 +92,7 @@ internal object SøknadUtils {
                     landkode = "DEU",
                     landnavn = "Tyskland"
                 ),
-                organisasjonsnummer = "101010",
+                organisasjonsnummer = "916974574",
                 yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
                 regnskapsfører = Regnskapsfører(
                     navn = "Kjell",
@@ -205,7 +205,7 @@ internal object SøknadUtils {
                     landkode = "DEU",
                     landnavn = "Tyskland"
                 ),
-                organisasjonsnummer = "101010",
+                organisasjonsnummer = "916974574",
                 yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
                 regnskapsfører = Regnskapsfører(
                     navn = "Kjell",
