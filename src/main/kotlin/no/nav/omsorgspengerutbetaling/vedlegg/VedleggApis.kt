@@ -31,7 +31,7 @@ fun Route.vedleggApis(
                 val multipart = call.receiveMultipart()
                 var vedlegg: Vedlegg? = null
 
-                var eier = idTokenProvider.getIdToken(call).getSubject()
+                val eier = idTokenProvider.getIdToken(call).getSubject()
                 if (eier == null) {
                     call.respondProblemDetails(fantIkkeSubjectPaaToken)
                 } else {
@@ -62,7 +62,7 @@ fun Route.vedleggApis(
                 val vedleggId = VedleggId(call.parameters["vedleggId"]!!)
                 logger.info("Henter vedlegg")
                 logger.info("$vedleggId")
-                var eier = idTokenProvider.getIdToken(call).getSubject()
+                val eier = idTokenProvider.getIdToken(call).getSubject()
                 if (eier == null) call.respond(HttpStatusCode.Forbidden) else {
                     val vedlegg = vedleggService.hentVedlegg(
                         vedleggId = vedleggId,
@@ -87,7 +87,7 @@ fun Route.vedleggApis(
                 val vedleggId = VedleggId(call.parameters["vedleggId"]!!)
                 logger.info("Sletter vedlegg")
                 logger.info("$vedleggId")
-                var eier = idTokenProvider.getIdToken(call).getSubject()
+                val eier = idTokenProvider.getIdToken(call).getSubject()
                 if (eier == null) call.respond(HttpStatusCode.Forbidden) else {
                     val resultat = vedleggService.slettVedleg(
                         vedleggId = vedleggId,
@@ -127,7 +127,7 @@ private suspend fun MultiPartData.getVedlegg(eier: DokumentEier): Vedlegg? {
     return null
 }
 
-private fun Vedlegg.isSupportedContentType(): Boolean = supportedContentTypes.contains(contentType.toLowerCase())
+private fun Vedlegg.isSupportedContentType(): Boolean = supportedContentTypes.contains(contentType.lowercase())
 
 private fun ApplicationRequest.isFormMultipart(): Boolean {
     return contentType().withoutParameters().match(ContentType.MultiPart.FormData)
