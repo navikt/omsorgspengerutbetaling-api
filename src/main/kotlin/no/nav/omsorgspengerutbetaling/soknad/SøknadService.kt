@@ -52,32 +52,13 @@ internal class SøknadService(
         vedlegg.valider(vedleggReferanser = søknad.vedlegg ?: listOf())
 
         logger.info("Legger søknad til prosessering")
-        val komplettSoknad = KomplettSoknad(
-            søknadId = søknad.søknadId,
-            språk = søknad.språk,
-            mottatt = k9FormatSøknad.mottattDato,
-            søker = søker,
-            harDekketTiFørsteDagerSelv = søknad.harDekketTiFørsteDagerSelv!!,
-            bosteder = søknad.bosteder,
-            opphold = søknad.opphold,
-            spørsmål = søknad.spørsmål,
-            utbetalingsperioder = søknad.utbetalingsperioder,
-            andreUtbetalinger = søknad.andreUtbetalinger,
-            vedlegg = vedlegg,
-            frilans = søknad.frilans,
-            fosterbarn = søknad.fosterbarn,
-            selvstendigVirksomheter = søknad.selvstendigVirksomheter,
-            erArbeidstakerOgså = søknad.erArbeidstakerOgså,
-            bekreftelser = søknad.bekreftelser,
-            k9FormatSøknad = k9FormatSøknad
-        )
+        val komplettSøknad = søknad.tilKomplettSøknad(k9FormatSøknad, søker, vedlegg)
 
         omsorgpengesøknadMottakGateway.leggTilProsessering(
-            soknad = komplettSoknad,
+            soknad = komplettSøknad,
             callId = callId
         )
 
         logger.trace("Søknad lagt til prosessering.")
     }
 }
-
