@@ -33,7 +33,7 @@ internal class SøknadService(
         val søker = søkerService.getSoker(idToken, callId)
         søker.validate()
 
-        logger.info("Mapper om søknad til k9format.")
+        logger.info("Mapper om søknad til K9-format.")
         val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(
             mottatt = ZonedDateTime.now(ZoneOffset.UTC),
             søker = søker
