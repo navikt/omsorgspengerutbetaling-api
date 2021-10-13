@@ -6,7 +6,6 @@ import com.typesafe.config.ConfigFactory
 import io.ktor.config.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
-import io.ktor.util.*
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.SøknadUtils.defaultSøknad
@@ -35,7 +34,6 @@ private const val ikkeMyndigFnr = "12125012345"
 private val gyldigFodselsnummerA = "02119970078"
 private val ikkeMyndigDato = "2050-12-12"
 
-@KtorExperimentalAPI
 class ApplicationTest {
 
     private companion object {

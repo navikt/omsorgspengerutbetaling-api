@@ -1,17 +1,22 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
+import no.nav.omsorgspengerutbetaling.felles.formaterStatuslogging
 import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.general.auth.IdToken
-import no.nav.omsorgspengerutbetaling.soker.Søker
+import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
+import no.nav.omsorgspengerutbetaling.soker.SøkerService
+import no.nav.omsorgspengerutbetaling.soker.validate
 import no.nav.omsorgspengerutbetaling.vedlegg.DokumentEier
 import no.nav.omsorgspengerutbetaling.vedlegg.VedleggService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 internal class SøknadService(
     private val omsorgpengesøknadMottakGateway: OmsorgpengesøknadMottakGateway,
-    private val vedleggService: VedleggService
+    private val vedleggService: VedleggService,
+    private val søkerService: SøkerService
 ) {
 
     private companion object {
@@ -22,10 +27,18 @@ internal class SøknadService(
         søknad: Søknad,
         idToken: IdToken,
         callId: CallId,
-        mottatt: ZonedDateTime,
-        søker: Søker,
-        k9FormatSøknad: no.nav.k9.søknad.Søknad
     ) {
+        logger.info(formaterStatuslogging(søknad.søknadId.id, "registreres"))
+
+        val søker = søkerService.getSoker(idToken, callId)
+        søker.validate()
+
+        logger.info("Mapper om søknad til k9format.")
+        val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(
+            mottatt = ZonedDateTime.now(ZoneOffset.UTC),
+            søker = søker
+        )
+        søknad.valider(k9FormatSøknad)
 
         logger.trace("Henter ${søknad.vedlegg?.size ?: 0} vedlegg.")
         val vedlegg = vedleggService.hentVedlegg(
@@ -42,7 +55,7 @@ internal class SøknadService(
         val komplettSoknad = KomplettSoknad(
             søknadId = søknad.søknadId,
             språk = søknad.språk,
-            mottatt = mottatt,
+            mottatt = k9FormatSøknad.mottattDato,
             søker = søker,
             harDekketTiFørsteDagerSelv = søknad.harDekketTiFørsteDagerSelv!!,
             bosteder = søknad.bosteder,
