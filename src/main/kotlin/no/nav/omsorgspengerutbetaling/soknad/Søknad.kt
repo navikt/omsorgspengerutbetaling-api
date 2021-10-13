@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonValue
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.type.SøknadId
 import no.nav.omsorgspengerutbetaling.soker.Søker
-import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import java.net.URL
 import java.util.*
 
@@ -22,9 +21,9 @@ data class Søknad(
     val fosterbarn: List<FosterBarn>? = listOf(),
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
-    val vedlegg: List<URL>? = listOf()
+    val vedlegg: List<URL> = listOf()
 ) {
-    fun tilKomplettSøknad(k9Format: Søknad, søker: Søker, vedlegg: List<Vedlegg>) = KomplettSoknad(
+    fun tilKomplettSøknad(k9Format: Søknad, søker: Søker) = KomplettSoknad(
         søknadId = søknadId,
         språk = språk,
         mottatt = k9Format.mottattDato,

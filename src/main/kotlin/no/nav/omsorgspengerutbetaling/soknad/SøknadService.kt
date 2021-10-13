@@ -6,7 +6,6 @@ import no.nav.omsorgspengerutbetaling.general.auth.IdToken
 import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
 import no.nav.omsorgspengerutbetaling.soker.SøkerService
 import no.nav.omsorgspengerutbetaling.soker.validate
-import no.nav.omsorgspengerutbetaling.vedlegg.DokumentEier
 import no.nav.omsorgspengerutbetaling.vedlegg.VedleggService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -40,19 +39,8 @@ internal class SøknadService(
         )
         søknad.valider(k9FormatSøknad)
 
-        logger.trace("Henter ${søknad.vedlegg?.size ?: 0} vedlegg.")
-        val vedlegg = vedleggService.hentVedlegg(
-            idToken = idToken,
-            vedleggUrls = søknad.vedlegg ?: listOf(),
-            callId = callId,
-            eier = DokumentEier(søker.fødselsnummer)
-        )
-
-        logger.trace("${vedlegg.size} vedlegg hentet. Validerer dem.")
-        vedlegg.valider(vedleggReferanser = søknad.vedlegg ?: listOf())
-
         logger.info("Legger søknad til prosessering")
-        val komplettSøknad = søknad.tilKomplettSøknad(k9FormatSøknad, søker, vedlegg)
+        val komplettSøknad = søknad.tilKomplettSøknad(k9FormatSøknad, søker)
 
         omsorgpengesøknadMottakGateway.leggTilProsessering(
             soknad = komplettSøknad,
