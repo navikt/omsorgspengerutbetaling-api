@@ -1,7 +1,7 @@
 package no.nav.omsorgspengerutbetaling
 
 import com.github.fppt.jedismock.RedisServer
-import io.ktor.server.testing.withApplication
+import io.ktor.server.testing.*
 import no.nav.helse.dusseldorf.testsupport.asArguments
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
@@ -25,9 +25,7 @@ class ApplicationWithMocks {
                 .omsorgspengesoknadApiConfig()
                 .build()
                 .stubK9DokumentHealth()
-                .stubOmsorgspengerutbetalingsoknadMottakHealth()
                 .stubOppslagHealth()
-                .stubLeggSoknadTilProsessering()
                 .stubK9Mellomlagring()
                 .stubK9OppslagSoker()
 

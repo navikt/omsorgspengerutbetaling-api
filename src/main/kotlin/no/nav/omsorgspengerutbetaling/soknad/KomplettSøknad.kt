@@ -6,7 +6,7 @@ import no.nav.omsorgspengerutbetaling.soker.Søker
 import java.net.URL
 import java.time.ZonedDateTime
 
-data class KomplettSoknad(
+data class KomplettSøknad(
     val søknadId: SøknadId,
     val språk: Språk,
     val mottatt: ZonedDateTime,

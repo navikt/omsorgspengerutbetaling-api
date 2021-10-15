@@ -8,6 +8,9 @@ val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
 val lettuceVersion = "5.3.5.RELEASE"
 val fuelVersion = "2.3.1"
 
+val kafkaEmbeddedEnvVersion = ext.get("kafkaEmbeddedEnvVersion").toString()
+val kafkaVersion = ext.get("kafkaVersion").toString() // Alligned med version fra kafka-embedded-env
+
 plugins {
     kotlin("jvm") version "1.5.31"
     id("com.github.johnrengelman.shadow") version "7.1.0"
@@ -41,6 +44,9 @@ dependencies {
     // Redis
     implementation ("io.lettuce:lettuce-core:$lettuceVersion")
 
+    // kafka
+    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
+
     // Test
     testImplementation("com.github.fppt:jedis-mock:0.1.22")
     testImplementation("no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
@@ -48,8 +54,10 @@ dependencies {
         exclude(group = "org.eclipse.jetty")
     }
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation ("org.skyscreamer:jsonassert:1.5.0")
+    testImplementation("org.skyscreamer:jsonassert:1.5.0")
     testImplementation("org.awaitility:awaitility-kotlin:4.1.0")
+    testImplementation("no.nav:kafka-embedded-env:$kafkaEmbeddedEnvVersion")
+    testImplementation("io.mockk:mockk:1.12.0")
 
 }
 
@@ -66,6 +74,7 @@ repositories {
     }
 
     mavenCentral()
+    maven("https://jitpack.io")
     maven("https://packages.confluent.io/maven/")
 }
 

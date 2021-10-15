@@ -131,7 +131,7 @@ internal object SøknadUtils {
         søker = søker
     )
 
-    internal fun defaultKomplettSøknad(søknadId: SøknadId) = KomplettSoknad(
+    internal fun defaultKomplettSøknad(søknadId: SøknadId) = KomplettSøknad(
         søknadId = søknadId,
         språk = Språk.BOKMÅL,
         mottatt = mottatt,
@@ -236,4 +236,4 @@ internal object SøknadUtils {
 }
 
 internal fun Søknad.somJson() = SøknadUtils.objectMapper.writeValueAsString(this)
-internal fun KomplettSoknad.somJson() = SøknadUtils.objectMapper.writeValueAsString(this)
+internal fun KomplettSøknad.somJson() = SøknadUtils.objectMapper.writeValueAsString(this)

@@ -4,11 +4,10 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.matching.AnythingPattern
-import io.ktor.http.HttpHeaders
+import io.ktor.http.*
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 
 internal const val k9OppslagPath = "/k9-selvbetjening-oppslag-mock"
-private const val omsorgpengerutbetalingsoknadMottakPath = "/omsorgspengerutbetalingsoknad-mottak-mock"
 private const val k9MellomlagringPath = "/k9-mellomlagring-mock"
 
 internal fun WireMockBuilder.omsorgspengesoknadApiConfig() = wireMockConfiguration {
@@ -84,19 +83,7 @@ private fun WireMockServer.stubHealthEndpointThroughZones(
 }
 
 internal fun WireMockServer.stubK9DokumentHealth() = stubHealthEndpoint("$k9MellomlagringPath/health")
-internal fun WireMockServer.stubOmsorgspengerutbetalingsoknadMottakHealth() = stubHealthEndpointThroughZones("$omsorgpengerutbetalingsoknadMottakPath/health")
 internal fun WireMockServer.stubOppslagHealth() = stubHealthEndpointThroughZones("$k9OppslagPath/health")
-
-internal fun WireMockServer.stubLeggSoknadTilProsessering() : WireMockServer{
-    WireMock.stubFor(
-        WireMock.post(WireMock.urlMatching(".*$omsorgpengerutbetalingsoknadMottakPath/v1/soknad"))
-            .willReturn(
-                WireMock.aResponse()
-                    .withStatus(202)
-            )
-    )
-    return this
-}
 
 internal fun WireMockServer.stubK9Mellomlagring() : WireMockServer{
     WireMock.stubFor(
@@ -110,5 +97,4 @@ internal fun WireMockServer.stubK9Mellomlagring() : WireMockServer{
 }
 
 internal fun WireMockServer.getK9OppslagUrl() = baseUrl() + k9OppslagPath
-internal fun WireMockServer.getOmsorgpengerutbetalingsoknadMottakUrl() = baseUrl() + omsorgpengerutbetalingsoknadMottakPath
 internal fun WireMockServer.getK9MellomlagringUrl() = baseUrl() + k9MellomlagringPath + "/v1/dokument"

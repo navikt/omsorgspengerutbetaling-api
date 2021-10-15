@@ -25,7 +25,7 @@ internal class SerDesTest {
     }
 
     @Test
-    fun `Test serialisering av request til mottak`() {
+    fun `Test serialisering av request til prosessering`() {
         val søknadId = UUID.randomUUID().toString()
 
         val komplettSoknad = SøknadUtils.defaultKomplettSøknad(SøknadId(søknadId))
