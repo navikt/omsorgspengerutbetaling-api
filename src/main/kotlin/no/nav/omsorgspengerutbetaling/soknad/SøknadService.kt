@@ -60,7 +60,6 @@ internal class SøknadService(
 
         try {
             kafkaProducer.produserKafkaMelding(komplettSøknad, metadata)
-            return
         } catch (exception: Exception){
             logger.info("Feilet ved å legge melding på Kafka.")
             if(søknad.vedlegg.isNotEmpty()){
