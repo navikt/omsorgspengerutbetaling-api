@@ -48,7 +48,7 @@ dependencies {
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 
     // Test
-    testImplementation("com.github.fppt:jedis-mock:0.1.22")
+    testImplementation("com.github.fppt:jedis-mock:0.17.0")
     testImplementation("no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
