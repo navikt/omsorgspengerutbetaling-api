@@ -6,43 +6,30 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.general.auth.IdToken
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.net.URL
-
-private val logger: Logger = LoggerFactory.getLogger("nav.VedleggService")
 
 class VedleggService(
     private val k9MellomlagringGateway: K9MellomlagringGateway
 ) {
-    suspend fun lagreVedlegg(
-        vedlegg: Vedlegg,
-        idToken: IdToken,
-        callId: CallId
-    ) : VedleggId {
-
-        return k9MellomlagringGateway.lagreVedlegg(
+    suspend fun lagreVedlegg(vedlegg: Vedlegg, idToken: IdToken, callId: CallId): VedleggId =
+        k9MellomlagringGateway.lagreVedlegg(
             vedlegg = vedlegg,
             idToken = idToken,
             callId = callId
         )
-
-    }
 
     suspend fun hentVedlegg(
         vedleggId: VedleggId,
         idToken: IdToken,
         callId: CallId,
         eier: DokumentEier
-    ) : Vedlegg? {
+    ): Vedlegg? = k9MellomlagringGateway.hentVedlegg(
+        vedleggId = vedleggId,
+        idToken = idToken,
+        callId = callId,
+        eier = eier
+    )
 
-        return k9MellomlagringGateway.hentVedlegg(
-            vedleggId = vedleggId,
-            idToken = idToken,
-            callId = callId,
-            eier = eier
-        )
-    }
 
     suspend fun hentVedlegg(
         vedleggUrls: List<URL>,
@@ -71,10 +58,37 @@ class VedleggService(
         idToken: IdToken,
         callId: CallId,
         eier: DokumentEier
-    ): Boolean {
-        return k9MellomlagringGateway.slettVedlegg(
-            vedleggId = vedleggId,
-            idToken = idToken,
+    ): Boolean = k9MellomlagringGateway.slettVedlegg(
+        vedleggId = vedleggId,
+        idToken = idToken,
+        callId = callId,
+        eier = eier
+    )
+
+
+    internal suspend fun persisterVedlegg(
+        vedleggsUrls: List<URL>,
+        callId: CallId,
+        eier: DokumentEier
+    ) {
+        val vedleggsId = vedleggsUrls.map { vedleggIdFromUrl(it) }
+
+        k9MellomlagringGateway.persisterVedlegg(
+            vedleggId = vedleggsId,
+            callId = callId,
+            eier = eier
+        )
+    }
+
+    suspend fun fjernHoldPåPersistertVedlegg(
+        vedleggsUrls: List<URL>,
+        callId: CallId,
+        eier: DokumentEier
+    ) {
+        val vedleggsId = vedleggsUrls.map { vedleggIdFromUrl(it) }
+
+        k9MellomlagringGateway.fjernHoldPåPersistertVedlegg(
+            vedleggId = vedleggsId,
             callId = callId,
             eier = eier
         )

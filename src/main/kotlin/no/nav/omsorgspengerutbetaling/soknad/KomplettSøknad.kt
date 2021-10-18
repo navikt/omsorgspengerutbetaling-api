@@ -3,10 +3,10 @@ package no.nav.omsorgspengerutbetaling.soknad
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.type.SøknadId
 import no.nav.omsorgspengerutbetaling.soker.Søker
-import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
+import java.net.URL
 import java.time.ZonedDateTime
 
-data class KomplettSoknad(
+data class KomplettSøknad(
     val søknadId: SøknadId,
     val språk: Språk,
     val mottatt: ZonedDateTime,
@@ -19,7 +19,7 @@ data class KomplettSoknad(
     val utbetalingsperioder: List<Utbetalingsperiode>,
     val andreUtbetalinger: List<String>,
     val erArbeidstakerOgså: Boolean,
-    val vedlegg: List<Vedlegg> = listOf(),
+    val vedlegg: List<URL> = listOf(),
     val fosterbarn: List<FosterBarn>? = listOf(),
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),

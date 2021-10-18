@@ -45,6 +45,7 @@ class K9MellomlagringGateway(
         private const val LAGRE_VEDLEGG_OPERATION = "lagre-vedlegg"
         private const val PERSISTER_VEDLEGG = "persister-vedlegg"
         private const val SLETT_PERSISTERT_VEDLEGG = "slett-persistert-vedlegg"
+        private const val FJERNE_HOLD_PÅ_PERSISTERT_VEDLEGG = "fjerne-hold-på-persistert-vedlegg"
         private const val TJENESTE = "omsorgspengerutbetaling-api"
     }
 
@@ -196,7 +197,7 @@ class K9MellomlagringGateway(
         ).vedlegg
     }
 
-    internal suspend fun slettPersistertVedlegg(
+    internal suspend fun fjernHoldPåPersistertVedlegg(
         vedleggId: List<VedleggId>,
         callId: CallId,
         eier: DokumentEier
@@ -208,7 +209,7 @@ class K9MellomlagringGateway(
             val deferred = mutableListOf<Deferred<Unit>>()
             vedleggId.forEach {
                 deferred.add(async {
-                    requestSlettPersisterVedlegg(
+                    requestFjerneHoldPåPersisterVedlegg(
                         vedleggId = it,
                         callId = callId,
                         eier = eier,
@@ -220,7 +221,7 @@ class K9MellomlagringGateway(
         }
     }
 
-    private suspend fun requestSlettPersisterVedlegg(
+    private suspend fun requestFjerneHoldPåPersisterVedlegg(
         vedleggId: VedleggId,
         callId: CallId,
         eier: DokumentEier,
@@ -229,13 +230,13 @@ class K9MellomlagringGateway(
 
         val urlMedId = Url.buildURL(
             baseUrl = komplettUrl,
-            pathParts = listOf(vedleggId.value)
+            pathParts = listOf("persistert", vedleggId.value)
         )
 
         val body = objectMapper.writeValueAsBytes(eier)
 
         val httpRequest = urlMedId.toString()
-            .httpDelete()
+            .httpPut()
             .body(body)
             .header(
                 HttpHeaders.Authorization to authorizationHeader,
@@ -245,7 +246,7 @@ class K9MellomlagringGateway(
 
         val (request, _, result) = Operation.monitored(
             app = TJENESTE,
-            operation = SLETT_PERSISTERT_VEDLEGG,
+            operation = FJERNE_HOLD_PÅ_PERSISTERT_VEDLEGG,
             resultResolver = { 204 == it.second.statusCode }
         ) {
             httpRequest.awaitStringResponseResult()
@@ -253,16 +254,15 @@ class K9MellomlagringGateway(
 
 
         result.fold(
-            { _ -> logger.info("Vellykket sletting av persistert vedlegg") },
+            { _ -> logger.info("Vellykket fjerning av hold på persistert vedlegg") },
             { error ->
                 logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
-                logger.error("Feil ved sletting av persistert vedlegg. $error")
-                throw IllegalStateException("Feil ved sletting av persistert vedlegg.")
+                logger.error("Feil ved fjerning av hold påpersistert vedlegg. $error")
             }
         )
     }
 
-    internal suspend fun persisterVedlegger(
+    internal suspend fun persisterVedlegg(
         vedleggId: List<VedleggId>,
         callId: CallId,
         eier: DokumentEier

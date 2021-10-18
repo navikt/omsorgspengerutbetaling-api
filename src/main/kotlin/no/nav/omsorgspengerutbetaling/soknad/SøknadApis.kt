@@ -7,8 +7,10 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.omsorgspengerutbetaling.felles.SØKNAD_URL
 import no.nav.omsorgspengerutbetaling.felles.VALIDER_URL
+import no.nav.omsorgspengerutbetaling.felles.formaterStatuslogging
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.getCallId
+import no.nav.omsorgspengerutbetaling.general.getMetadata
 import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soker.SøkerService
@@ -28,53 +30,27 @@ internal fun Route.søknadApis(
 
     route(SØKNAD_URL) {
         post {
-            logger.trace("Mottatt ny søknad. Mapper søknad.")
             val søknad = call.receive<Søknad>()
-            val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
-            val idToken = idTokenProvider.getIdToken(call)
-            val callId = call.getCallId()
-
-            logger.trace("Registrerer søknad. Henter søker")
-
-            val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
-
-            logger.trace("Søker hentet. Validerer søker.")
-            søker.validate()
-            logger.trace("Søker Validert.")
-
-            logger.trace("Søknad mappet. Validerer")
-            logger.info("Mapper om søknad til k9format.")
-            val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(
-                mottatt = mottatt,
-                søker = søker
-            )
-
-            søknad.valider(k9FormatSøknad)
-            logger.trace("Validering OK. Registrerer søknad.")
+            logger.info(formaterStatuslogging(søknad.søknadId.id, "mottatt"))
 
             søknadService.registrer(
                 søknad = søknad,
-                k9FormatSøknad = k9FormatSøknad,
-                mottatt = mottatt,
-                søker = søker,
-                callId = callId,
-                idToken = idToken
+                callId = call.getCallId(),
+                idToken = idTokenProvider.getIdToken(call),
+                metadata = call.getMetadata()
             )
 
-            logger.trace("Søknad registrert.")
             call.respond(HttpStatusCode.Accepted)
         }
 
         post(VALIDER_URL) {
             val søknad = call.receive<Søknad>()
             logger.info("Validerer søknad...")
-            val mottatt = ZonedDateTime.now(ZoneOffset.UTC)
-            val idToken = idTokenProvider.getIdToken(call)
-            val callId = call.getCallId()
 
-            val søker: Søker = søkerService.getSoker(idToken = idToken, callId = callId)
+            val søker: Søker = søkerService.getSoker(idToken = idTokenProvider.getIdToken(call), callId = call.getCallId())
+            søker.validate()
 
-            val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(mottatt, søker)
+            val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(ZonedDateTime.now(ZoneOffset.UTC), søker)
             søknad.valider(k9FormatSøknad)
             logger.trace("Validering OK.")
             call.respond(HttpStatusCode.Accepted)

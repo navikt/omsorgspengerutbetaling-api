@@ -1,12 +1,13 @@
 package no.nav.omsorgspengerutbetaling
 
+import KafkaWrapper
 import com.github.fppt.jedismock.RedisServer
 import com.github.tomakehurst.wiremock.http.Cookie
 import com.typesafe.config.ConfigFactory
+import hentSøknad
 import io.ktor.config.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
-import io.ktor.util.*
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.SøknadUtils.defaultSøknad
@@ -15,11 +16,12 @@ import no.nav.omsorgspengerutbetaling.felles.SØKNAD_URL
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.wiremock.*
+import org.json.JSONObject
 import org.junit.AfterClass
-import org.junit.jupiter.api.Disabled
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import testConsumer
 import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
@@ -35,7 +37,6 @@ private const val ikkeMyndigFnr = "12125012345"
 private val gyldigFodselsnummerA = "02119970078"
 private val ikkeMyndigDato = "2050-12-12"
 
-@KtorExperimentalAPI
 class ApplicationTest {
 
     private companion object {
@@ -49,12 +50,13 @@ class ApplicationTest {
             .omsorgspengesoknadApiConfig()
             .build()
             .stubK9DokumentHealth()
-            .stubOmsorgspengerutbetalingsoknadMottakHealth()
             .stubOppslagHealth()
-            .stubLeggSoknadTilProsessering()
             .stubK9OppslagSoker()
             .stubK9Mellomlagring()
             .stubK9OppslagBarn()
+
+        private val kafkaEnvironment = KafkaWrapper.bootstrap()
+        private val kafkaKonsumer = kafkaEnvironment.testConsumer()
 
         val redisServer: RedisServer = RedisServer
             .newRedisServer()
@@ -66,6 +68,7 @@ class ApplicationTest {
             val testConfig = ConfigFactory.parseMap(
                 TestConfiguration.asMap(
                     wireMockServer = wireMockServer,
+                    kafkaEnvironment = kafkaEnvironment,
                     redisServer = redisServer
                 )
             )
@@ -135,10 +138,12 @@ class ApplicationTest {
     }
 
     @Test
-    fun `Sende soknad`() {
+    fun `Sende søknad`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
-        val jpegUrl = engine.jpegUrl(cookie)
-        val pdfUrl = engine.pdUrl(cookie)
+
+        val søknad = defaultSøknad.copy(
+            vedlegg = listOf(URL(engine.jpegUrl(cookie)), URL(engine.pdUrl(cookie)))
+        )
 
         requestAndAssert(
             httpMethod = HttpMethod.Post,
@@ -146,141 +151,10 @@ class ApplicationTest {
             expectedResponse = null,
             expectedCode = HttpStatusCode.Accepted,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
-                spørsmål = listOf(
-                    SpørsmålOgSvar(
-                        spørsmål = "Spørsmål 1",
-                        svar = JaNei.Ja
-                    )
-                ),
-                utbetalingsperioder = listOf(
-                    Utbetalingsperiode(
-                        fraOgMed = LocalDate.now(),
-                        tilOgMed = LocalDate.now(),
-                        antallTimerPlanlagt = Duration.ofHours(3),
-                        antallTimerBorte = Duration.ofHours(2),
-                        aktivitetFravær = listOf(AktivitetFravær.FRILANSER),
-                        årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
-                    ),
-                    Utbetalingsperiode(
-                        fraOgMed = LocalDate.now().plusDays(10),
-                        tilOgMed = LocalDate.now().plusDays(15),
-                        aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET),
-                        årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
-                    )
-                ),
-                vedlegg = listOf(URL(jpegUrl), URL(pdfUrl))
-            ).somJson()
+            requestEntity = søknad.somJson()
         )
-    }
 
-    @Test
-    fun `Sende soknad som raw json`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse = null,
-            expectedCode = HttpStatusCode.Accepted,
-            cookie = cookie,
-            requestEntity =
-            //language=json
-            """
-            {
-            "språk": "nb",
-            "harDekketTiFørsteDagerSelv": true,
-            "bosteder": [{
-                "fraOgMed": "2019-12-12",
-                "tilOgMed": "2019-12-22",
-                "landkode": "GB",
-                "landnavn": "Great Britain",
-                "erEØSLand": true
-            }],
-            "opphold": [{
-                "fraOgMed": "2019-12-12",
-                "tilOgMed": "2019-12-22",
-                "landkode": "GB",
-                "landnavn": "Great Britain",
-                "erEØSLand": true
-            }],
-            "spørsmål": [{
-                "spørsmål": "Et spørsmål",
-                "svar": false
-            }],
-             "barn": [
-              {
-                "identitetsnummer": "02119970078",
-                "aleneOmOmsorgen": true,
-                "navn": "Barn Barnesen",
-                "aktørId": "123456"
-              }
-            ],
-            "fosterbarn": [
-              {
-                "fødselsnummer": "12125012345"
-              }
-            ],
-            "bekreftelser": {
-                "harBekreftetOpplysninger": true,
-                "harForståttRettigheterOgPlikter": true
-            },
-            "utbetalingsperioder": [{
-                "fraOgMed": "2020-01-01",
-                "tilOgMed": "2020-01-11",
-                "antallTimerBorte": "PT3H",
-                "antallTimerPlanlagt": "PT5H",
-                "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE",
-                "aktivitetFravær": ["FRILANSER"]
-            }, {
-                "fraOgMed": "2020-01-21",
-                "tilOgMed": "2020-01-21",
-                "årsak": "SMITTEVERNHENSYN",
-                "aktivitetFravær": ["SELVSTENDIG_VIRKSOMHET"]
-            }, {
-                "fraOgMed": "2020-01-31",
-                "tilOgMed": "2020-02-05",
-                "antallTimerBorte": "PT3H",
-                "antallTimerPlanlagt": "PT5H",
-                "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"],
-                "årsak": "ORDINÆRT_FRAVÆR"
-            }],
-            "frilans": {
-                "startdato": "2020-01-01",
-                "jobberFortsattSomFrilans": true
-            },
-            "selvstendigVirksomheter": [{
-                "harFlereAktiveVirksomheter": true,
-                "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
-                "fraOgMed": "2020-01-01",
-                "tilOgMed": "2020-01-11",
-                "næringsinntekt": 100000,
-                "navnPåVirksomheten": "Test",
-                "organisasjonsnummer": "916974574",
-                "registrertINorge": false,
-                "registrertIUtlandet": {
-                  "landkode": "DEU",
-                  "landnavn": "Tyskland"
-                },
-                "erNyoppstartet": true,
-                "yrkesaktivSisteTreFerdigliknedeÅrene": {
-                    "oppstartsdato": "2018-01-01"
-                },
-                "varigEndring": {
-                    "dato": "2019-01-01",
-                    "inntektEtterEndring": 1337,
-                    "forklaring": "Fordi"
-                },
-                "regnskapsfører": {
-                    "navn": "Regn",
-                    "telefon": "555-FILK",
-                    "erNærVennFamilie": false
-                }
-            }],
-            "andreUtbetalinger": []
-        }
-            """.trimIndent()
-        )
+        hentOgAssertSøknad(JSONObject(søknad))
     }
 
     @Test
@@ -889,47 +763,7 @@ class ApplicationTest {
     }
 
     @Test
-    @Disabled // TODO: 11/05/2021 Aktiveres igjen når validering av frilanser er aktivert på k9Format.
     fun `Sende søknad med frilanser som har sluttet, uten sluttdato, gir feilmelding`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse =
-            //language=json
-            """
-                {
-                  "type": "/problem-details/invalid-request-parameters",
-                  "title": "invalid-request-parameters",
-                  "status": 400,
-                  "detail": "Requesten inneholder ugyldige paramtere.",
-                  "instance": "about:blank",
-                  "invalid_parameters": [
-                  {
-                      "type": "entity",
-                      "name": "frilanser.sluttdato",
-                      "reason": "'sluttdato' kan ikke være null, dersom 'jobberFortsattSomFrilans' er false.",
-                      "invalid_value": "k9-format feilkode: påkrevd"
-                    }
-                  ]
-                }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = defaultSøknad.copy(
-                frilans = Frilans(
-                    startdato = LocalDate.now(),
-                    sluttdato = null,
-                    jobberFortsattSomFrilans = JaNei.Nei
-                )
-            ).somJson()
-        )
-    }
-
-    @Test
-    @Disabled // TODO: 11/05/2021 Aktiveres igjen når validering av frilanser er aktivert på k9Format.
-    fun `Sende søknad med frilanser der startdato er etter sluttdato, gir feilmelding`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
         requestAndAssert(
@@ -947,12 +781,50 @@ class ApplicationTest {
                   "invalid_parameters": [
                     {
                       "type": "entity",
-                      "name": "frilanser.startdato",
-                      "reason": "'startdato' kan ikke være etter 'sluttdato'",
-                      "invalid_value": "k9-format feilkode: ugyldig argument"
+                      "name": "frilans.sluttdato",
+                      "reason": "Sluttdato kan ikke være null dersom jobberFortsattSomFrilans=Nei",
+                      "invalid_value": "sluttdato=null,jobberFortsattSomFrilans=Nei "
                     }
                   ]
                 }
+            """.trimIndent(),
+            expectedCode = HttpStatusCode.BadRequest,
+            cookie = cookie,
+            requestEntity = defaultSøknad.copy(
+                frilans = Frilans(
+                    startdato = LocalDate.now(),
+                    sluttdato = null,
+                    jobberFortsattSomFrilans = JaNei.Nei
+                )
+            ).somJson()
+        )
+    }
+
+    @Test
+    fun `Sende søknad med frilanser der startdato er etter sluttdato, gir feilmelding`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = SØKNAD_URL,
+            expectedResponse =
+            //language=json
+            """
+            {
+              "type": "/problem-details/invalid-request-parameters",
+              "title": "invalid-request-parameters",
+              "status": 400,
+              "detail": "Requesten inneholder ugyldige paramtere.",
+              "instance": "about:blank",
+              "invalid_parameters": [
+                {
+                  "type": "entity",
+                  "name": "frilans.sluttdato",
+                  "reason": "Sluttdato kan ikke være før startdato",
+                  "invalid_value": "startdato=2021-02-01, sluttdato=2021-01-01"
+                }
+              ]
+            }
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
@@ -964,6 +836,23 @@ class ApplicationTest {
                 )
             ).somJson()
         )
+    }
+
+    private fun hentOgAssertSøknad(søknad: JSONObject){
+        val hentet = kafkaKonsumer.hentSøknad(søknad.getJSONObject("søknadId").getString("id"))
+        assertGyldigSøknad(søknad, hentet.data)
+    }
+
+    private fun assertGyldigSøknad(
+        søknadSendtInn: JSONObject,
+        søknadFraTopic: JSONObject
+    ) {
+        assertTrue(søknadFraTopic.has("søker"))
+        assertTrue(søknadFraTopic.has("mottatt"))
+        assertTrue(søknadFraTopic.has("k9FormatSøknad"))
+
+        assertEquals(søknadSendtInn.getJSONArray("vedlegg").length() ,søknadFraTopic.getJSONArray("vedlegg").length())
+        assertEquals(søknadSendtInn.getJSONArray("andreUtbetalinger").toString(), søknadFraTopic.getJSONArray("andreUtbetalinger").toString())
     }
 
     private fun expectedGetSokerJson(
@@ -982,3 +871,5 @@ class ApplicationTest {
     }
     """.trimIndent()
 }
+
+

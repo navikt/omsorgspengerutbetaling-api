@@ -31,6 +31,7 @@ import no.nav.helse.dusseldorf.ktor.metrics.init
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenStatusPages
 import no.nav.omsorgspengerutbetaling.general.systemauth.AccessTokenClientResolver
+import no.nav.omsorgspengerutbetaling.kafka.KafkaProducer
 import no.nav.omsorgspengerutbetaling.mellomlagring.MellomlagringService
 import no.nav.omsorgspengerutbetaling.mellomlagring.mellomlagringApis
 import no.nav.omsorgspengerutbetaling.redis.RedisConfig
@@ -38,7 +39,6 @@ import no.nav.omsorgspengerutbetaling.redis.RedisStore
 import no.nav.omsorgspengerutbetaling.soker.SøkerGateway
 import no.nav.omsorgspengerutbetaling.soker.SøkerService
 import no.nav.omsorgspengerutbetaling.soker.søkerApis
-import no.nav.omsorgspengerutbetaling.soknad.OmsorgpengesøknadMottakGateway
 import no.nav.omsorgspengerutbetaling.soknad.SøknadService
 import no.nav.omsorgspengerutbetaling.soknad.søknadApis
 import no.nav.omsorgspengerutbetaling.vedlegg.K9MellomlagringGateway
@@ -117,20 +117,23 @@ fun Application.omsorgpengesoknadapi() {
             k9MellomlagringGateway = k9MellomlagringGateway
         )
 
-        val omsorgpengesoknadMottakGateway = OmsorgpengesøknadMottakGateway(
-            baseUrl = configuration.getOmsorgpengesoknadMottakBaseUrl(),
-            accessTokenClient = accessTokenClientResolver.accessTokenClient(),
-            omsorgspengerutbetalingMottakClientId = configuration.getOmsorgspengerutbetalingMottakScopes()
-        )
-
         val sokerGateway = SøkerGateway(
             baseUrl = configuration.getK9OppslagUrl()
         )
 
-
         val søkerService = SøkerService(
             søkerGateway = sokerGateway
         )
+
+        val kafkaProducer = KafkaProducer(
+            kafkaConfig = configuration.getKafkaConfig()
+        )
+
+        environment.monitor.subscribe(ApplicationStopping) {
+            logger.info("Stopper Kafka Producer.")
+            kafkaProducer.stop()
+            logger.info("Kafka Producer Stoppet.")
+        }
 
         authenticate(*issuers.allIssuers()) {
 
@@ -158,8 +161,10 @@ fun Application.omsorgpengesoknadapi() {
             søknadApis(
                 idTokenProvider = idTokenProvider,
                 søknadService = SøknadService(
-                    omsorgpengesøknadMottakGateway = omsorgpengesoknadMottakGateway,
-                    vedleggService = vedleggService
+                    vedleggService = vedleggService,
+                    søkerService = søkerService,
+                    k9MellomlagringIngress = configuration.getK9MellomlagringIngress(),
+                    kafkaProducer = kafkaProducer
                 ),
                 søkerService = søkerService
             )
@@ -167,19 +172,13 @@ fun Application.omsorgpengesoknadapi() {
 
         val healthService = HealthService(
             healthChecks = setOf(
-                omsorgpengesoknadMottakGateway,
+                kafkaProducer,
                 HttpRequestHealthCheck(
                     mapOf(
                         Url.buildURL(
                             baseUrl = configuration.getK9MellomlagringUrl(),
                             pathParts = listOf("health")
-                        ) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
-                        Url.buildURL(
-                            baseUrl = configuration.getOmsorgpengesoknadMottakBaseUrl(),
-                            pathParts = listOf("health")
-                        ) to HttpRequestHealthConfig(
-                            expectedStatus = HttpStatusCode.OK
-                        )
+                        ) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK)
                     )
                 )
             )

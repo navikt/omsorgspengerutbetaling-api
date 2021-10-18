@@ -33,6 +33,7 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         addAll(validerInntektsopplysninger())
         addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
         addAll(k9FormatSøknad.valider())
+        frilans?.let { addAll(it.valider()) }
 
     }.sortedBy { it.reason }.toSet()
 
