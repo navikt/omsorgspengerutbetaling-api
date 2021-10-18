@@ -10,7 +10,7 @@ import io.ktor.http.*
 import io.ktor.server.testing.*
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
-import no.nav.omsorgspengerutbetaling.SøknadUtils.defaultSøknad
+import no.nav.omsorgspengerutbetaling.SøknadUtils.hentGyldigSøknad
 import no.nav.omsorgspengerutbetaling.felles.SØKER_URL
 import no.nav.omsorgspengerutbetaling.felles.SØKNAD_URL
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
@@ -141,7 +141,7 @@ class ApplicationTest {
     fun `Sende søknad`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
-        val søknad = defaultSøknad.copy(
+        val søknad = hentGyldigSøknad().copy(
             vedlegg = listOf(URL(engine.jpegUrl(cookie)), URL(engine.pdUrl(cookie)))
         )
 
@@ -161,7 +161,7 @@ class ApplicationTest {
     fun `Sende søknad med selvstendigNæringsdrivende og ikke noe for selvstendigVirksomheter`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
-        val søknad = defaultSøknad.copy(
+        val søknad = hentGyldigSøknad().copy(
             vedlegg = listOf(URL(engine.jpegUrl(cookie)), URL(engine.pdUrl(cookie))),
             selvstendigVirksomheter = listOf(),
             selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
@@ -199,7 +199,7 @@ class ApplicationTest {
             path = SØKNAD_URL,
             expectedCode = HttpStatusCode.Unauthorized,
             expectedResponse = null,
-            requestEntity = defaultSøknad.somJson(),
+            requestEntity = hentGyldigSøknad().somJson(),
             leggTilCookie = false
         )
     }
@@ -224,7 +224,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.Forbidden,
             cookie = cookie,
-            requestEntity = defaultSøknad.somJson()
+            requestEntity = hentGyldigSøknad().somJson()
         )
     }
 
@@ -256,7 +256,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 vedlegg = listOf(URL(jpegUrl), URL(finnesIkkeUrl))
             ).somJson()
         )
@@ -290,7 +290,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = SøknadUtils.hentGyldigSøknad().copy(
                 utbetalingsperioder = listOf(
                     Utbetalingsperiode(
                         fraOgMed = LocalDate.now(),
@@ -332,7 +332,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = SøknadUtils.hentGyldigSøknad().copy(
                 utbetalingsperioder = listOf(
                     Utbetalingsperiode(
                         fraOgMed = LocalDate.now(),
@@ -372,7 +372,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = SøknadUtils.hentGyldigSøknad().copy(
                 utbetalingsperioder = listOf(
                     Utbetalingsperiode(
                         fraOgMed = LocalDate.now(),
@@ -393,7 +393,7 @@ class ApplicationTest {
             httpMethod = HttpMethod.Post,
             path = SØKNAD_URL,
             expectedCode = HttpStatusCode.BadRequest,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 bekreftelser = Bekreftelser(
                     harForståttRettigheterOgPlikter = JaNei.Nei,
                     harBekreftetOpplysninger = JaNei.Nei
@@ -511,7 +511,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 andreUtbetalinger = listOf("sykepenger", "koronapenger")
             ).somJson()
         )
@@ -605,7 +605,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 selvstendigVirksomheter = listOf(
                     SelvstendigNæringsdrivende(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
@@ -670,7 +670,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 selvstendigVirksomheter = listOf(
                     SelvstendigNæringsdrivende(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
@@ -726,7 +726,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 selvstendigVirksomheter = listOf(
                     SelvstendigNæringsdrivende(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
@@ -784,7 +784,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 fosterbarn = listOf(
                     FosterBarn(
                         fødselsnummer = "02119970078"
@@ -825,7 +825,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 frilans = Frilans(
                     startdato = LocalDate.now(),
                     sluttdato = null,
@@ -863,7 +863,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 frilans = Frilans(
                     startdato = LocalDate.parse("2021-02-01"),
                     sluttdato = LocalDate.parse("2021-01-01"),

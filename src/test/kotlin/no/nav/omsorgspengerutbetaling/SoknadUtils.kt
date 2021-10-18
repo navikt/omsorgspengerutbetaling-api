@@ -17,7 +17,7 @@ internal object SøknadUtils {
 
     private val start = LocalDate.parse("2020-01-01")
 
-    internal val defaultSøknad = Søknad(
+    fun hentGyldigSøknad() = Søknad(
         språk = Språk.BOKMÅL,
         harDekketTiFørsteDagerSelv = true,
         bosteder = listOf(
@@ -126,7 +126,7 @@ internal object SøknadUtils {
         myndig = true
     )
 
-    fun k9FormatSøknad(søknadId: SøknadId) = defaultSøknad.copy(søknadId = søknadId).tilKOmsorgspengerUtbetalingSøknad(
+    fun k9FormatSøknad(søknadId: SøknadId) = hentGyldigSøknad().copy(søknadId = søknadId).tilKOmsorgspengerUtbetalingSøknad(
         mottatt = mottatt,
         søker = søker
     )

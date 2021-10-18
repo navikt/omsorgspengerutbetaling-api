@@ -38,7 +38,7 @@ internal class SerDesTest {
     private companion object {
         val start = LocalDate.parse("2020-01-01")
 
-        val søknad = SøknadUtils.defaultSøknad.copy(
+        val søknad = SøknadUtils.hentGyldigSøknad().copy(
             utbetalingsperioder = listOf(
                 Utbetalingsperiode(
                     fraOgMed = start,
