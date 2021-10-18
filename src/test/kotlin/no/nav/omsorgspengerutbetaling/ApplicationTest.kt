@@ -158,6 +158,41 @@ class ApplicationTest {
     }
 
     @Test
+    fun `Sende søknad med selvstendigNæringsdrivende og ikke noe for selvstendigVirksomheter`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        val søknad = defaultSøknad.copy(
+            vedlegg = listOf(URL(engine.jpegUrl(cookie)), URL(engine.pdUrl(cookie))),
+            selvstendigVirksomheter = listOf(),
+            selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                fraOgMed = LocalDate.parse("2020-01-10"),
+                tilOgMed = LocalDate.parse("2021-01-10"),
+                næringsinntekt = 123123,
+                navnPåVirksomheten = "TullOgTøys",
+                registrertINorge = JaNei.Nei,
+                registrertIUtlandet = Land(
+                    landkode = "DEU",
+                    landnavn = "Tyskland"
+                ),
+                erNyoppstartet = true,
+                harFlereAktiveVirksomheter = false
+            )
+        )
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = SØKNAD_URL,
+            expectedResponse = null,
+            expectedCode = HttpStatusCode.Accepted,
+            cookie = cookie,
+            requestEntity = søknad.somJson()
+        )
+
+        hentOgAssertSøknad(JSONObject(søknad))
+    }
+
+    @Test
     fun `Sende søknad ikke innlogget`() {
         requestAndAssert(
             httpMethod = HttpMethod.Post,
@@ -572,7 +607,7 @@ class ApplicationTest {
             cookie = cookie,
             requestEntity = defaultSøknad.copy(
                 selvstendigVirksomheter = listOf(
-                    Virksomhet(
+                    SelvstendigNæringsdrivende(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
                         fraOgMed = LocalDate.parse("2021-02-07"),
                         tilOgMed = LocalDate.parse("2021-02-08"),
@@ -637,7 +672,7 @@ class ApplicationTest {
             cookie = cookie,
             requestEntity = defaultSøknad.copy(
                 selvstendigVirksomheter = listOf(
-                    Virksomhet(
+                    SelvstendigNæringsdrivende(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
                         fraOgMed = LocalDate.parse("2021-02-07"),
                         tilOgMed = LocalDate.parse("2021-02-08"),
@@ -693,7 +728,7 @@ class ApplicationTest {
             cookie = cookie,
             requestEntity = defaultSøknad.copy(
                 selvstendigVirksomheter = listOf(
-                    Virksomhet(
+                    SelvstendigNæringsdrivende(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
                         fraOgMed = LocalDate.now().minusDays(1),
                         tilOgMed = LocalDate.now(),

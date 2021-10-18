@@ -81,7 +81,7 @@ internal object SøknadUtils {
             jobberFortsattSomFrilans = JaNei.Ja
         ),
         selvstendigVirksomheter = listOf(
-            Virksomhet(
+            SelvstendigNæringsdrivende(
                 næringstyper = listOf(JORDBRUK_SKOGBRUK, FISKE, DAGMAMMA, ANNEN),
                 fraOgMed = start.minusDays(1),
                 tilOgMed = start,
@@ -193,7 +193,7 @@ internal object SøknadUtils {
             jobberFortsattSomFrilans = JaNei.Ja
         ),
         selvstendigVirksomheter = listOf(
-            Virksomhet(
+            SelvstendigNæringsdrivende(
                 harFlereAktiveVirksomheter = true,
                 næringstyper = listOf(JORDBRUK_SKOGBRUK, FISKE, DAGMAMMA, ANNEN),
                 fraOgMed = start.minusDays(1),

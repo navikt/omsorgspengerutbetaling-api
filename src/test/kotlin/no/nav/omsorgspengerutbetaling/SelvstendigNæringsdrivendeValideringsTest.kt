@@ -4,15 +4,15 @@ import no.nav.helse.dusseldorf.ktor.core.ParameterType
 import no.nav.helse.dusseldorf.ktor.core.Violation
 import no.nav.omsorgspengerutbetaling.soknad.JaNei
 import no.nav.omsorgspengerutbetaling.soknad.Næringstyper
-import no.nav.omsorgspengerutbetaling.soknad.Virksomhet
+import no.nav.omsorgspengerutbetaling.soknad.SelvstendigNæringsdrivende
 import no.nav.omsorgspengerutbetaling.soknad.validate
 import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class VirksomhetValideringsTest {
+internal class SelvstendigNæringsdrivendeValideringsTest {
 
-    val defaultVirksomhet = Virksomhet(
+    val defaultSelvstendigNæringsdrivende = SelvstendigNæringsdrivende(
         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
         fraOgMed = LocalDate.parse("2020-01-10"),
         tilOgMed = LocalDate.parse("2021-01-10"),
@@ -27,7 +27,7 @@ internal class VirksomhetValideringsTest {
     @Test
     internal fun `Gitt at nyoppstartet er true og fraOgMed er etter 4 år siden, forvent feil`() {
         val fraOgMed = LocalDate.now().minusYears(4).minusDays(1)
-        val feil = defaultVirksomhet.copy(
+        val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = true
         ).validate(0)
@@ -47,7 +47,7 @@ internal class VirksomhetValideringsTest {
     @Test
     internal fun `Gitt at nyoppstartet er true og fraOgMed er akkurat 4 år siden, forvent feil`() {
         val fraOgMed = LocalDate.now().minusYears(4)
-        val feil = defaultVirksomhet.copy(
+        val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = true
         ).validate(0)
@@ -67,7 +67,7 @@ internal class VirksomhetValideringsTest {
     @Test
     internal fun `Gitt at nyoppstartet er true og fraOgMed er før 4 år siden, forvent ingen feil`() {
         val fraOgMed = LocalDate.now().minusYears(4).plusDays(1)
-        val feil = defaultVirksomhet.copy(
+        val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = true
         ).validate(0)
@@ -78,7 +78,7 @@ internal class VirksomhetValideringsTest {
     @Test
     internal fun `Gitt at nyoppstartet er false og fraOgMed er før 4 år siden, forvent feil`() {
         val fraOgMed = LocalDate.now().minusYears(4).plusDays(1)
-        val feil = defaultVirksomhet.copy(
+        val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = false
         ).validate(0)
@@ -98,7 +98,7 @@ internal class VirksomhetValideringsTest {
     @Test
     internal fun `Gitt at nyoppstartet er false og fraOgMed er akkurat 4 år siden, forvent ingen feil`() {
         val fraOgMed = LocalDate.now().minusYears(4)
-        val feil = defaultVirksomhet.copy(
+        val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = false
         ).validate(0)
@@ -109,7 +109,7 @@ internal class VirksomhetValideringsTest {
     @Test
     internal fun `Gitt at nyoppstartet er false og fraOgMed er etter 4 år siden, forvent ingen feil`() {
         val fraOgMed = LocalDate.now().minusYears(4).minusDays(1)
-        val feil = defaultVirksomhet.copy(
+        val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = false
         ).validate(0)
@@ -119,7 +119,7 @@ internal class VirksomhetValideringsTest {
 
     @Test
     internal fun `harFlereAktiveVirksomheter må settes, ved null skal det gis feil`() {
-        val feil = defaultVirksomhet.copy(
+        val feil = defaultSelvstendigNæringsdrivende.copy(
             harFlereAktiveVirksomheter = null
         ).validate(0)
 

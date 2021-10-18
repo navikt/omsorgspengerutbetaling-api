@@ -5,7 +5,7 @@ import no.nav.helse.dusseldorf.ktor.core.ParameterType
 import no.nav.helse.dusseldorf.ktor.core.Violation
 import java.time.LocalDate
 
-data class Virksomhet(
+data class SelvstendigNæringsdrivende(
     val næringstyper: List<Næringstyper> = listOf(),
     val fiskerErPåBladB: JaNei = JaNei.Nei,
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -48,8 +48,10 @@ data class Regnskapsfører(
 )
 
 
-internal fun Virksomhet.validate(index: Int): MutableSet<Violation> {
+internal fun SelvstendigNæringsdrivende.validate(index: Int): MutableSet<Violation> {
     val violations = mutableSetOf<Violation>()
+
+    // TODO: 18/10/2021 Felt utgår når selvstendigNæringsdrivende er prodsatt
     val felt = "selvstendigVirksomheter[$index]"
 
     tilOgMed?.apply {

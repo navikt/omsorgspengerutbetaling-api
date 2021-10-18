@@ -31,7 +31,8 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         addAll(spørsmål.valider())
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
-        addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter))
+        addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter)) // TODO: 18/10/2021 Utgår når selvstendigNæringsdrivende er prodsatt
+        selvstendigNæringsdrivende?.let { addAll(selvstendigNæringsdrivende.validate(0)) }
         addAll(k9FormatSøknad.valider())
         frilans?.let { addAll(it.valider()) }
 
@@ -79,7 +80,7 @@ private fun Søknad.validerInntektsopplysninger() = mutableSetOf<Violation>().ap
 }
 
 private fun validerSelvstendigVirksomheter(
-    selvstendigVirksomheter: List<Virksomhet>
+    selvstendigVirksomheter: List<SelvstendigNæringsdrivende>
 ): MutableSet<Violation> = mutableSetOf<Violation>().apply {
     if (selvstendigVirksomheter.isNotEmpty()) {
         selvstendigVirksomheter.mapIndexed { index, virksomhet ->
