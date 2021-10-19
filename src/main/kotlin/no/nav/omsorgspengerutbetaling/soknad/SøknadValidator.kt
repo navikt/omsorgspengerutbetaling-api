@@ -67,7 +67,7 @@ private fun no.nav.k9.søknad.Søknad.valider() =
     }
 
 private fun Søknad.validerInntektsopplysninger() = mutableSetOf<Violation>().apply {
-    if (frilans == null && selvstendigVirksomheter.isEmpty()) {
+    if (frilans == null && selvstendigVirksomheter.isEmpty() && selvstendigNæringsdrivende == null) {
         add(
             Violation(
                 parameterName = "frilans/selvstendigVirksomheter",
