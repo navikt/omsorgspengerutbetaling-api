@@ -33,7 +33,6 @@ class KafkaProducer(
         metadata: Metadata
     ) {
         if (metadata.version != 1) throw IllegalStateException("Kan ikke legge melding med versjon ${metadata.version} til prosessering.")
-        logger.info("SKAL IKKE VISES I PROD: {}", komplettSøknad.somJson())
         val recordMetaData = producer.send(
             ProducerRecord(
                 MOTTATT_TOPIC.name,

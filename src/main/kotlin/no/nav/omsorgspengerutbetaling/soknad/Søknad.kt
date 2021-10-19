@@ -40,6 +40,7 @@ data class Søknad(
         andreUtbetalinger = andreUtbetalinger,
         vedlegg = vedlegg.tilK9MellomLagringUrl(k9MellomlagringIngress),
         frilans = frilans,
+        selvstendigNæringsdrivende = selvstendigNæringsdrivende,
         fosterbarn = fosterbarn,
         selvstendigVirksomheter = selvstendigVirksomheter,
         erArbeidstakerOgså = erArbeidstakerOgså,
