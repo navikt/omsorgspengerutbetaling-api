@@ -31,8 +31,7 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         addAll(spørsmål.valider())
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
-        addAll(validerSelvstendigVirksomheter(selvstendigVirksomheter)) // TODO: 18/10/2021 Utgår når selvstendigNæringsdrivende er prodsatt
-        selvstendigNæringsdrivende?.let { addAll(selvstendigNæringsdrivende.validate(0)) }
+        selvstendigNæringsdrivende?.let { addAll(selvstendigNæringsdrivende.validate()) }
         addAll(k9FormatSøknad.valider())
         frilans?.let { addAll(it.valider()) }
 
@@ -67,25 +66,15 @@ private fun no.nav.k9.søknad.Søknad.valider() =
     }
 
 private fun Søknad.validerInntektsopplysninger() = mutableSetOf<Violation>().apply {
-    if (frilans == null && selvstendigVirksomheter.isEmpty() && selvstendigNæringsdrivende == null) {
+    if (frilans == null && selvstendigNæringsdrivende == null) {
         add(
             Violation(
-                parameterName = "frilans/selvstendigVirksomheter",
+                parameterName = "frilans/selvstendigNæringsdrivende",
                 parameterType = ParameterType.ENTITY,
-                reason = "Må settes 'frilans' eller minst en 'selvstendigVirksomheter'",
+                reason = "Må settes 'frilans' eller 'selvstendigNæringsdrivende'",
                 invalidValue = null
             )
         )
-    }
-}
-
-private fun validerSelvstendigVirksomheter(
-    selvstendigVirksomheter: List<SelvstendigNæringsdrivende>
-): MutableSet<Violation> = mutableSetOf<Violation>().apply {
-    if (selvstendigVirksomheter.isNotEmpty()) {
-        selvstendigVirksomheter.mapIndexed { index, virksomhet ->
-            addAll(virksomhet.validate(index))
-        }
     }
 }
 

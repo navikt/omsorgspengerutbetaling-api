@@ -23,6 +23,5 @@ data class KomplettSøknad(
     val fosterbarn: List<FosterBarn>? = listOf(),
     val frilans: Frilans? = null,
     val selvstendigNæringsdrivende: SelvstendigNæringsdrivende? = null,
-    val selvstendigVirksomheter: List<SelvstendigNæringsdrivende> = listOf(), // TODO: 18/10/2021 Utgår når selvstendigNæringsdrivende er prodsatt
     val k9FormatSøknad: Søknad
 )

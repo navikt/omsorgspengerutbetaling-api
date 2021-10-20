@@ -66,40 +66,39 @@ internal class SerDesTest {
                 sluttdato = null,
                 jobberFortsattSomFrilans = JaNei.Ja
             ),
-            selvstendigVirksomheter = listOf(
-                SelvstendigNæringsdrivende(
-                    harFlereAktiveVirksomheter = true,
-                    næringstyper = listOf(
-                        Næringstyper.JORDBRUK_SKOGBRUK,
-                        Næringstyper.FISKE,
-                        Næringstyper.DAGMAMMA,
-                        Næringstyper.ANNEN
-                    ),
-                    fiskerErPåBladB = JaNei.Ja,
-                    fraOgMed = start,
-                    tilOgMed = start.plusDays(10),
-                    næringsinntekt = 100000,
-                    navnPåVirksomheten = "Test",
-                    organisasjonsnummer = "111",
-                    registrertINorge = JaNei.Nei,
-                    registrertIUtlandet = Land(
-                        landkode = "DEU",
-                        landnavn = "Tyskland"
-                    ),
-                    yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(
-                        oppstartsdato = start.minusYears(2)
-                    ),
-                    varigEndring = VarigEndring(
-                        dato = start.minusYears(1),
-                        inntektEtterEndring = 1337,
-                        forklaring = "Fordi"
-                    ),
-                    regnskapsfører = Regnskapsfører(
-                        navn = "Regn",
-                        telefon = "555-FILK"
-                    ),
-                    erNyoppstartet = true
-                )
+            selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+                harFlereAktiveVirksomheter = true,
+                næringstyper = listOf(
+                    Næringstyper.JORDBRUK_SKOGBRUK,
+                    Næringstyper.FISKE,
+                    Næringstyper.DAGMAMMA,
+                    Næringstyper.ANNEN
+                ),
+                fiskerErPåBladB = JaNei.Ja,
+                fraOgMed = start,
+                tilOgMed = start.plusDays(10),
+                næringsinntekt = 100000,
+                navnPåVirksomheten = "Test",
+                organisasjonsnummer = "111",
+                registrertINorge = JaNei.Nei,
+                registrertIUtlandet = Land(
+                    landkode = "DEU",
+                    landnavn = "Tyskland"
+                ),
+                yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(
+                    oppstartsdato = start.minusYears(2)
+                ),
+                varigEndring = VarigEndring(
+                    dato = start.minusYears(1),
+                    inntektEtterEndring = 1337,
+                    forklaring = "Fordi"
+                ),
+                regnskapsfører = Regnskapsfører(
+                    navn = "Regn",
+                    telefon = "555-FILK"
+                ),
+                erNyoppstartet = true
+
             ),
             vedlegg = listOf(
                 URL("http://localhost:8080/vedlegg/1"),
@@ -174,8 +173,7 @@ internal class SerDesTest {
                 "sluttdato": null,
                 "jobberFortsattSomFrilans": true
             },
-            "selvstendigNæringsdrivende" : null,
-            "selvstendigVirksomheter": [{
+            "selvstendigNæringsdrivende" : {
                 "harFlereAktiveVirksomheter": true,
                 "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
                 "fiskerErPåBladB": false,
@@ -202,7 +200,7 @@ internal class SerDesTest {
                     "navn": "Kjell",
                     "telefon": "84554"
                 }
-            }],
+            },
             "erArbeidstakerOgså": true,
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
@@ -361,8 +359,7 @@ internal class SerDesTest {
                 "sluttdato": null,
                 "jobberFortsattSomFrilans": true
             },
-            "selvstendigNæringsdrivende" : null,
-            "selvstendigVirksomheter": [{
+            "selvstendigNæringsdrivende" : {
                 "harFlereAktiveVirksomheter": true,
                 "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
                 "fiskerErPåBladB": true,
@@ -389,7 +386,7 @@ internal class SerDesTest {
                     "navn": "Regn",
                     "telefon": "555-FILK"
                 }
-            }],
+            },
             "erArbeidstakerOgså": true,
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"

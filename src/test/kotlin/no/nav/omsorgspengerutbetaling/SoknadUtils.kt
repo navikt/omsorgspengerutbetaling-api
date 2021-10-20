@@ -80,33 +80,32 @@ internal object SøknadUtils {
             sluttdato = null,
             jobberFortsattSomFrilans = JaNei.Ja
         ),
-        selvstendigVirksomheter = listOf(
-            SelvstendigNæringsdrivende(
-                næringstyper = listOf(JORDBRUK_SKOGBRUK, FISKE, DAGMAMMA, ANNEN),
-                fraOgMed = start.minusDays(1),
-                tilOgMed = start,
-                næringsinntekt = 123123,
-                navnPåVirksomheten = "TullOgTøys",
-                registrertINorge = JaNei.Nei,
-                registrertIUtlandet = Land(
-                    landkode = "DEU",
-                    landnavn = "Tyskland"
-                ),
-                organisasjonsnummer = "916974574",
-                yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
-                regnskapsfører = Regnskapsfører(
-                    navn = "Kjell",
-                    telefon = "84554"
-                ),
-                varigEndring = VarigEndring(
-                    dato = start,
-                    inntektEtterEndring = 1337,
-                    forklaring = "Fordi"
-                ),
-                fiskerErPåBladB = JaNei.Nei,
-                erNyoppstartet = true,
-                harFlereAktiveVirksomheter = true
-            )
+        selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+            næringstyper = listOf(JORDBRUK_SKOGBRUK, FISKE, DAGMAMMA, ANNEN),
+            fraOgMed = start.minusDays(1),
+            tilOgMed = start,
+            næringsinntekt = 123123,
+            navnPåVirksomheten = "TullOgTøys",
+            registrertINorge = JaNei.Nei,
+            registrertIUtlandet = Land(
+                landkode = "DEU",
+                landnavn = "Tyskland"
+            ),
+            organisasjonsnummer = "916974574",
+            yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
+            regnskapsfører = Regnskapsfører(
+                navn = "Kjell",
+                telefon = "84554"
+            ),
+            varigEndring = VarigEndring(
+                dato = start,
+                inntektEtterEndring = 1337,
+                forklaring = "Fordi"
+            ),
+            fiskerErPåBladB = JaNei.Nei,
+            erNyoppstartet = true,
+            harFlereAktiveVirksomheter = true
+
         ),
         erArbeidstakerOgså = true,
         fosterbarn = listOf(
@@ -192,33 +191,32 @@ internal object SøknadUtils {
             startdato = start,
             jobberFortsattSomFrilans = JaNei.Ja
         ),
-        selvstendigVirksomheter = listOf(
-            SelvstendigNæringsdrivende(
-                harFlereAktiveVirksomheter = true,
-                næringstyper = listOf(JORDBRUK_SKOGBRUK, FISKE, DAGMAMMA, ANNEN),
-                fraOgMed = start.minusDays(1),
-                tilOgMed = start,
-                næringsinntekt = 123123,
-                navnPåVirksomheten = "TullOgTøys",
-                registrertINorge = JaNei.Nei,
-                registrertIUtlandet = Land(
-                    landkode = "DEU",
-                    landnavn = "Tyskland"
-                ),
-                organisasjonsnummer = "916974574",
-                yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
-                regnskapsfører = Regnskapsfører(
-                    navn = "Kjell",
-                    telefon = "84554"
-                ),
-                varigEndring = VarigEndring(
-                    dato = start,
-                    inntektEtterEndring = 1337,
-                    forklaring = "Fordi"
-                ),
-                fiskerErPåBladB = JaNei.Nei,
-                erNyoppstartet = true
-            )
+        selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+            harFlereAktiveVirksomheter = true,
+            næringstyper = listOf(JORDBRUK_SKOGBRUK, FISKE, DAGMAMMA, ANNEN),
+            fraOgMed = start.minusDays(1),
+            tilOgMed = start,
+            næringsinntekt = 123123,
+            navnPåVirksomheten = "TullOgTøys",
+            registrertINorge = JaNei.Nei,
+            registrertIUtlandet = Land(
+                landkode = "DEU",
+                landnavn = "Tyskland"
+            ),
+            organisasjonsnummer = "916974574",
+            yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(start),
+            regnskapsfører = Regnskapsfører(
+                navn = "Kjell",
+                telefon = "84554"
+            ),
+            varigEndring = VarigEndring(
+                dato = start,
+                inntektEtterEndring = 1337,
+                forklaring = "Fordi"
+            ),
+            fiskerErPåBladB = JaNei.Nei,
+            erNyoppstartet = true
+
         ),
         erArbeidstakerOgså = true,
         fosterbarn = listOf(

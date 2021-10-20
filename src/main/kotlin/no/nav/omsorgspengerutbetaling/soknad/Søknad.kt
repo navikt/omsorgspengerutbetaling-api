@@ -24,7 +24,6 @@ data class Søknad(
     val fosterbarn: List<FosterBarn>? = listOf(),
     val frilans: Frilans? = null,
     val selvstendigNæringsdrivende: SelvstendigNæringsdrivende? = null,
-    val selvstendigVirksomheter: List<SelvstendigNæringsdrivende> = listOf(), // TODO: 18/10/2021 Utgår når selvstendigNæringsdrivende er prodsatt
     val vedlegg: List<URL> = listOf()
 ) {
     fun tilKomplettSøknad(k9Format: Søknad, søker: Søker, k9MellomlagringIngress: URI) = KomplettSøknad(
@@ -42,7 +41,6 @@ data class Søknad(
         frilans = frilans,
         selvstendigNæringsdrivende = selvstendigNæringsdrivende,
         fosterbarn = fosterbarn,
-        selvstendigVirksomheter = selvstendigVirksomheter,
         erArbeidstakerOgså = erArbeidstakerOgså,
         bekreftelser = bekreftelser,
         k9FormatSøknad = k9Format

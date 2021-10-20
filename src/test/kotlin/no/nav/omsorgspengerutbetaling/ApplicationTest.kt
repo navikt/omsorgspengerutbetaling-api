@@ -163,7 +163,6 @@ class ApplicationTest {
 
         val søknad = hentGyldigSøknad().copy(
             vedlegg = listOf(URL(engine.jpegUrl(cookie)), URL(engine.pdUrl(cookie))),
-            selvstendigVirksomheter = listOf(),
             selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
                 næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
                 fraOgMed = LocalDate.parse("2020-01-10"),
@@ -400,8 +399,8 @@ class ApplicationTest {
                 ),
                 spørsmål = listOf(),
                 utbetalingsperioder = listOf(),
-                selvstendigVirksomheter = listOf(),
-                frilans = null
+                frilans = null,
+                selvstendigNæringsdrivende = null
             ).somJson(),
             expectedResponse =
             //language=json
@@ -433,8 +432,8 @@ class ApplicationTest {
                 },
                 {
                   "type": "entity",
-                  "name": "frilans/selvstendigVirksomheter",
-                  "reason": "Må settes 'frilans' eller minst en 'selvstendigVirksomheter'",
+                  "name": "frilans/selvstendigNæringsdrivende",
+                  "reason": "Må settes 'frilans' eller 'selvstendigNæringsdrivende'",
                   "invalid_value": null
                 },
                 {
@@ -606,25 +605,23 @@ class ApplicationTest {
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
             requestEntity = hentGyldigSøknad().copy(
-                selvstendigVirksomheter = listOf(
-                    SelvstendigNæringsdrivende(
-                        næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
-                        fraOgMed = LocalDate.parse("2021-02-07"),
-                        tilOgMed = LocalDate.parse("2021-02-08"),
-                        næringsinntekt = 1233123,
-                        navnPåVirksomheten = "TullOgTøys",
-                        registrertINorge = JaNei.Nei,
-                        registrertIUtlandet = null,
-                        organisasjonsnummer = "916974574",
-                        yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                        regnskapsfører = Regnskapsfører(
-                            navn = "Kjell",
-                            telefon = "84554"
-                        ),
-                        fiskerErPåBladB = JaNei.Nei,
-                        erNyoppstartet = true,
-                        harFlereAktiveVirksomheter = true
-                    )
+                selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+                    næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                    fraOgMed = LocalDate.parse("2021-02-07"),
+                    tilOgMed = LocalDate.parse("2021-02-08"),
+                    næringsinntekt = 1233123,
+                    navnPåVirksomheten = "TullOgTøys",
+                    registrertINorge = JaNei.Nei,
+                    registrertIUtlandet = null,
+                    organisasjonsnummer = "916974574",
+                    yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                    regnskapsfører = Regnskapsfører(
+                        navn = "Kjell",
+                        telefon = "84554"
+                    ),
+                    fiskerErPåBladB = JaNei.Nei,
+                    erNyoppstartet = true,
+                    harFlereAktiveVirksomheter = true
                 )
             ).somJson()
         )
@@ -671,28 +668,26 @@ class ApplicationTest {
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
             requestEntity = hentGyldigSøknad().copy(
-                selvstendigVirksomheter = listOf(
-                    SelvstendigNæringsdrivende(
-                        næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
-                        fraOgMed = LocalDate.parse("2021-02-07"),
-                        tilOgMed = LocalDate.parse("2021-02-08"),
-                        næringsinntekt = 1233123,
-                        navnPåVirksomheten = "TullOgTøys",
-                        registrertINorge = JaNei.Nei,
-                        registrertIUtlandet = Land(
-                            landkode = "ukjent",
-                            landnavn = "ukjent"
-                        ),
-                        organisasjonsnummer = "101010",
-                        yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                        regnskapsfører = Regnskapsfører(
-                            navn = "Kjell",
-                            telefon = "84554"
-                        ),
-                        fiskerErPåBladB = JaNei.Nei,
-                        erNyoppstartet = true,
-                        harFlereAktiveVirksomheter = true
-                    )
+                selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+                    næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                    fraOgMed = LocalDate.parse("2021-02-07"),
+                    tilOgMed = LocalDate.parse("2021-02-08"),
+                    næringsinntekt = 1233123,
+                    navnPåVirksomheten = "TullOgTøys",
+                    registrertINorge = JaNei.Nei,
+                    registrertIUtlandet = Land(
+                        landkode = "ukjent",
+                        landnavn = "ukjent"
+                    ),
+                    organisasjonsnummer = "101010",
+                    yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                    regnskapsfører = Regnskapsfører(
+                        navn = "Kjell",
+                        telefon = "84554"
+                    ),
+                    fiskerErPåBladB = JaNei.Nei,
+                    erNyoppstartet = true,
+                    harFlereAktiveVirksomheter = true
                 )
             ).somJson()
         )
@@ -727,25 +722,24 @@ class ApplicationTest {
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
             requestEntity = hentGyldigSøknad().copy(
-                selvstendigVirksomheter = listOf(
-                    SelvstendigNæringsdrivende(
-                        næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
-                        fraOgMed = LocalDate.now().minusDays(1),
-                        tilOgMed = LocalDate.now(),
-                        næringsinntekt = 1233123,
-                        navnPåVirksomheten = "TullOgTøys",
-                        registrertINorge = JaNei.Ja,
-                        organisasjonsnummer = " ",
-                        yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                        regnskapsfører = Regnskapsfører(
-                            navn = "Kjell",
-                            telefon = "84554"
-                        ),
-                        fiskerErPåBladB = JaNei.Nei,
-                        erNyoppstartet = true,
-                        harFlereAktiveVirksomheter = true
-                    )
+                selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+                    næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                    fraOgMed = LocalDate.now().minusDays(1),
+                    tilOgMed = LocalDate.now(),
+                    næringsinntekt = 1233123,
+                    navnPåVirksomheten = "TullOgTøys",
+                    registrertINorge = JaNei.Ja,
+                    organisasjonsnummer = " ",
+                    yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                    regnskapsfører = Regnskapsfører(
+                        navn = "Kjell",
+                        telefon = "84554"
+                    ),
+                    fiskerErPåBladB = JaNei.Nei,
+                    erNyoppstartet = true,
+                    harFlereAktiveVirksomheter = true
                 )
+
             ).somJson()
         )
     }
