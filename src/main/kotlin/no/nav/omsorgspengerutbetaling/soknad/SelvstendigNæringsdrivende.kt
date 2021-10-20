@@ -51,7 +51,6 @@ data class Regnskapsfører(
 internal fun SelvstendigNæringsdrivende.validate(): MutableSet<Violation> {
     val violations = mutableSetOf<Violation>()
 
-    // TODO: 18/10/2021 Felt utgår når selvstendigNæringsdrivende er prodsatt
     val felt = "selvstendigNæringsdrivende"
 
     tilOgMed?.apply {
