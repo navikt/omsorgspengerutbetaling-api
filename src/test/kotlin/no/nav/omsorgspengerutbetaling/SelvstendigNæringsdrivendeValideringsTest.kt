@@ -30,13 +30,13 @@ internal class SelvstendigNæringsdrivendeValideringsTest {
         val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = true
-        ).validate(0)
+        ).validate()
 
         assertEquals(1, feil.size)
         assertEquals(
             feil.first(),
             Violation(
-                parameterName = "selvstendigVirksomheter[0].erNyoppstartet",
+                parameterName = "selvstendigNæringsdrivende.erNyoppstartet",
                 parameterType = ParameterType.ENTITY,
                 reason = "Hvis erNyoppstartet er true så må fraOgMed være etter ${LocalDate.now().minusYears(4)}",
                 invalidValue = fraOgMed
@@ -50,13 +50,13 @@ internal class SelvstendigNæringsdrivendeValideringsTest {
         val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = true
-        ).validate(0)
+        ).validate()
 
         assertEquals(1, feil.size)
         assertEquals(
             feil.first(),
             Violation(
-                parameterName = "selvstendigVirksomheter[0].erNyoppstartet",
+                parameterName = "selvstendigNæringsdrivende.erNyoppstartet",
                 parameterType = ParameterType.ENTITY,
                 reason = "Hvis erNyoppstartet er true så må fraOgMed være etter ${LocalDate.now().minusYears(4)}",
                 invalidValue = fraOgMed
@@ -70,7 +70,7 @@ internal class SelvstendigNæringsdrivendeValideringsTest {
         val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = true
-        ).validate(0)
+        ).validate()
 
         assertEquals(0, feil.size)
     }
@@ -81,13 +81,13 @@ internal class SelvstendigNæringsdrivendeValideringsTest {
         val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = false
-        ).validate(0)
+        ).validate()
 
         assertEquals(1, feil.size)
         assertEquals(
             feil.first(),
             Violation(
-                parameterName = "selvstendigVirksomheter[0].erNyoppstartet",
+                parameterName = "selvstendigNæringsdrivende.erNyoppstartet",
                 parameterType = ParameterType.ENTITY,
                 reason = "Hvis erNyoppstartet er false så må fraOgMed være før ${LocalDate.now().minusYears(4)}",
                 invalidValue = fraOgMed
@@ -101,7 +101,7 @@ internal class SelvstendigNæringsdrivendeValideringsTest {
         val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = false
-        ).validate(0)
+        ).validate()
 
         assertEquals(0, feil.size)
     }
@@ -112,7 +112,7 @@ internal class SelvstendigNæringsdrivendeValideringsTest {
         val feil = defaultSelvstendigNæringsdrivende.copy(
             fraOgMed = fraOgMed,
             erNyoppstartet = false
-        ).validate(0)
+        ).validate()
 
         assertEquals(0, feil.size)
     }
@@ -121,13 +121,13 @@ internal class SelvstendigNæringsdrivendeValideringsTest {
     internal fun `harFlereAktiveVirksomheter må settes, ved null skal det gis feil`() {
         val feil = defaultSelvstendigNæringsdrivende.copy(
             harFlereAktiveVirksomheter = null
-        ).validate(0)
+        ).validate()
 
         assertEquals(1, feil.size)
         assertEquals(
             feil.first(),
             Violation(
-                parameterName = "selvstendigVirksomheter[0].harFlereAktiveVirksomheter",
+                parameterName = "selvstendigNæringsdrivende.harFlereAktiveVirksomheter",
                 parameterType = ParameterType.ENTITY,
                 reason = "harFlereAktiveVirksomheter må være satt til true eller false, ikke null",
                 invalidValue = null

@@ -89,25 +89,11 @@ fun no.nav.omsorgspengerutbetaling.soknad.Søknad.opptjeningAktivitet(): Opptjen
         )
     }
 
-    // TODO: 18/10/2021 Utgår når selvstendigNæringsdrivende er prodsatt
-    if (this.selvstendigVirksomheter.isNotEmpty()) {
-        selvstendigNæringsdrivende = this.selvstendigVirksomheter.tilK9SelvstendingNæringsdrivende()
-    }
-
     return OpptjeningAktivitet(
         selvstendigNæringsdrivende,
         frilans?.tilK9Frilanser(),
         null,
         null
-    )
-}
-
-// TODO: 18/10/2021 Utgår når selvstendigNæringsdrivende er prodsatt
-private fun List<SelvstendigNæringsdrivende>.tilK9SelvstendingNæringsdrivende(): List<K9SelvstendigNæringsdrivende1> = map { virksomhet ->
-    K9SelvstendigNæringsdrivende1(
-        mapOf(Periode(virksomhet.fraOgMed, virksomhet.tilOgMed) to virksomhet.tilK9SelvstendingNæringsdrivendeInfo()),
-        Organisasjonsnummer.of(virksomhet.organisasjonsnummer),
-        virksomhet.navnPåVirksomheten
     )
 }
 
