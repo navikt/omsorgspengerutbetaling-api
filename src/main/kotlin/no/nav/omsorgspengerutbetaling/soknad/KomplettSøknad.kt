@@ -22,6 +22,7 @@ data class KomplettSøknad(
     val vedlegg: List<URL> = listOf(),
     val fosterbarn: List<FosterBarn>? = listOf(),
     val frilans: Frilans? = null,
-    val selvstendigVirksomheter: List<Virksomhet> = listOf(),
+    val selvstendigNæringsdrivende: SelvstendigNæringsdrivende? = null,
+    val selvstendigVirksomheter: List<SelvstendigNæringsdrivende> = listOf(), // TODO: 18/10/2021 Utgår når selvstendigNæringsdrivende er prodsatt
     val k9FormatSøknad: Søknad
 )

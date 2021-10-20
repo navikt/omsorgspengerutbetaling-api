@@ -10,7 +10,7 @@ import io.ktor.http.*
 import io.ktor.server.testing.*
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
-import no.nav.omsorgspengerutbetaling.SøknadUtils.defaultSøknad
+import no.nav.omsorgspengerutbetaling.SøknadUtils.hentGyldigSøknad
 import no.nav.omsorgspengerutbetaling.felles.SØKER_URL
 import no.nav.omsorgspengerutbetaling.felles.SØKNAD_URL
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
@@ -141,8 +141,43 @@ class ApplicationTest {
     fun `Sende søknad`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
-        val søknad = defaultSøknad.copy(
+        val søknad = hentGyldigSøknad().copy(
             vedlegg = listOf(URL(engine.jpegUrl(cookie)), URL(engine.pdUrl(cookie)))
+        )
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = SØKNAD_URL,
+            expectedResponse = null,
+            expectedCode = HttpStatusCode.Accepted,
+            cookie = cookie,
+            requestEntity = søknad.somJson()
+        )
+
+        hentOgAssertSøknad(JSONObject(søknad))
+    }
+
+    @Test
+    fun `Sende søknad med selvstendigNæringsdrivende og ikke noe for selvstendigVirksomheter`() {
+        val cookie = getAuthCookie(gyldigFodselsnummerA)
+
+        val søknad = hentGyldigSøknad().copy(
+            vedlegg = listOf(URL(engine.jpegUrl(cookie)), URL(engine.pdUrl(cookie))),
+            selvstendigVirksomheter = listOf(),
+            selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
+                fraOgMed = LocalDate.parse("2020-01-10"),
+                tilOgMed = LocalDate.parse("2021-01-10"),
+                næringsinntekt = 123123,
+                navnPåVirksomheten = "TullOgTøys",
+                registrertINorge = JaNei.Nei,
+                registrertIUtlandet = Land(
+                    landkode = "DEU",
+                    landnavn = "Tyskland"
+                ),
+                erNyoppstartet = true,
+                harFlereAktiveVirksomheter = false
+            )
         )
 
         requestAndAssert(
@@ -164,7 +199,7 @@ class ApplicationTest {
             path = SØKNAD_URL,
             expectedCode = HttpStatusCode.Unauthorized,
             expectedResponse = null,
-            requestEntity = defaultSøknad.somJson(),
+            requestEntity = hentGyldigSøknad().somJson(),
             leggTilCookie = false
         )
     }
@@ -189,7 +224,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.Forbidden,
             cookie = cookie,
-            requestEntity = defaultSøknad.somJson()
+            requestEntity = hentGyldigSøknad().somJson()
         )
     }
 
@@ -221,7 +256,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 vedlegg = listOf(URL(jpegUrl), URL(finnesIkkeUrl))
             ).somJson()
         )
@@ -255,7 +290,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = SøknadUtils.hentGyldigSøknad().copy(
                 utbetalingsperioder = listOf(
                     Utbetalingsperiode(
                         fraOgMed = LocalDate.now(),
@@ -297,7 +332,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = SøknadUtils.hentGyldigSøknad().copy(
                 utbetalingsperioder = listOf(
                     Utbetalingsperiode(
                         fraOgMed = LocalDate.now(),
@@ -337,7 +372,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = SøknadUtils.defaultSøknad.copy(
+            requestEntity = SøknadUtils.hentGyldigSøknad().copy(
                 utbetalingsperioder = listOf(
                     Utbetalingsperiode(
                         fraOgMed = LocalDate.now(),
@@ -358,7 +393,7 @@ class ApplicationTest {
             httpMethod = HttpMethod.Post,
             path = SØKNAD_URL,
             expectedCode = HttpStatusCode.BadRequest,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 bekreftelser = Bekreftelser(
                     harForståttRettigheterOgPlikter = JaNei.Nei,
                     harBekreftetOpplysninger = JaNei.Nei
@@ -476,7 +511,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 andreUtbetalinger = listOf("sykepenger", "koronapenger")
             ).somJson()
         )
@@ -570,9 +605,9 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 selvstendigVirksomheter = listOf(
-                    Virksomhet(
+                    SelvstendigNæringsdrivende(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
                         fraOgMed = LocalDate.parse("2021-02-07"),
                         tilOgMed = LocalDate.parse("2021-02-08"),
@@ -635,9 +670,9 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 selvstendigVirksomheter = listOf(
-                    Virksomhet(
+                    SelvstendigNæringsdrivende(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
                         fraOgMed = LocalDate.parse("2021-02-07"),
                         tilOgMed = LocalDate.parse("2021-02-08"),
@@ -691,9 +726,9 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 selvstendigVirksomheter = listOf(
-                    Virksomhet(
+                    SelvstendigNæringsdrivende(
                         næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
                         fraOgMed = LocalDate.now().minusDays(1),
                         tilOgMed = LocalDate.now(),
@@ -749,7 +784,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 fosterbarn = listOf(
                     FosterBarn(
                         fødselsnummer = "02119970078"
@@ -790,7 +825,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 frilans = Frilans(
                     startdato = LocalDate.now(),
                     sluttdato = null,
@@ -828,7 +863,7 @@ class ApplicationTest {
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
-            requestEntity = defaultSøknad.copy(
+            requestEntity = hentGyldigSøknad().copy(
                 frilans = Frilans(
                     startdato = LocalDate.parse("2021-02-01"),
                     sluttdato = LocalDate.parse("2021-01-01"),

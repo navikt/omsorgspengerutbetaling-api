@@ -6,7 +6,6 @@ import no.nav.k9.søknad.felles.fravær.FraværPeriode
 import no.nav.k9.søknad.felles.fravær.FraværÅrsak
 import no.nav.k9.søknad.felles.opptjening.Frilanser
 import no.nav.k9.søknad.felles.opptjening.OpptjeningAktivitet
-import no.nav.k9.søknad.felles.opptjening.SelvstendigNæringsdrivende
 import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Søker
@@ -18,6 +17,7 @@ import no.nav.omsorgspengerutbetaling.soknad.*
 import java.math.BigDecimal
 import java.time.ZonedDateTime
 import no.nav.k9.søknad.felles.fravær.AktivitetFravær as K9AktivitetFravær
+import no.nav.k9.søknad.felles.opptjening.SelvstendigNæringsdrivende as K9SelvstendigNæringsdrivende1
 import no.nav.omsorgspengerutbetaling.soknad.Søknad as OmsorgspengerutbetalingSoknadSøknad
 
 fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
@@ -76,23 +76,43 @@ fun List<Utbetalingsperiode>.tilFraværsperiode(): List<FraværPeriode> = map { 
     )
 }
 
-fun OmsorgspengerutbetalingSoknadSøknad.opptjeningAktivitet() = OpptjeningAktivitet(
-    selvstendigVirksomheter.tilK9SelvstendingNæringsdrivende(),
-    frilans?.tilK9Frilanser(),
-    null,
-    null
-)
+fun no.nav.omsorgspengerutbetaling.soknad.Søknad.opptjeningAktivitet(): OpptjeningAktivitet {
+    var selvstendigNæringsdrivende: List<K9SelvstendigNæringsdrivende1>? = null
 
-private fun List<Virksomhet>.tilK9SelvstendingNæringsdrivende(): List<SelvstendigNæringsdrivende> = map { virksomhet ->
-    SelvstendigNæringsdrivende(
+    this.selvstendigNæringsdrivende?.let {
+        selvstendigNæringsdrivende = listOf(
+            K9SelvstendigNæringsdrivende1(
+                mapOf(Periode(it.fraOgMed, it.tilOgMed) to it.tilK9SelvstendingNæringsdrivendeInfo()),
+                Organisasjonsnummer.of(it.organisasjonsnummer),
+                it.navnPåVirksomheten
+            )
+        )
+    }
+
+    // TODO: 18/10/2021 Utgår når selvstendigNæringsdrivende er prodsatt
+    if (this.selvstendigVirksomheter.isNotEmpty()) {
+        selvstendigNæringsdrivende = this.selvstendigVirksomheter.tilK9SelvstendingNæringsdrivende()
+    }
+
+    return OpptjeningAktivitet(
+        selvstendigNæringsdrivende,
+        frilans?.tilK9Frilanser(),
+        null,
+        null
+    )
+}
+
+// TODO: 18/10/2021 Utgår når selvstendigNæringsdrivende er prodsatt
+private fun List<SelvstendigNæringsdrivende>.tilK9SelvstendingNæringsdrivende(): List<K9SelvstendigNæringsdrivende1> = map { virksomhet ->
+    K9SelvstendigNæringsdrivende1(
         mapOf(Periode(virksomhet.fraOgMed, virksomhet.tilOgMed) to virksomhet.tilK9SelvstendingNæringsdrivendeInfo()),
         Organisasjonsnummer.of(virksomhet.organisasjonsnummer),
         virksomhet.navnPåVirksomheten
     )
 }
 
-fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo {
-    val infoBuilder = SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
+fun SelvstendigNæringsdrivende.tilK9SelvstendingNæringsdrivendeInfo(): K9SelvstendigNæringsdrivende1.SelvstendigNæringsdrivendePeriodeInfo {
+    val infoBuilder = K9SelvstendigNæringsdrivende1.SelvstendigNæringsdrivendePeriodeInfo.builder()
     infoBuilder
         .virksomhetstyper(næringstyper.tilK9Virksomhetstyper())
         .registrertIUtlandet(!registrertINorge.boolean)

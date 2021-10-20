@@ -38,7 +38,7 @@ internal class SerDesTest {
     private companion object {
         val start = LocalDate.parse("2020-01-01")
 
-        val søknad = SøknadUtils.defaultSøknad.copy(
+        val søknad = SøknadUtils.hentGyldigSøknad().copy(
             utbetalingsperioder = listOf(
                 Utbetalingsperiode(
                     fraOgMed = start,
@@ -67,7 +67,7 @@ internal class SerDesTest {
                 jobberFortsattSomFrilans = JaNei.Ja
             ),
             selvstendigVirksomheter = listOf(
-                Virksomhet(
+                SelvstendigNæringsdrivende(
                     harFlereAktiveVirksomheter = true,
                     næringstyper = listOf(
                         Næringstyper.JORDBRUK_SKOGBRUK,
@@ -174,6 +174,7 @@ internal class SerDesTest {
                 "sluttdato": null,
                 "jobberFortsattSomFrilans": true
             },
+            "selvstendigNæringsdrivende" : null,
             "selvstendigVirksomheter": [{
                 "harFlereAktiveVirksomheter": true,
                 "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],
@@ -360,6 +361,7 @@ internal class SerDesTest {
                 "sluttdato": null,
                 "jobberFortsattSomFrilans": true
             },
+            "selvstendigNæringsdrivende" : null,
             "selvstendigVirksomheter": [{
                 "harFlereAktiveVirksomheter": true,
                 "næringstyper": ["JORDBRUK_SKOGBRUK", "FISKE", "DAGMAMMA", "ANNEN"],

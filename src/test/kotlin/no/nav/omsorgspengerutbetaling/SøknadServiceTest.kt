@@ -66,7 +66,7 @@ internal class SøknadServiceTest{
                 every { kafkaProducer.produserKafkaMelding(any(), any()) } throws Exception("Mocket feil ved kafkaProducer")
 
                 søknadService.registrer(
-                    søknad = SøknadUtils.defaultSøknad.copy(
+                    søknad = SøknadUtils.hentGyldigSøknad().copy(
                         vedlegg = listOf(URL("https://www.vg.no/vedlegg"))
                     ),
                     metadata = Metadata(
