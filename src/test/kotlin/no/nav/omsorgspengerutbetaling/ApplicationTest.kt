@@ -53,7 +53,6 @@ class ApplicationTest {
             .stubOppslagHealth()
             .stubK9OppslagSoker()
             .stubK9Mellomlagring()
-            .stubK9OppslagBarn()
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaKonsumer = kafkaEnvironment.testConsumer()
@@ -120,6 +119,44 @@ class ApplicationTest {
             expectedCode = HttpStatusCode.OK,
             expectedResponse = expectedGetSokerJson(fnr)
         )
+    }
+
+    @Test
+    fun `Hente søker hvor man får 451 fra oppslag`() {
+        wireMockServer.stubK9OppslagSoker(
+            statusCode = HttpStatusCode.fromValue(451),
+            responseBody =
+            //language=json
+            """
+            {
+                "detail": "Policy decision: DENY - Reason: (NAV-bruker er i live AND NAV-bruker er ikke myndig)",
+                "instance": "/meg",
+                "type": "/problem-details/tilgangskontroll-feil",
+                "title": "tilgangskontroll-feil",
+                "status": 451
+            }
+            """.trimIndent()
+        )
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Get,
+            path = SØKER_URL,
+            expectedCode = HttpStatusCode.fromValue(451),
+            expectedResponse =
+            //language=json
+            """
+            {
+                "type": "/problem-details/tilgangskontroll-feil",
+                "title": "tilgangskontroll-feil",
+                "status": 451,
+                "instance": "/soker",
+                "detail": "Tilgang nektet."
+            }
+            """.trimIndent(),
+            cookie = getAuthCookie(ikkeMyndigFnr)
+        )
+
+        wireMockServer.stubK9OppslagSoker()
     }
 
     @Test
