@@ -34,6 +34,7 @@ dependencies {
     }
 
     implementation ( "no.nav.k9:soknad:$k9FormatVersion")
+    implementation ( "org.glassfish:jakarta.el:3.0.4")
 
     // Client
     implementation ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")
@@ -44,7 +45,6 @@ dependencies {
 
     // kafka
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
-    implementation ( "org.glassfish:jakarta.el:3.0.4")
 
     // Test
     testImplementation("com.github.fppt:jedis-mock:0.1.22")
