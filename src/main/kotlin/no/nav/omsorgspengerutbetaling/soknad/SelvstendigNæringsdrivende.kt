@@ -53,6 +53,22 @@ internal fun SelvstendigNæringsdrivende.validate(): MutableSet<Violation> {
 
     val felt = "selvstendigNæringsdrivende"
 
+    organisasjonsnummer?.let {
+        if(it.any{ !it.isDigit()}){
+            violations.add(
+                Violation(
+                    parameterName = "${felt}.organisasjonsnummer",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "Ugyldig organisasjonsnummer, inneholder noe annet enn tall."
+                )
+            )
+        }
+    }
+
+    registrertIUtlandet?.let {
+        violations.addAll(it.valider(felt))
+    }
+
     tilOgMed?.apply {
         violations.addAll(Periode(fraOgMed, tilOgMed).valider())
     }

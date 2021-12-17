@@ -359,8 +359,8 @@ class ApplicationTest {
               "invalid_parameters": [
                 {
                   "type": "entity",
-                  "name": "fraværsperioder[0].aktivitetFravær",
-                  "reason": "size must be between 1 and 2",
+                  "name": "fraværsperioder[0]",
+                  "reason": "Aktivitet må være satt",
                   "invalid_value": "k9-format feilkode: påkrevd"
                 }
               ]
@@ -435,7 +435,6 @@ class ApplicationTest {
                     harBekreftetOpplysninger = JaNei.Nei
                 ),
                 spørsmål = listOf(),
-                utbetalingsperioder = listOf(),
                 frilans = null,
                 selvstendigNæringsdrivende = null
             ).somJson(),
@@ -449,12 +448,6 @@ class ApplicationTest {
               "detail": "Requesten inneholder ugyldige paramtere.",
               "instance": "about:blank",
               "invalid_parameters": [
-                {
-                  "type": "entity",
-                  "name": "fraværsperioder",
-                  "reason": "Minst 1 fraværsperiode må oppgis",
-                  "invalid_value": "k9-format feilkode: påkrevd"
-                },
                 {
                   "type": "entity",
                   "name": "bekreftlser.harBekreftetOpplysninger",
@@ -472,12 +465,6 @@ class ApplicationTest {
                   "name": "frilans/selvstendigNæringsdrivende",
                   "reason": "Må settes 'frilans' eller 'selvstendigNæringsdrivende'",
                   "invalid_value": null
-                },
-                {
-                  "type": "entity",
-                  "name": "utbetalingsperioder",
-                  "reason": "Må settes minst en utbetalingsperiode.",
-                  "invalid_value": []
                 }
               ]
             }
@@ -617,27 +604,21 @@ class ApplicationTest {
             expectedResponse =
             //language=json
             """
+            {
+              "type": "/problem-details/invalid-request-parameters",
+              "title": "invalid-request-parameters",
+              "status": 400,
+              "detail": "Requesten inneholder ugyldige paramtere.",
+              "instance": "about:blank",
+              "invalid_parameters": [
                 {
-                  "type": "/problem-details/invalid-request-parameters",
-                  "title": "invalid-request-parameters",
-                  "status": 400,
-                  "detail": "Requesten inneholder ugyldige paramtere.",
-                  "instance": "about:blank",
-                  "invalid_parameters": [
-                    {
-                      "type": "entity",
-                      "name": "aktivitet.selvstendigNæringsdrivende[0].perioder[2021-02-07/2021-02-08].valideringRegistrertUtlandet",
-                      "reason": "[Feil{felt='.landkode', feilkode='påkrevd', feilmelding='landkode må være satt, og kan ikke være null, dersom virksomhet er registrert i utlandet.'}]",
-                      "invalid_value": "k9-format feilkode: påkrevd"
-                    },
-                    {
-                      "type": "entity",
-                      "name": "selvstendigNæringsdrivende.perioder{2021-02-07-2021-02-08}.landkode",
-                      "reason": "landkode må være satt, og kan ikke være null, dersom virksomhet er registrert i utlandet.",
-                      "invalid_value": "k9-format feilkode: påkrevd"
-                    }
-                  ]
+                  "type": "entity",
+                  "name": "selvstendigNæringsdrivende.perioder{2021-02-07-2021-02-08}.landkode",
+                  "reason": "landkode må være satt, og kan ikke være null, dersom virksomhet er registrert i utlandet.",
+                  "invalid_value": "k9-format feilkode: påkrevd"
                 }
+              ]
+            }
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
@@ -674,33 +655,21 @@ class ApplicationTest {
             expectedResponse =
             //language=json
             """
+            {
+              "type": "/problem-details/invalid-request-parameters",
+              "title": "invalid-request-parameters",
+              "status": 400,
+              "detail": "Requesten inneholder ugyldige paramtere.",
+              "instance": "about:blank",
+              "invalid_parameters": [
                 {
-                  "type": "/problem-details/invalid-request-parameters",
-                  "title": "invalid-request-parameters",
-                  "status": 400,
-                  "detail": "Requesten inneholder ugyldige paramtere.",
-                  "instance": "about:blank",
-                  "invalid_parameters": [
-                    {
-                      "type": "entity",
-                      "name": "aktivitet.selvstendigNæringsdrivende[0].perioder[2021-02-07/2021-02-08].landkode.landkode",
-                      "reason": "'ukjent' matcher ikke tillatt pattern '^[A-Z]+${'$'}'",
-                      "invalid_value": "k9-format feilkode: påkrevd"
-                    },
-                    {
-                      "type": "entity",
-                      "name": "aktivitet.selvstendigNæringsdrivende[0].organisasjonsnummer.valid",
-                      "reason": "[ugyldigOrgNummer] Organisasjonsnummer må være gyldig.",
-                      "invalid_value": "k9-format feilkode: påkrevd"
-                    },
-                    {
-                      "type": "entity",
-                      "name": "aktivitet.selvstendigNæringsdrivende[0].perioder[2021-02-07/2021-02-08].landkode.landkode",
-                      "reason": "size must be between 0 and 3",
-                      "invalid_value": "k9-format feilkode: påkrevd"
-                    }
-                  ]
+                  "type": "entity",
+                  "name": "selvstendigNæringsdrivende.landkode",
+                  "reason": "Landkode er ikke en gyldig ISO 3166-1 alpha-3 kode.",
+                  "invalid_value": "ukjent"
                 }
+              ]
+            }
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
@@ -731,7 +700,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `Sende søknad med selvstendig næringsvirksomhet som ikke er gyldig, har tomrom i organisasjonsnummer`() {
+    fun `Sende søknad med selvstendig næringsvirksomhet som ikke har gyldig organisasjonsnummer`() {
         val cookie = getAuthCookie(gyldigFodselsnummerA)
 
         requestAndAssert(
@@ -740,21 +709,21 @@ class ApplicationTest {
             expectedResponse =
             //language=json
             """
+            {
+              "type": "/problem-details/invalid-request-parameters",
+              "title": "invalid-request-parameters",
+              "status": 400,
+              "detail": "Requesten inneholder ugyldige paramtere.",
+              "instance": "about:blank",
+              "invalid_parameters": [
                 {
-                  "type": "/problem-details/invalid-request-parameters",
-                  "title": "invalid-request-parameters",
-                  "status": 400,
-                  "detail": "Requesten inneholder ugyldige paramtere.",
-                  "instance": "about:blank",
-                  "invalid_parameters": [
-                    {
-                      "type": "entity",
-                      "name": "aktivitet.selvstendigNæringsdrivende[0].okOrganisasjonsnummer",
-                      "reason": "organisasjonsnummer må være satt med mindre virksomhet er registrert i utlandet",
-                      "invalid_value": "k9-format feilkode: påkrevd"
-                    }
-                  ]
+                  "type": "entity",
+                  "name": "selvstendigNæringsdrivende.organisasjonsnummer",
+                  "reason": "Ugyldig organisasjonsnummer, inneholder noe annet enn tall.",
+                  "invalid_value": null
                 }
+              ]
+            }
             """.trimIndent(),
             expectedCode = HttpStatusCode.BadRequest,
             cookie = cookie,
@@ -765,8 +734,8 @@ class ApplicationTest {
                     tilOgMed = LocalDate.now(),
                     næringsinntekt = 1233123,
                     navnPåVirksomheten = "TullOgTøys",
+                    organisasjonsnummer = "123a",
                     registrertINorge = JaNei.Ja,
-                    organisasjonsnummer = " ",
                     yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
                     regnskapsfører = Regnskapsfører(
                         navn = "Kjell",
@@ -800,15 +769,9 @@ class ApplicationTest {
                   "invalid_parameters": [
                     {
                       "type": "entity",
-                      "name": "fosterbarn[1].norskIdentitetsnummer.verdi",
-                      "reason": "'ugyldig fødselsnummer' matcher ikke tillatt pattern '^\\d+${'$'}'",
-                      "invalid_value": "k9-format feilkode: påkrevd"
-                    },
-                    {
-                      "type": "entity",
-                      "name": "fosterbarn[1].norskIdentitetsnummer.verdi",
-                      "reason": "size must be between 0 and 11",
-                      "invalid_value": "k9-format feilkode: påkrevd"
+                      "name": "fosterbarn[1].fødselsnummer",
+                      "reason": "Ugyldig fødselsnummer",
+                      "invalid_value": null
                     }
                   ]
                 }

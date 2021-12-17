@@ -31,9 +31,10 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         addAll(spørsmål.valider())
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
-        selvstendigNæringsdrivende?.let { addAll(selvstendigNæringsdrivende.validate()) }
         addAll(k9FormatSøknad.valider())
         frilans?.let { addAll(it.valider()) }
+        fosterbarn?.let { addAll(it.valider()) }
+        selvstendigNæringsdrivende?.let { addAll(selvstendigNæringsdrivende.validate()) }
 
     }.sortedBy { it.reason }.toSet()
 
@@ -64,6 +65,24 @@ private fun no.nav.k9.søknad.Søknad.valider() =
             invalidValue = "k9-format feilkode: ${it.feilkode}"
         )
     }
+
+private fun List<FosterBarn>.valider(): MutableSet<Violation> {
+    val feil = mutableSetOf<Violation>()
+
+    this.forEachIndexed { index, fosterBarn ->
+        if(!fosterBarn.fødselsnummer.erGyldigFodselsnummer()){
+            feil.add(
+                Violation(
+                    parameterName = "fosterbarn[$index].fødselsnummer",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "Ugyldig fødselsnummer"
+                )
+            )
+        }
+    }
+
+    return feil
+}
 
 private fun Søknad.validerInntektsopplysninger() = mutableSetOf<Violation>().apply {
     if (frilans == null && selvstendigNæringsdrivende == null) {

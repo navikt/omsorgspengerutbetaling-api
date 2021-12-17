@@ -31,6 +31,7 @@ internal class SerDesTest {
         val komplettSoknad = SøknadUtils.defaultKomplettSøknad(SøknadId(søknadId))
         val komplettSøknadJson = komplettSøknadJson(søknadId)
 
+        println(komplettSoknad.somJson())
         JSONAssert.assertEquals(komplettSøknadJson, komplettSoknad.somJson(), true)
         //assertEquals(komplettSoknad, SøknadUtils.objectMapper.readValue(komplettSøknadJson)) // TODO: 05/02/2021  Må fikses før prodsetting.
     }
@@ -260,26 +261,30 @@ internal class SerDesTest {
                         "duration": "PT3H", 
                         "årsak": "STENGT_SKOLE_ELLER_BARNEHAGE",
                         "aktivitetFravær": ["FRILANSER"],
-                        "arbeidsgiverOrgNr": null,
-                        "søknadÅrsak": null
+                        "søknadÅrsak": null,
+                        "arbeidsforholdId": null,
+                        "arbeidsgiverOrgNr": null
                       },
                       {
                         "periode": "2020-01-21/2020-01-21",
                         "duration": "PT3H", 
                         "årsak": "SMITTEVERNHENSYN",
                         "aktivitetFravær": ["SELVSTENDIG_VIRKSOMHET"],
-                        "arbeidsgiverOrgNr": null,
-                        "søknadÅrsak": null
+                        "søknadÅrsak": null,
+                        "arbeidsforholdId": null,
+                        "arbeidsgiverOrgNr": null
                       },
                       {
                         "periode": "2020-01-31/2020-02-05",
                         "duration": "PT3H", 
                         "årsak": "ORDINÆRT_FRAVÆR",
                         "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"],
-                        "arbeidsgiverOrgNr": null,
-                        "søknadÅrsak": null
+                        "søknadÅrsak": null,
+                        "arbeidsforholdId": null,
+                        "arbeidsgiverOrgNr": null
                       }
                     ],
+                    "fraværsperioderKorrigeringIm": null,
                     "bosteder": {
                       "perioder": {
                         "2019-12-12/2019-12-22": {
@@ -298,7 +303,10 @@ internal class SerDesTest {
                       "perioderSomSkalSlettes": {}
                     }
                   },
-              "journalposter": []
+              "journalposter": [],
+              "begrunnelseForInnsending": {
+                "tekst": null
+              }
             }
         }
         """.trimIndent()

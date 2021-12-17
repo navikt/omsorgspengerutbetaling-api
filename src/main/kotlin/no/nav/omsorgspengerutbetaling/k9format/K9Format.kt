@@ -1,6 +1,5 @@
 package no.nav.omsorgspengerutbetaling.k9format
 
-import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.Versjon
 import no.nav.k9.søknad.felles.fravær.FraværPeriode
 import no.nav.k9.søknad.felles.fravær.FraværÅrsak
@@ -16,16 +15,17 @@ import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.omsorgspengerutbetaling.soknad.*
 import java.math.BigDecimal
 import java.time.ZonedDateTime
+import no.nav.k9.søknad.Søknad as K9Søknad
 import no.nav.k9.søknad.felles.fravær.AktivitetFravær as K9AktivitetFravær
-import no.nav.k9.søknad.felles.opptjening.SelvstendigNæringsdrivende as K9SelvstendigNæringsdrivende1
+import no.nav.k9.søknad.felles.opptjening.SelvstendigNæringsdrivende as K9SelvstendigNæringsdrivende
 import no.nav.omsorgspengerutbetaling.soknad.Søknad as OmsorgspengerutbetalingSoknadSøknad
 
 fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
     mottatt: ZonedDateTime,
     søker: no.nav.omsorgspengerutbetaling.soker.Søker
-): Søknad {
+): K9Søknad {
 
-    return Søknad(
+    return K9Søknad(
         søknadId,
         Versjon.of("1.0.0"),
         mottatt,
@@ -34,6 +34,7 @@ fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
             fosterbarn?.tilK9Barn(),
             opptjeningAktivitet(),
             this.utbetalingsperioder.tilFraværsperiode(),
+            null,
             this.bosteder.tilK9Bosteder(),
             this.opphold.tilK9Utenlandsopphold()
         )
@@ -72,33 +73,38 @@ fun List<Utbetalingsperiode>.tilFraværsperiode(): List<FraværPeriode> = map { 
                 AktivitetFravær.SELVSTENDIG_VIRKSOMHET -> K9AktivitetFravær.SELVSTENDIG_VIRKSOMHET
             }
         },
-        null
-    )
-}
-
-fun no.nav.omsorgspengerutbetaling.soknad.Søknad.opptjeningAktivitet(): OpptjeningAktivitet {
-    var selvstendigNæringsdrivende: List<K9SelvstendigNæringsdrivende1>? = null
-
-    this.selvstendigNæringsdrivende?.let {
-        selvstendigNæringsdrivende = listOf(
-            K9SelvstendigNæringsdrivende1(
-                mapOf(Periode(it.fraOgMed, it.tilOgMed) to it.tilK9SelvstendingNæringsdrivendeInfo()),
-                Organisasjonsnummer.of(it.organisasjonsnummer),
-                it.navnPåVirksomheten
-            )
-        )
-    }
-
-    return OpptjeningAktivitet(
-        selvstendigNæringsdrivende,
-        frilans?.tilK9Frilanser(),
         null,
         null
     )
 }
 
-fun SelvstendigNæringsdrivende.tilK9SelvstendingNæringsdrivendeInfo(): K9SelvstendigNæringsdrivende1.SelvstendigNæringsdrivendePeriodeInfo {
-    val infoBuilder = K9SelvstendigNæringsdrivende1.SelvstendigNæringsdrivendePeriodeInfo.builder()
+fun OmsorgspengerutbetalingSoknadSøknad.opptjeningAktivitet(): OpptjeningAktivitet {
+    val opptjeningAktivitet = OpptjeningAktivitet()
+
+    selvstendigNæringsdrivende?.let {
+        opptjeningAktivitet.medSelvstendigNæringsdrivende(
+            K9SelvstendigNæringsdrivende()
+                .medVirksomhetNavn(it.navnPåVirksomheten)
+                .medPerioder(mapOf(Periode(it.fraOgMed, it.tilOgMed) to it.tilK9SelvstendingNæringsdrivendeInfo()))
+                .apply {
+                    it.organisasjonsnummer?.let {
+                        medOrganisasjonsnummer(Organisasjonsnummer.of(it))
+                    }
+                }
+        )
+    }
+
+    frilans?.let {
+        opptjeningAktivitet.medFrilanser(
+            it.tilK9Frilanser()
+        )
+    }
+
+    return opptjeningAktivitet
+}
+
+fun SelvstendigNæringsdrivende.tilK9SelvstendingNæringsdrivendeInfo(): K9SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo {
+    val infoBuilder = K9SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
     infoBuilder
         .virksomhetstyper(næringstyper.tilK9Virksomhetstyper())
         .registrertIUtlandet(!registrertINorge.boolean)
@@ -137,13 +143,14 @@ private fun List<Næringstyper>.tilK9Virksomhetstyper(): List<VirksomhetType> = 
     }
 }
 
-private fun Frilans.tilK9Frilanser(): Frilanser = Frilanser()
-    .medStartDato(startdato)
-    .medSluttDato(sluttdato)
+private fun Frilans.tilK9Frilanser(): Frilanser = Frilanser().apply {
+    medStartDato(this@tilK9Frilanser.startdato)
+    this@tilK9Frilanser.sluttdato?.let { medStartDato(it) }
+}
 
 private fun List<FosterBarn>.tilK9Barn(): List<Barn> {
     return map {
-        Barn(NorskIdentitetsnummer.of(it.fødselsnummer), null)
+        Barn().medNorskIdentitetsnummer(NorskIdentitetsnummer.of(it.fødselsnummer))
     }
 }
 
