@@ -104,34 +104,32 @@ fun OmsorgspengerutbetalingSoknadSøknad.opptjeningAktivitet(): OpptjeningAktivi
 }
 
 fun SelvstendigNæringsdrivende.tilK9SelvstendingNæringsdrivendeInfo(): K9SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo {
-    val infoBuilder = K9SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
-    infoBuilder
-        .virksomhetstyper(næringstyper.tilK9Virksomhetstyper())
-        .registrertIUtlandet(!registrertINorge.boolean)
+    val periodeInfo = K9SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo()
+        .medVirksomhetstyper(næringstyper.tilK9Virksomhetstyper())
+        .medRegistrertIUtlandet(!registrertINorge.boolean)
+        .medErNyoppstartet(erNyoppstartet)
 
-    if (registrertINorge.boolean) infoBuilder.landkode(Landkode.NORGE)
-    else infoBuilder.landkode(Landkode.of(registrertIUtlandet?.landkode))
+    if (registrertINorge.boolean) periodeInfo.medLandkode(Landkode.NORGE)
 
-    næringsinntekt?.let { infoBuilder.bruttoInntekt(BigDecimal.valueOf(it.toLong())) }
-
-    infoBuilder.erNyoppstartet(erNyoppstartet)
+    næringsinntekt?.let { periodeInfo.medBruttoInntekt(BigDecimal.valueOf(it.toLong())) }
+    registrertIUtlandet?.let { periodeInfo.medLandkode(Landkode.of(it.landkode)) }
+    yrkesaktivSisteTreFerdigliknedeÅrene?.let { periodeInfo.medErNyIArbeidslivet(true) }
 
     regnskapsfører?.let {
-        infoBuilder
-            .regnskapsførerNavn(it.navn)
-            .regnskapsførerTelefon(it.telefon)
+        periodeInfo
+            .medRegnskapsførerNavn(it.navn)
+            .medRegnskapsførerTlf(it.telefon)
     }
 
     varigEndring?.let {
-        infoBuilder
-            .erVarigEndring(true)
-            .bruttoInntekt(BigDecimal.valueOf(it.inntektEtterEndring.toLong()))
-            .endringDato(it.dato)
-            .endringBegrunnelse(it.forklaring)
-    } ?: infoBuilder.erVarigEndring(false)
+        periodeInfo
+            .medErVarigEndring(true)
+            .medEndringBegrunnelse(it.forklaring)
+            .medEndringDato(it.dato)
+            .medBruttoInntekt(BigDecimal.valueOf(it.inntektEtterEndring.toLong()))
+    } ?: periodeInfo.medErVarigEndring(false)
 
-    yrkesaktivSisteTreFerdigliknedeÅrene?.let { infoBuilder.erNyIArbeidslivet(true) }
-    return infoBuilder.build()
+    return periodeInfo
 }
 
 private fun List<Næringstyper>.tilK9Virksomhetstyper(): List<VirksomhetType> = map {
