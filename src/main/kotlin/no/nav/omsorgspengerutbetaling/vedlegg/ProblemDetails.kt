@@ -34,8 +34,3 @@ val feilVedSlettingAvVedlegg = DefaultProblemDetails(
     status = 500,
     detail = "Feil ved sletting av vedlegg"
 )
-val fantIkkeSubjectPaaToken = DefaultProblemDetails(
-    title = "fant-ikke-subject",
-    status = 413,
-    detail = "Fant ikke subject på idToken"
-)
