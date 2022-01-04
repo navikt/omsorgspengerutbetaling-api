@@ -3,11 +3,11 @@ package no.nav.omsorgspengerutbetaling.soker
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import io.ktor.http.*
+import no.nav.helse.dusseldorf.ktor.auth.IdToken
 import no.nav.helse.dusseldorf.ktor.client.buildURL
 import no.nav.helse.dusseldorf.ktor.core.Retry
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.omsorgspengerutbetaling.general.CallId
-import no.nav.omsorgspengerutbetaling.general.auth.IdToken
 import no.nav.omsorgspengerutbetaling.general.oppslag.K9OppslagGateway
 import no.nav.omsorgspengerutbetaling.general.oppslag.throwable
 import no.nav.omsorgspengerutbetaling.k9SelvbetjeningOppslagKonfigurert

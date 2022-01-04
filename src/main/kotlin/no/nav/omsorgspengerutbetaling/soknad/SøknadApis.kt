@@ -5,10 +5,10 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import no.nav.helse.dusseldorf.ktor.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.felles.SØKNAD_URL
 import no.nav.omsorgspengerutbetaling.felles.VALIDER_URL
 import no.nav.omsorgspengerutbetaling.felles.formaterStatuslogging
-import no.nav.omsorgspengerutbetaling.general.auth.IdTokenProvider
 import no.nav.omsorgspengerutbetaling.general.getCallId
 import no.nav.omsorgspengerutbetaling.general.getMetadata
 import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad

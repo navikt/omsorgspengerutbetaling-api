@@ -1,8 +1,8 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
+import no.nav.helse.dusseldorf.ktor.auth.IdToken
 import no.nav.omsorgspengerutbetaling.felles.formaterStatuslogging
 import no.nav.omsorgspengerutbetaling.general.CallId
-import no.nav.omsorgspengerutbetaling.general.auth.IdToken
 import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
 import no.nav.omsorgspengerutbetaling.kafka.KafkaProducer
 import no.nav.omsorgspengerutbetaling.kafka.Metadata
