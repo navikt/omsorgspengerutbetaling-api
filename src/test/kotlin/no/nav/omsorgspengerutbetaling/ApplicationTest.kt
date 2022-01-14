@@ -880,7 +880,7 @@ class ApplicationTest {
         assertTrue(søknadFraTopic.has("mottatt"))
         assertTrue(søknadFraTopic.has("k9FormatSøknad"))
 
-        assertEquals(søknadSendtInn.getJSONArray("vedlegg").length() ,søknadFraTopic.getJSONArray("vedlegg").length())
+        assertEquals(søknadSendtInn.getJSONArray("vedlegg").length() ,søknadFraTopic.getJSONArray("vedleggId").length())
         assertEquals(søknadSendtInn.getJSONArray("andreUtbetalinger").toString(), søknadFraTopic.getJSONArray("andreUtbetalinger").toString())
     }
 

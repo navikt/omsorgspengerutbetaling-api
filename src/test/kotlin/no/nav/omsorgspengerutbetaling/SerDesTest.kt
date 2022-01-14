@@ -206,7 +206,7 @@ internal class SerDesTest {
             "fosterbarn": [{
                 "fødselsnummer": "02119970078"
             }],
-            "vedlegg": [],
+            "vedleggId": [],
             "k9FormatSøknad": {
                 "søknadId": "$søknadId",
                 "mottattDato": "2018-01-02T03:04:05.000Z",

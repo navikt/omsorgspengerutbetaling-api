@@ -21,7 +21,6 @@ import no.nav.omsorgspengerutbetaling.vedlegg.VedleggService
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
-import java.net.URI
 import java.net.URL
 import java.time.LocalDate
 import kotlin.test.Test
@@ -44,7 +43,6 @@ internal class SøknadServiceTest{
         søknadService = SøknadService(
             søkerService = søkerService,
             kafkaProducer = kafkaProducer,
-            k9MellomlagringIngress = URI("http://localhost:8080/v1/dokument"),
             vedleggService = vedleggService
         )
         assertNotNull(kafkaProducer)

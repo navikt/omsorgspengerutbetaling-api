@@ -12,14 +12,12 @@ import no.nav.omsorgspengerutbetaling.vedlegg.DokumentEier
 import no.nav.omsorgspengerutbetaling.vedlegg.VedleggService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URI
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 internal class SøknadService(
     private val vedleggService: VedleggService,
     private val søkerService: SøkerService,
-    private val k9MellomlagringIngress: URI,
     private val kafkaProducer: KafkaProducer
 ) {
 
@@ -56,7 +54,7 @@ internal class SøknadService(
         }
 
         logger.info("Legger søknad til prosessering")
-        val komplettSøknad = søknad.tilKomplettSøknad(k9FormatSøknad, søker, k9MellomlagringIngress)
+        val komplettSøknad = søknad.tilKomplettSøknad(k9FormatSøknad, søker)
 
         try {
             kafkaProducer.produserKafkaMelding(komplettSøknad, metadata)

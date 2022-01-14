@@ -163,7 +163,6 @@ fun Application.omsorgpengesoknadapi() {
                 søknadService = SøknadService(
                     vedleggService = vedleggService,
                     søkerService = søkerService,
-                    k9MellomlagringIngress = configuration.getK9MellomlagringIngress(),
                     kafkaProducer = kafkaProducer
                 ),
                 søkerService = søkerService

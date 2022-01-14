@@ -224,7 +224,7 @@ internal object SøknadUtils {
                 fødselsnummer = "02119970078"
             )
         ),
-        vedlegg = listOf(),
+        vedleggId = listOf(),
         bekreftelser = Bekreftelser(
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja
