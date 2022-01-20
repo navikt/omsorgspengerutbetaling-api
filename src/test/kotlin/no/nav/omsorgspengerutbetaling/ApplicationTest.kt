@@ -11,6 +11,7 @@ import io.ktor.server.testing.*
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.SøknadUtils.hentGyldigSøknad
+import no.nav.omsorgspengerutbetaling.felles.BARN_URL
 import no.nav.omsorgspengerutbetaling.felles.SØKER_URL
 import no.nav.omsorgspengerutbetaling.felles.SØKNAD_URL
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
@@ -28,6 +29,7 @@ import java.time.LocalDate
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 private const val fnr = "290990123456"
@@ -52,6 +54,7 @@ class ApplicationTest {
             .stubK9DokumentHealth()
             .stubOppslagHealth()
             .stubK9OppslagSoker()
+            .stubK9OppslagBarn()
             .stubK9Mellomlagring()
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
@@ -172,6 +175,97 @@ class ApplicationTest {
             ),
             cookie = getAuthCookie(ikkeMyndigFnr)
         )
+    }
+
+    @Test
+    fun `Hente barn og sjekk eksplisit at identitetsnummer ikke blir med ved get kall`(){
+
+        val respons = requestAndAssert(
+            httpMethod = HttpMethod.Get,
+            path = BARN_URL,
+            expectedCode = HttpStatusCode.OK,
+            //language=json
+            expectedResponse = """
+                {
+                  "barn": [
+                    {
+                      "fødselsdato": "2000-08-27",
+                      "fornavn": "BARN",
+                      "mellomnavn": "EN",
+                      "etternavn": "BARNESEN",
+                      "aktørId": "1000000000001"
+                    },
+                    {
+                      "fødselsdato": "2001-04-10",
+                      "fornavn": "BARN",
+                      "mellomnavn": "TO",
+                      "etternavn": "BARNESEN",
+                      "aktørId": "1000000000002"
+                    }
+                  ]
+                }
+            """.trimIndent()
+        )
+
+        val responsSomJSONArray = JSONObject(respons).getJSONArray("barn")
+
+        assertFalse(responsSomJSONArray.getJSONObject(0).has("identitetsnummer"))
+        assertFalse(responsSomJSONArray.getJSONObject(1).has("identitetsnummer"))
+    }
+
+    @Test
+    fun `Feil ved henting av barn skal returnere tom liste`() {
+        wireMockServer.stubK9OppslagBarn(simulerFeil = true)
+        requestAndAssert(
+            httpMethod = HttpMethod.Get,
+            path = BARN_URL,
+            expectedCode = HttpStatusCode.OK,
+            expectedResponse = """
+            {
+                "barn": []
+            }
+            """.trimIndent(),
+            cookie = getAuthCookie(gyldigFodselsnummerA)
+        )
+        wireMockServer.stubK9OppslagBarn()
+    }
+
+    @Test
+    fun `Hente barn hvor man får 451 fra oppslag`(){
+        wireMockServer.stubK9OppslagBarn(
+            statusCode = HttpStatusCode.fromValue(451),
+            responseBody =
+            //language=json
+            """
+            {
+                "detail": "Policy decision: DENY - Reason: (NAV-bruker er i live AND NAV-bruker er ikke myndig)",
+                "instance": "/meg",
+                "type": "/problem-details/tilgangskontroll-feil",
+                "title": "tilgangskontroll-feil",
+                "status": 451
+            }
+            """.trimIndent()
+        )
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Get,
+            path = BARN_URL,
+            expectedCode = HttpStatusCode.fromValue(451),
+            expectedResponse =
+            //language=json
+            """
+            {
+                "type": "/problem-details/tilgangskontroll-feil",
+                "title": "tilgangskontroll-feil",
+                "status": 451,
+                "instance": "/barn",
+                "detail": "Tilgang nektet."
+            }
+            """.trimIndent(),
+            cookie = getAuthCookie(ikkeMyndigFnr)
+        )
+
+        wireMockServer.stubK9OppslagBarn() // reset til default mapping
     }
 
     @Test
