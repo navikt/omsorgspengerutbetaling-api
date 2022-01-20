@@ -10,7 +10,7 @@ import no.nav.omsorgspengerutbetaling.general.oppslag.TilgangNektetException
 import no.nav.omsorgspengerutbetaling.general.oppslag.respondTilgangNektetProblemDetail
 import org.slf4j.LoggerFactory
 
-private val logger = LoggerFactory.getLogger("no.nav.omsorgsdagermeldingapi.barn.barnApis")
+private val logger = LoggerFactory.getLogger("no.nav.omsorgspengerutbetaling.barn.BarnApis")
 
 fun Route.barnApis(
     barnService: BarnService,
