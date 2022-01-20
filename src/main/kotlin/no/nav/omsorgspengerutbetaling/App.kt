@@ -29,6 +29,9 @@ import no.nav.helse.dusseldorf.ktor.jackson.JacksonStatusPages
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.dusseldorf.ktor.metrics.init
+import no.nav.omsorgspengerutbetaling.barn.BarnGateway
+import no.nav.omsorgspengerutbetaling.barn.BarnService
+import no.nav.omsorgspengerutbetaling.barn.barnApis
 import no.nav.omsorgspengerutbetaling.general.auth.IdTokenStatusPages
 import no.nav.omsorgspengerutbetaling.general.systemauth.AccessTokenClientResolver
 import no.nav.omsorgspengerutbetaling.kafka.KafkaProducer
@@ -125,6 +128,15 @@ fun Application.omsorgpengesoknadapi() {
             søkerGateway = sokerGateway
         )
 
+        val barnGateway = BarnGateway(
+            baseUrl = configuration.getK9OppslagUrl()
+        )
+
+        val barnService = BarnService(
+            barnGateway = barnGateway,
+            cache = configuration.cache()
+        )
+
         val kafkaProducer = KafkaProducer(
             kafkaConfig = configuration.getKafkaConfig()
         )
@@ -142,6 +154,10 @@ fun Application.omsorgpengesoknadapi() {
                 idTokenProvider = idTokenProvider
             )
 
+            barnApis(
+                barnService = barnService,
+                idTokenProvider = idTokenProvider
+            )
 
             mellomlagringApis(
                 mellomlagringService = MellomlagringService(
