@@ -20,6 +20,7 @@ internal class SerDesTest {
         val søknad = søknad.copy(søknadId = SøknadId(søknadId))
         val søknadJson = søknadJson(søknadId)
 
+        println(søknad.somJson())
         JSONAssert.assertEquals(søknadJson, søknad.somJson(), true)
         assertEquals(søknad, SøknadUtils.objectMapper.readValue(søknadJson))
     }
@@ -203,10 +204,21 @@ internal class SerDesTest {
                 }
             },
             "erArbeidstakerOgså": true,
-            "fosterbarn": [{
+            "fosterbarn": [
+              {
                 "fødselsnummer": "02119970078"
-            }],
-            "vedleggId": [],
+              }
+            ],
+            "barn" : [
+                  {
+                    "navn": "Barn Barnesen",
+                    "fødselsdato": "2021-01-01",
+                    "aktørId": "1000000000001",
+                    "utvidetRett": null,
+                    "identitetsnummer": "16012099359"
+                  }
+            ],
+            "vedleggId": ["1", "2", "3"],
             "k9FormatSøknad": {
                 "søknadId": "$søknadId",
                 "mottattDato": "2018-01-02T03:04:05.000Z",
@@ -218,10 +230,14 @@ internal class SerDesTest {
                 "ytelse": {
                     "type": "OMP_UT",
                     "fosterbarn": [
-                      {
-                        "norskIdentitetsnummer": "02119970078",
-                        "fødselsdato": null
-                      }
+                        {
+                          "norskIdentitetsnummer": null,
+                          "fødselsdato": null
+                        },
+                        {
+                          "norskIdentitetsnummer": "02119970078",
+                          "fødselsdato": null
+                        }
                     ],
                     "aktivitet": {
                       "selvstendigNæringsdrivende": [
@@ -396,9 +412,20 @@ internal class SerDesTest {
                 }
             },
             "erArbeidstakerOgså": true,
-            "fosterbarn": [{
+            "fosterbarn": [
+              {
                 "fødselsnummer": "02119970078"
-            }],
+              }
+            ],
+            "barn": [
+                {
+                  "navn": "Barn Barnesen",
+                  "fødselsdato": "2021-01-01",
+                  "aktørId": "1000000000001",
+                  "utvidetRett": null,
+                  "identitetsnummer": null
+                }
+            ],
             "vedlegg": [
               "http://localhost:8080/vedlegg/1",
               "http://localhost:8080/vedlegg/2",

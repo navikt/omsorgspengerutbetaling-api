@@ -1,6 +1,7 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
 import no.nav.helse.dusseldorf.ktor.auth.IdToken
+import no.nav.omsorgspengerutbetaling.barn.BarnService
 import no.nav.omsorgspengerutbetaling.felles.formaterStatuslogging
 import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
@@ -18,6 +19,7 @@ import java.time.ZonedDateTime
 internal class SøknadService(
     private val vedleggService: VedleggService,
     private val søkerService: SøkerService,
+    private val barnService: BarnService,
     private val kafkaProducer: KafkaProducer
 ) {
 
@@ -35,6 +37,9 @@ internal class SøknadService(
 
         val søker = søkerService.getSoker(idToken, callId)
         søker.validate()
+
+        val barnMedIdentitetsnummer = barnService.hentNåværendeBarn(idToken, callId)
+        søknad.oppdaterBarnMedFnr(barnMedIdentitetsnummer)
 
         logger.info("Mapper om søknad til K9-format.")
         val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(

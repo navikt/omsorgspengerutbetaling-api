@@ -5,7 +5,6 @@ import no.nav.k9.søknad.felles.fravær.FraværPeriode
 import no.nav.k9.søknad.felles.fravær.FraværÅrsak
 import no.nav.k9.søknad.felles.opptjening.Frilanser
 import no.nav.k9.søknad.felles.opptjening.OpptjeningAktivitet
-import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Søker
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold
@@ -13,14 +12,15 @@ import no.nav.k9.søknad.felles.type.*
 import no.nav.k9.søknad.felles.type.Periode
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.omsorgspengerutbetaling.soknad.*
+import no.nav.omsorgspengerutbetaling.soknad.Søknad
 import java.math.BigDecimal
 import java.time.ZonedDateTime
 import no.nav.k9.søknad.Søknad as K9Søknad
 import no.nav.k9.søknad.felles.fravær.AktivitetFravær as K9AktivitetFravær
 import no.nav.k9.søknad.felles.opptjening.SelvstendigNæringsdrivende as K9SelvstendigNæringsdrivende
-import no.nav.omsorgspengerutbetaling.soknad.Søknad as OmsorgspengerutbetalingSoknadSøknad
+import no.nav.k9.søknad.felles.personopplysninger.Barn as K9Barn
 
-fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
+fun Søknad.tilKOmsorgspengerUtbetalingSøknad(
     mottatt: ZonedDateTime,
     søker: no.nav.omsorgspengerutbetaling.soker.Søker
 ): K9Søknad {
@@ -31,7 +31,7 @@ fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
         mottatt,
         søker.tilK9Søker(),
         OmsorgspengerUtbetaling(
-            fosterbarn?.tilK9Barn(),
+            byggK9Barn(),
             opptjeningAktivitet(),
             this.utbetalingsperioder.tilFraværsperiode(),
             null,
@@ -40,6 +40,14 @@ fun OmsorgspengerutbetalingSoknadSøknad.tilKOmsorgspengerUtbetalingSøknad(
         )
     )
 }
+
+fun Søknad.byggK9Barn(): List<K9Barn> = mutableListOf<K9Barn>().apply {
+    barn.forEach { add(it.tilK9Barn()) }
+    fosterbarn?.forEach { add(it.tilK9Barn()) }
+}
+
+fun Barn.tilK9Barn() = K9Barn().medNorskIdentitetsnummer(NorskIdentitetsnummer.of(identitetsnummer))
+fun FosterBarn.tilK9Barn() = K9Barn().medNorskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
 
 fun List<Opphold>.tilK9Utenlandsopphold(): Utenlandsopphold {
     val perioder = mutableMapOf<Periode, Utenlandsopphold.UtenlandsoppholdPeriodeInfo>()
@@ -78,7 +86,7 @@ fun List<Utbetalingsperiode>.tilFraværsperiode(): List<FraværPeriode> = map { 
     )
 }
 
-fun OmsorgspengerutbetalingSoknadSøknad.opptjeningAktivitet(): OpptjeningAktivitet {
+fun Søknad.opptjeningAktivitet(): OpptjeningAktivitet {
     val opptjeningAktivitet = OpptjeningAktivitet()
 
     selvstendigNæringsdrivende?.let {
@@ -144,12 +152,6 @@ private fun List<Næringstyper>.tilK9Virksomhetstyper(): List<VirksomhetType> = 
 private fun Frilans.tilK9Frilanser(): Frilanser = Frilanser().apply {
     medStartDato(this@tilK9Frilanser.startdato)
     this@tilK9Frilanser.sluttdato?.let { medStartDato(it) }
-}
-
-private fun List<FosterBarn>.tilK9Barn(): List<Barn> {
-    return map {
-        Barn().medNorskIdentitetsnummer(NorskIdentitetsnummer.of(it.fødselsnummer))
-    }
 }
 
 private fun no.nav.omsorgspengerutbetaling.soker.Søker.tilK9Søker() = Søker(NorskIdentitetsnummer.of(fødselsnummer))

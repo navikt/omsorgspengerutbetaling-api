@@ -14,6 +14,7 @@ import no.nav.omsorgspengerutbetaling.SøknadUtils.hentGyldigSøknad
 import no.nav.omsorgspengerutbetaling.felles.BARN_URL
 import no.nav.omsorgspengerutbetaling.felles.SØKER_URL
 import no.nav.omsorgspengerutbetaling.felles.SØKNAD_URL
+import no.nav.omsorgspengerutbetaling.felles.somJson
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.wiremock.*
@@ -225,7 +226,7 @@ class ApplicationTest {
                 "barn": []
             }
             """.trimIndent(),
-            cookie = getAuthCookie(gyldigFodselsnummerA)
+            cookie = getAuthCookie("13106423495")
         )
         wireMockServer.stubK9OppslagBarn()
     }
@@ -286,6 +287,37 @@ class ApplicationTest {
         )
 
         hentOgAssertSøknad(JSONObject(søknad))
+    }
+
+    @Test
+    fun `Sende søknad og verifisere at barn har fått identitetsnummer`() {
+        val cookie = getAuthCookie(fnr)
+
+        val søknad = hentGyldigSøknad().copy(
+            vedlegg = listOf(URL(engine.jpegUrl(cookie)), URL(engine.pdUrl(cookie))),
+            barn = listOf(
+                Barn(
+                    navn = "Barn Barnesen",
+                    fødselsdato = LocalDate.parse("2021-01-01"),
+                    aktørId = "1000000000001"
+                )
+            )
+        )
+
+        requestAndAssert(
+            httpMethod = HttpMethod.Post,
+            path = SØKNAD_URL,
+            expectedResponse = null,
+            expectedCode = HttpStatusCode.Accepted,
+            cookie = cookie,
+            requestEntity = søknad.somJson()
+        )
+
+        hentOgAssertSøknad(JSONObject(søknad))
+
+        val hentetSøknad = kafkaKonsumer.hentSøknad(søknad.søknadId.id)
+
+        assertTrue(hentetSøknad.data.getJSONArray("barn").getJSONObject(0).getString("identitetsnummer") != null)
     }
 
     @Test
@@ -961,7 +993,7 @@ class ApplicationTest {
         )
     }
 
-    private fun hentOgAssertSøknad(søknad: JSONObject){
+    private fun hentOgAssertSøknad(søknad: JSONObject) {
         val hentet = kafkaKonsumer.hentSøknad(søknad.getJSONObject("søknadId").getString("id"))
         assertGyldigSøknad(søknad, hentet.data)
     }

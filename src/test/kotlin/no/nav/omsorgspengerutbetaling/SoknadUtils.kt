@@ -112,6 +112,13 @@ internal object SøknadUtils {
             FosterBarn(
                 fødselsnummer = "02119970078"
             )
+        ),
+        barn = listOf(
+            Barn(
+                navn = "Barn Barnesen",
+                fødselsdato = LocalDate.parse("2021-01-01"),
+                aktørId = "1000000000001"
+            )
         )
     )
 
@@ -224,7 +231,15 @@ internal object SøknadUtils {
                 fødselsnummer = "02119970078"
             )
         ),
-        vedleggId = listOf(),
+        barn = listOf(
+            Barn(
+                navn = "Barn Barnesen",
+                fødselsdato = LocalDate.parse("2021-01-01"),
+                aktørId = "1000000000001",
+                identitetsnummer = "16012099359"
+            )
+        ),
+        vedleggId = listOf("1", "2","3"),
         bekreftelser = Bekreftelser(
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja

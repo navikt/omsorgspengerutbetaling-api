@@ -8,6 +8,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
 import no.nav.helse.dusseldorf.ktor.auth.IdToken
 import no.nav.helse.dusseldorf.testsupport.jws.Azure
+import no.nav.omsorgspengerutbetaling.barn.BarnService
 import no.nav.omsorgspengerutbetaling.general.CallId
 import no.nav.omsorgspengerutbetaling.kafka.KafkaProducer
 import no.nav.omsorgspengerutbetaling.kafka.Metadata
@@ -33,6 +34,9 @@ internal class SøknadServiceTest{
     lateinit var søkerService: SøkerService
 
     @RelaxedMockK
+    lateinit var barnService: BarnService
+
+    @RelaxedMockK
     lateinit var vedleggService: VedleggService
 
     lateinit var søknadService: SøknadService
@@ -42,6 +46,7 @@ internal class SøknadServiceTest{
         MockKAnnotations.init(this)
         søknadService = SøknadService(
             søkerService = søkerService,
+            barnService = barnService,
             kafkaProducer = kafkaProducer,
             vedleggService = vedleggService
         )
@@ -65,7 +70,9 @@ internal class SøknadServiceTest{
 
                 søknadService.registrer(
                     søknad = SøknadUtils.hentGyldigSøknad().copy(
-                        vedlegg = listOf(URL("https://www.vg.no/vedlegg"))
+                        vedlegg = listOf(URL("https://www.vg.no/vedlegg")),
+                        barn = listOf(),
+                        fosterbarn = listOf()
                     ),
                     metadata = Metadata(
                         version = 1,

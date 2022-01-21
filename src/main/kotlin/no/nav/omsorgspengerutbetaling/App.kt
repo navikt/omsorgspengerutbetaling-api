@@ -179,7 +179,8 @@ fun Application.omsorgpengesoknadapi() {
                 søknadService = SøknadService(
                     vedleggService = vedleggService,
                     søkerService = søkerService,
-                    kafkaProducer = kafkaProducer
+                    kafkaProducer = kafkaProducer,
+                    barnService = barnService
                 ),
                 søkerService = søkerService
             )

@@ -20,6 +20,7 @@ data class KomplettSøknad(
     val erArbeidstakerOgså: Boolean,
     val vedleggId: List<String> = listOf(),
     val fosterbarn: List<FosterBarn>? = listOf(),
+    val barn: List<Barn> = listOf(),
     val frilans: Frilans? = null,
     val selvstendigNæringsdrivende: SelvstendigNæringsdrivende? = null,
     val k9FormatSøknad: Søknad
