@@ -42,8 +42,11 @@ internal fun Søknad.valider() {
     }
 }
 
+
+// TODO: 24/01/2022 Legge til validering at dersom alle barna er over 13 må minst et barn ha utvidet rett
+
 private fun Søknad.validerHarDekketTiFørsteDagerSelv() = mutableSetOf<Violation>().apply {
-    if (barn.any { it.fødselsdato.year.minus(LocalDate.now().year) <= 12 }) {
+    if (barn.any { LocalDate.now().year.minus(it.fødselsdato.year) <= 12 }) {
         if (harDekketTiFørsteDagerSelv != true) {
             add(
                 Violation(
