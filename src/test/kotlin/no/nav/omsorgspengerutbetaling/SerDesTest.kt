@@ -2,25 +2,28 @@ package no.nav.omsorgspengerutbetaling
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.k9.søknad.felles.type.SøknadId
+import no.nav.omsorgspengerutbetaling.SøknadUtils.mottatt
 import no.nav.omsorgspengerutbetaling.soknad.*
 import org.skyscreamer.jsonassert.JSONAssert
 import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class SerDesTest {
+    val mottatt = ZonedDateTime.of(2018, 1, 2, 3, 4, 5, 6, ZoneId.of("UTC"))
 
     @Test
     internal fun `Test reserialisering av request`() {
         val søknadId = UUID.randomUUID().toString()
 
-        val søknad = søknad.copy(søknadId = SøknadId(søknadId))
+        val søknad = søknad.copy(søknadId = SøknadId(søknadId), mottatt = mottatt)
         val søknadJson = søknadJson(søknadId)
 
-        println(søknad.somJson())
         JSONAssert.assertEquals(søknadJson, søknad.somJson(), true)
         assertEquals(søknad, SøknadUtils.objectMapper.readValue(søknadJson))
     }
@@ -29,10 +32,9 @@ internal class SerDesTest {
     fun `Test serialisering av request til prosessering`() {
         val søknadId = UUID.randomUUID().toString()
 
-        val komplettSoknad = SøknadUtils.defaultKomplettSøknad(SøknadId(søknadId))
+        val komplettSoknad = SøknadUtils.defaultKomplettSøknad(SøknadId(søknadId)).copy(mottatt = mottatt)
         val komplettSøknadJson = komplettSøknadJson(søknadId)
 
-        println(komplettSoknad.somJson())
         JSONAssert.assertEquals(komplettSøknadJson, komplettSoknad.somJson(), true)
         //assertEquals(komplettSoknad, SøknadUtils.objectMapper.readValue(komplettSøknadJson)) // TODO: 05/02/2021  Må fikses før prodsetting.
     }
@@ -41,6 +43,7 @@ internal class SerDesTest {
         val start = LocalDate.parse("2020-01-01")
 
         val søknad = SøknadUtils.hentGyldigSøknad().copy(
+            mottatt = mottatt,
             utbetalingsperioder = listOf(
                 Utbetalingsperiode(
                     fraOgMed = start,
@@ -331,6 +334,7 @@ internal class SerDesTest {
         fun søknadJson(søknadId: String) = """
         {
             "søknadId": "$søknadId",
+            "mottatt": "2018-01-02T03:04:05.000000006Z",
             "språk": "nb",
             "harDekketTiFørsteDagerSelv": true,
             "bosteder": [{
@@ -433,7 +437,5 @@ internal class SerDesTest {
             ]
         }
         """.trimIndent()
-
-
     }
 }

@@ -11,14 +11,12 @@ import no.nav.omsorgspengerutbetaling.felles.VALIDER_URL
 import no.nav.omsorgspengerutbetaling.felles.formaterStatuslogging
 import no.nav.omsorgspengerutbetaling.general.getCallId
 import no.nav.omsorgspengerutbetaling.general.getMetadata
-import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
+import no.nav.omsorgspengerutbetaling.k9format.tilK9Format
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soker.SøkerService
 import no.nav.omsorgspengerutbetaling.soker.validate
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
 
 private val logger: Logger = LoggerFactory.getLogger("nav.soknadApis")
 
@@ -50,9 +48,10 @@ internal fun Route.søknadApis(
             val søker: Søker = søkerService.getSoker(idToken = idTokenProvider.getIdToken(call), callId = call.getCallId())
             søker.validate()
 
-            val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(ZonedDateTime.now(ZoneOffset.UTC), søker)
-            søknad.valider(k9FormatSøknad)
-            logger.trace("Validering OK.")
+            val k9FormatSøknad = søknad.tilK9Format(søker)
+            k9FormatSøknad.valider()
+            søknad.valider()
+            logger.info("Validering OK.")
             call.respond(HttpStatusCode.Accepted)
         }
     }

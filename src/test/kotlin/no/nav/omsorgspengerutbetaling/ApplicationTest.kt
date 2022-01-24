@@ -290,7 +290,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `Sende søknad og verifisere at barn har fått identitetsnummer`() {
+    fun `Sende søknad uten identitetsnummer på barn og verifisere at barn har fått identitetsnummer`() {
         val cookie = getAuthCookie(fnr)
 
         val søknad = hentGyldigSøknad().copy(
@@ -299,7 +299,8 @@ class ApplicationTest {
                 Barn(
                     navn = "Barn Barnesen",
                     fødselsdato = LocalDate.parse("2021-01-01"),
-                    aktørId = "1000000000001"
+                    aktørId = "1000000000001",
+                    identitetsnummer = null
                 )
             )
         )

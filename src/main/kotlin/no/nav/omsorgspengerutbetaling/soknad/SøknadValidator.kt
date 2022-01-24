@@ -21,7 +21,7 @@ internal val VedleggTooLargeProblemDetails = DefaultProblemDetails(
     detail = "Totale størreslsen på alle vedlegg overstiger maks på 24 MB."
 )
 
-internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
+internal fun Søknad.valider() {
     val violations = mutableSetOf<Violation>().apply {
         addAll(validerPåkrevdBoolean("harDekketTiFørsteDagerSelv", harDekketTiFørsteDagerSelv))
         addAll(utbetalingsperioder.valider())
@@ -31,12 +31,10 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
         addAll(spørsmål.valider())
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
-        addAll(k9FormatSøknad.valider())
         frilans?.let { addAll(it.valider()) }
         fosterbarn?.let { addAll(it.valider()) }
         addAll(barn.validerBarn())
         selvstendigNæringsdrivende?.let { addAll(selvstendigNæringsdrivende.validate()) }
-
     }.sortedBy { it.reason }.toSet()
 
     if (violations.isNotEmpty()) {
@@ -57,15 +55,21 @@ private fun validerPåkrevdBoolean(felt: String, verdi: Boolean?) = mutableSetOf
     }
 }
 
-private fun no.nav.k9.søknad.Søknad.valider() =
-    OmsorgspengerUtbetalingValidator().valider(getYtelse<OmsorgspengerUtbetaling>()).map {
+fun no.nav.k9.søknad.Søknad.valider(){
+   val feil = OmsorgspengerUtbetalingValidator().valider(getYtelse<OmsorgspengerUtbetaling>()).map {
         Violation(
             parameterName = it.felt,
             parameterType = ParameterType.ENTITY,
             reason = it.feilmelding,
             invalidValue = "k9-format feilkode: ${it.feilkode}"
         )
+    }.toSet()
+
+    if (feil.isNotEmpty()) {
+        throw Throwblem(ValidationProblemDetails(feil))
     }
+}
+
 
 private fun List<FosterBarn>.valider(): MutableSet<Violation> {
     val feil = mutableSetOf<Violation>()

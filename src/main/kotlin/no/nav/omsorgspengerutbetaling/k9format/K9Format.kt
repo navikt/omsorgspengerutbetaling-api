@@ -14,14 +14,12 @@ import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.soknad.Søknad
 import java.math.BigDecimal
-import java.time.ZonedDateTime
 import no.nav.k9.søknad.Søknad as K9Søknad
 import no.nav.k9.søknad.felles.fravær.AktivitetFravær as K9AktivitetFravær
 import no.nav.k9.søknad.felles.opptjening.SelvstendigNæringsdrivende as K9SelvstendigNæringsdrivende
 import no.nav.k9.søknad.felles.personopplysninger.Barn as K9Barn
 
-fun Søknad.tilKOmsorgspengerUtbetalingSøknad(
-    mottatt: ZonedDateTime,
+fun Søknad.tilK9Format(
     søker: no.nav.omsorgspengerutbetaling.soker.Søker
 ): K9Søknad {
 

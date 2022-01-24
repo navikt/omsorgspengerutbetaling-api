@@ -5,10 +5,13 @@ import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.type.SøknadId
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import java.net.URL
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.util.*
 
 data class Søknad(
     val søknadId: SøknadId = SøknadId(UUID.randomUUID().toString()),
+    val mottatt: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC),
     val språk: Språk,
     val harDekketTiFørsteDagerSelv: Boolean? = null,
     val bosteder: List<Bosted>,

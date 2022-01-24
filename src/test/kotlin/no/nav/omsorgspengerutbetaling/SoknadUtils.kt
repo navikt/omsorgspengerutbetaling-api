@@ -2,7 +2,7 @@ package no.nav.omsorgspengerutbetaling
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.k9.søknad.felles.type.SøknadId
-import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
+import no.nav.omsorgspengerutbetaling.k9format.tilK9Format
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soknad.*
 import no.nav.omsorgspengerutbetaling.soknad.Næringstyper.*
@@ -18,6 +18,7 @@ internal object SøknadUtils {
     private val start = LocalDate.parse("2020-01-01")
 
     fun hentGyldigSøknad() = Søknad(
+        mottatt = mottatt,
         språk = Språk.BOKMÅL,
         harDekketTiFørsteDagerSelv = true,
         bosteder = listOf(
@@ -132,10 +133,7 @@ internal object SøknadUtils {
         myndig = true
     )
 
-    fun k9FormatSøknad(søknadId: SøknadId) = hentGyldigSøknad().copy(søknadId = søknadId).tilKOmsorgspengerUtbetalingSøknad(
-        mottatt = mottatt,
-        søker = søker
-    )
+    fun k9FormatSøknad(søknadId: SøknadId) = hentGyldigSøknad().copy(søknadId = søknadId).tilK9Format(søker = søker)
 
     internal fun defaultKomplettSøknad(søknadId: SøknadId) = KomplettSøknad(
         søknadId = søknadId,
