@@ -41,7 +41,7 @@ data class Søknad(
         språk = språk,
         mottatt = k9Format.mottattDato,
         søker = søker,
-        harDekketTiFørsteDagerSelv = harDekketTiFørsteDagerSelv!!,
+        harDekketTiFørsteDagerSelv = harDekketTiFørsteDagerSelv,
         bosteder = bosteder,
         opphold = opphold,
         spørsmål = spørsmål,

@@ -10,7 +10,7 @@ data class KomplettSøknad(
     val språk: Språk,
     val mottatt: ZonedDateTime,
     val søker: Søker,
-    val harDekketTiFørsteDagerSelv: Boolean,
+    val harDekketTiFørsteDagerSelv: Boolean?,
     val bosteder: List<Bosted>,
     val opphold: List<Opphold>,
     val spørsmål: List<SpørsmålOgSvar>,
