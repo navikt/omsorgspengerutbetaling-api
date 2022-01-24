@@ -118,7 +118,8 @@ internal object SøknadUtils {
             Barn(
                 navn = "Barn Barnesen",
                 fødselsdato = LocalDate.parse("2021-01-01"),
-                aktørId = "1000000000001"
+                aktørId = "1000000000001",
+                identitetsnummer = "16012099359"
             )
         )
     )

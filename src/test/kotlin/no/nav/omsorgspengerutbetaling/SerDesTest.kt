@@ -234,7 +234,7 @@ internal class SerDesTest {
                     "type": "OMP_UT",
                     "fosterbarn": [
                         {
-                          "norskIdentitetsnummer": null,
+                          "norskIdentitetsnummer": "16012099359",
                           "fødselsdato": null
                         },
                         {
@@ -427,7 +427,7 @@ internal class SerDesTest {
                   "fødselsdato": "2021-01-01",
                   "aktørId": "1000000000001",
                   "utvidetRett": null,
-                  "identitetsnummer": null
+                  "identitetsnummer": "16012099359"
                 }
             ],
             "vedlegg": [

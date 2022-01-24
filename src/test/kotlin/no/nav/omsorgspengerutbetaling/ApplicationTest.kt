@@ -11,6 +11,7 @@ import io.ktor.server.testing.*
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.SøknadUtils.hentGyldigSøknad
+import no.nav.omsorgspengerutbetaling.TestUtils.Companion.getAuthCookie
 import no.nav.omsorgspengerutbetaling.felles.BARN_URL
 import no.nav.omsorgspengerutbetaling.felles.SØKER_URL
 import no.nav.omsorgspengerutbetaling.felles.SØKNAD_URL
