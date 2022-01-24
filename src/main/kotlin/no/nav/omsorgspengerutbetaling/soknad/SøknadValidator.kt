@@ -25,7 +25,6 @@ internal fun Søknad.valider() {
     val violations = mutableSetOf<Violation>().apply {
         addAll(validerPåkrevdBoolean("harDekketTiFørsteDagerSelv", harDekketTiFørsteDagerSelv))
         addAll(utbetalingsperioder.valider())
-        addAll(andreUtbetalinger.valider())
         addAll(opphold.valider("opphold"))
         addAll(bosteder.valider("bosteder"))
         addAll(spørsmål.valider())

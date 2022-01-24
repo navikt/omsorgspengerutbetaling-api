@@ -16,7 +16,7 @@ data class KomplettSøknad(
     val spørsmål: List<SpørsmålOgSvar>,
     val bekreftelser: Bekreftelser,
     val utbetalingsperioder: List<Utbetalingsperiode>,
-    val andreUtbetalinger: List<String>,
+    val andreUtbetalinger: List<AndreUtbetalinger>,
     val erArbeidstakerOgså: Boolean,
     val vedleggId: List<String> = listOf(),
     val fosterbarn: List<FosterBarn>? = listOf(),

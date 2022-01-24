@@ -19,7 +19,7 @@ data class Søknad(
     val spørsmål: List<SpørsmålOgSvar>,
     val bekreftelser: Bekreftelser,
     val utbetalingsperioder: List<Utbetalingsperiode>,
-    val andreUtbetalinger: List<String>,
+    val andreUtbetalinger: List<AndreUtbetalinger>,
     val erArbeidstakerOgså: Boolean,
     val fosterbarn: List<FosterBarn>? = listOf(),
     val barn: List<Barn> = listOf(),

@@ -172,7 +172,7 @@ internal class SerDesTest {
                 "årsak": "ORDINÆRT_FRAVÆR",
                 "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
             }],
-            "andreUtbetalinger": ["dagpenger", "sykepenger"],
+            "andreUtbetalinger": ["DAGPENGER", "SYKEPENGER"],
             "frilans": {
                 "startdato": "2020-01-01",
                 "sluttdato": null,
@@ -381,7 +381,7 @@ internal class SerDesTest {
                 "årsak": "ORDINÆRT_FRAVÆR",
                 "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
             }],
-            "andreUtbetalinger": ["dagpenger", "sykepenger", "midlertidigkompensasjonsnfri"],
+            "andreUtbetalinger": ["DAGPENGER", "SYKEPENGER", "MIDLERTIDIG_KOMPENSASJON_SN_FRI"],
             "frilans": {
                 "startdato": "2020-01-01",
                 "sluttdato": null,

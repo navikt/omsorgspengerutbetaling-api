@@ -5,6 +5,10 @@ import no.nav.k9.søknad.felles.type.SøknadId
 import no.nav.omsorgspengerutbetaling.k9format.tilK9Format
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soknad.*
+import no.nav.omsorgspengerutbetaling.soknad.AktivitetFravær.FRILANSER
+import no.nav.omsorgspengerutbetaling.soknad.AktivitetFravær.SELVSTENDIG_VIRKSOMHET
+import no.nav.omsorgspengerutbetaling.soknad.AndreUtbetalinger.*
+import no.nav.omsorgspengerutbetaling.soknad.FraværÅrsak.*
 import no.nav.omsorgspengerutbetaling.soknad.Næringstyper.*
 import java.time.Duration
 import java.time.LocalDate
@@ -36,24 +40,24 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(10),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE,
-                aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
+                årsak = STENGT_SKOLE_ELLER_BARNEHAGE,
+                aktivitetFravær = listOf(FRILANSER)
             ),
             Utbetalingsperiode(
                 fraOgMed = start.plusDays(20),
                 tilOgMed = start.plusDays(20),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.SMITTEVERNHENSYN,
-                aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
+                årsak = SMITTEVERNHENSYN,
+                aktivitetFravær = listOf(SELVSTENDIG_VIRKSOMHET)
             ),
             Utbetalingsperiode(
                 fraOgMed = start.plusDays(30),
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR,
-                aktivitetFravær = listOf(AktivitetFravær.FRILANSER, AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
+                årsak = ORDINÆRT_FRAVÆR,
+                aktivitetFravær = listOf(FRILANSER, SELVSTENDIG_VIRKSOMHET)
             )
         ),
         opphold = listOf(
@@ -172,24 +176,24 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(10),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE,
-                aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
+                årsak = STENGT_SKOLE_ELLER_BARNEHAGE,
+                aktivitetFravær = listOf(FRILANSER)
             ),
             Utbetalingsperiode(
                 fraOgMed = start.plusDays(20),
                 tilOgMed = start.plusDays(20),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.SMITTEVERNHENSYN,
-                aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
+                årsak = SMITTEVERNHENSYN,
+                aktivitetFravær = listOf(SELVSTENDIG_VIRKSOMHET)
             ),
             Utbetalingsperiode(
                 fraOgMed = start.plusDays(30),
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR,
-                aktivitetFravær = listOf(AktivitetFravær.FRILANSER, AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
+                årsak = ORDINÆRT_FRAVÆR,
+                aktivitetFravær = listOf(FRILANSER, SELVSTENDIG_VIRKSOMHET)
             )
         ),
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
