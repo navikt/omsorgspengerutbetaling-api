@@ -5,6 +5,7 @@ import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetalingValidator
 import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import java.net.URL
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 private const val MAX_FRITEKST_TEGN = 1000
@@ -23,7 +24,7 @@ internal val VedleggTooLargeProblemDetails = DefaultProblemDetails(
 
 internal fun Søknad.valider() {
     val violations = mutableSetOf<Violation>().apply {
-        addAll(validerPåkrevdBoolean("harDekketTiFørsteDagerSelv", harDekketTiFørsteDagerSelv))
+        addAll(validerHarDekketTiFørsteDagerSelv())
         addAll(utbetalingsperioder.valider())
         addAll(opphold.valider("opphold"))
         addAll(bosteder.valider("bosteder"))
@@ -38,6 +39,21 @@ internal fun Søknad.valider() {
 
     if (violations.isNotEmpty()) {
         throw Throwblem(ValidationProblemDetails(violations))
+    }
+}
+
+private fun Søknad.validerHarDekketTiFørsteDagerSelv() = mutableSetOf<Violation>().apply {
+    if (barn.any { it.fødselsdato.year.minus(LocalDate.now().year) <= 12 }) {
+        if (harDekketTiFørsteDagerSelv != true) {
+            add(
+                Violation(
+                    parameterName = "harDekketTiFørsteDagerSelv",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "harDekketTiFørsteDagerSelv må være true dersom et barn er 12 år eller yngre.",
+                    invalidValue = harDekketTiFørsteDagerSelv
+                )
+            )
+        }
     }
 }
 
