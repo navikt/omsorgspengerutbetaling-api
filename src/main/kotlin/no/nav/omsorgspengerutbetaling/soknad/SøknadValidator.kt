@@ -25,6 +25,7 @@ internal val VedleggTooLargeProblemDetails = DefaultProblemDetails(
 internal fun Søknad.valider() {
     val violations = mutableSetOf<Violation>().apply {
         addAll(validerHarDekketTiFørsteDagerSelv())
+        addAll(validerUtvidetRett())
         addAll(utbetalingsperioder.valider())
         addAll(opphold.valider("opphold"))
         addAll(bosteder.valider("bosteder"))
@@ -43,10 +44,24 @@ internal fun Søknad.valider() {
 }
 
 
-// TODO: 24/01/2022 Legge til validering at dersom alle barna er over 13 må minst et barn ha utvidet rett
+internal fun Barn.alder() = LocalDate.now().year.minus(this.fødselsdato.year)
+
+private fun Søknad.validerUtvidetRett() = mutableSetOf<Violation>().apply {
+    if(barn.isNotEmpty() && barn.all { it.alder() >= 13 }){
+        if(barn.none { it.utvidetRett == true }){
+            add(
+                Violation(
+                    parameterName = "barn[?].utvidetRett",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "Hvis alle barn er 13 år eller eldre må minst et barn ha utvidet rett"
+                )
+            )
+        }
+    }
+}
 
 private fun Søknad.validerHarDekketTiFørsteDagerSelv() = mutableSetOf<Violation>().apply {
-    if (barn.any { LocalDate.now().year.minus(it.fødselsdato.year) <= 12 }) {
+    if (barn.any { it.alder() <= 12 }) {
         if (harDekketTiFørsteDagerSelv != true) {
             add(
                 Violation(
@@ -57,19 +72,6 @@ private fun Søknad.validerHarDekketTiFørsteDagerSelv() = mutableSetOf<Violatio
                 )
             )
         }
-    }
-}
-
-private fun validerPåkrevdBoolean(felt: String, verdi: Boolean?) = mutableSetOf<Violation>().apply {
-    if (verdi == null) {
-        add(
-            Violation(
-                parameterName = felt,
-                parameterType = ParameterType.ENTITY,
-                reason = "'${felt}' kan ikke være null.",
-                invalidValue = verdi
-            )
-        )
     }
 }
 
