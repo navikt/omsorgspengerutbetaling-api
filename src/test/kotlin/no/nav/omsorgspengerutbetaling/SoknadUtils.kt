@@ -29,7 +29,7 @@ internal object SøknadUtils {
             Bosted(
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
-                landkode = "GB",
+                landkode = "GBR",
                 landnavn = "Great Britain",
                 erEØSLand = JaNei.Ja
             )
@@ -64,7 +64,7 @@ internal object SøknadUtils {
             Opphold(
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
-                landkode = "GB",
+                landkode = "GBR",
                 landnavn = "Great Britain",
                 erEØSLand = JaNei.Ja
             )
@@ -150,7 +150,7 @@ internal object SøknadUtils {
             Bosted(
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
-                landkode = "GB",
+                landkode = "GBR",
                 landnavn = "Great Britain",
                 erEØSLand = JaNei.Ja
             )
@@ -159,7 +159,7 @@ internal object SøknadUtils {
             Opphold(
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
-                landkode = "GB",
+                landkode = "GBR",
                 landnavn = "Great Britain",
                 erEØSLand = JaNei.Ja
             )

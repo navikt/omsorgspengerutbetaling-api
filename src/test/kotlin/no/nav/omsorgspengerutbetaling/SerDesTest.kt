@@ -131,14 +131,14 @@ internal class SerDesTest {
             "bosteder": [{
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
-                "landkode": "GB",
+                "landkode": "GBR",
                 "landnavn": "Great Britain",
                 "erEØSLand": true
             }],
             "opphold": [{
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
-                "landkode": "GB",
+                "landkode": "GBR",
                 "landnavn": "Great Britain",
                 "erEØSLand": true
             }],
@@ -307,7 +307,7 @@ internal class SerDesTest {
                     "bosteder": {
                       "perioder": {
                         "2019-12-12/2019-12-22": {
-                          "land": "GB"
+                          "land": "GBR"
                         }
                       },
                       "perioderSomSkalSlettes": {}
@@ -315,7 +315,7 @@ internal class SerDesTest {
                     "utenlandsopphold": {
                       "perioder": {
                         "2019-12-12/2019-12-22": {
-                          "land": "GB",
+                          "land": "GBR",
                           "årsak": null
                         }
                       },
@@ -340,14 +340,14 @@ internal class SerDesTest {
             "bosteder": [{
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
-                "landkode": "GB",
+                "landkode": "GBR",
                 "landnavn": "Great Britain",
                 "erEØSLand": true
             }],
             "opphold": [{
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
-                "landkode": "GB",
+                "landkode": "GBR",
                 "landnavn": "Great Britain",
                 "erEØSLand": true
             }],

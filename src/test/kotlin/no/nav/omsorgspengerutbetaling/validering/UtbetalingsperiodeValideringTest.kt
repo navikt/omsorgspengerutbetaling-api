@@ -29,6 +29,26 @@ class UtbetalingsperiodeValideringTest {
     }
 
     @Test
+    fun `Skal feile dersom ingen aktivitetFravær satt`(){
+        val søknad = gyldigSøknad.copy(
+            utbetalingsperioder = listOf(
+                gyldigUtbetalingsperiode.copy(
+                    aktivitetFravær = listOf()
+                )
+            )
+        )
+        val forventetMangler = """
+              [{
+                "reason": "aktivitetFravær kan ikke være tom, må inneholde minst en aktivitet.",
+                "name": "utbetalingsperioder[0].aktivitetFravær",
+                "invalid_value": [],
+                "type": "entity"
+              }]
+        """.trimIndent()
+        validerOgAssertMangler(søknad, true, forventetMangler)
+    }
+
+    @Test
     fun `Skal gi feil dersom listen er tom`(){
         val søknad = gyldigSøknad.copy(
             utbetalingsperioder = listOf()
@@ -58,7 +78,7 @@ class UtbetalingsperiodeValideringTest {
               [{
                 "reason": "Til og med må være etter eller lik fra og med",
                 "name": "utbetalingsperioder[0]",
-                "invalid_value": "2015-01-01",
+                "invalid_value": "fraOgMed=2015-01-02, tilOgMed=2015-01-01",
                 "type": "entity"
               }]
         """.trimIndent()
