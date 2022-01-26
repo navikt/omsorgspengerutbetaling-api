@@ -63,26 +63,22 @@ internal class SelvstendigNæringsdrivendeValideringTest {
         )
 
         val forventetMangler = """
-            [
-              {
+            [{
                 "reason": "Landkode er ikke en gyldig ISO 3166-1 alpha-3 kode.",
                 "name": "selvstendigNæringsdrivende.landkode",
                 "invalid_value": " ",
                 "type": "entity"
-              },
-              {
+              }, {
                 "reason": "Landkode kan ikke være blank.",
                 "name": "selvstendigNæringsdrivende.landkode",
                 "invalid_value": " ",
                 "type": "entity"
-              },
-              {
+              },{
                 "reason": "Landnavn kan ikke være blank.",
                 "name": "selvstendigNæringsdrivende.landnavn",
                 "invalid_value": " ",
                 "type": "entity"
-              }
-            ]
+            }]
         """.trimIndent()
         validerOgAssertMangler(søknad, true, forventetMangler)
     }
