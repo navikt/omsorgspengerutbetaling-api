@@ -14,6 +14,7 @@ data class FosterBarn(
 data class Barn(
     val navn: String,
     val fødselsdato: LocalDate,
+    val type: TypeBarn,
     val aktørId: String? = null,
     val utvidetRett: Boolean? = null,
     var identitetsnummer: String? = null
@@ -24,4 +25,11 @@ data class Barn(
         logger.info("Oppdaterer identitetsnummer på barn")
         this.identitetsnummer = identitetsnummer
     }
+}
+
+enum class TypeBarn{
+    FOSTERBARN,
+    BARNET_BOR_I_UTLANDET,
+    ANNET,
+    FRA_OPPSLAG
 }

@@ -121,6 +121,7 @@ internal object SøknadUtils {
         barn = listOf(
             Barn(
                 navn = "Barn Barnesen",
+                type = TypeBarn.BARNET_BOR_I_UTLANDET,
                 fødselsdato = LocalDate.parse("2021-01-01"),
                 aktørId = "1000000000001",
                 identitetsnummer = "16012099359"
@@ -237,6 +238,7 @@ internal object SøknadUtils {
         barn = listOf(
             Barn(
                 navn = "Barn Barnesen",
+                type = TypeBarn.ANNET,
                 fødselsdato = LocalDate.parse("2021-01-01"),
                 aktørId = "1000000000001",
                 identitetsnummer = "16012099359"

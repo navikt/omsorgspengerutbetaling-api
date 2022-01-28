@@ -20,6 +20,7 @@ import no.nav.omsorgspengerutbetaling.mellomlagring.started
 import no.nav.omsorgspengerutbetaling.soknad.Barn
 import no.nav.omsorgspengerutbetaling.soknad.Bekreftelser
 import no.nav.omsorgspengerutbetaling.soknad.JaNei
+import no.nav.omsorgspengerutbetaling.soknad.TypeBarn
 import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.json.JSONObject
 import org.junit.AfterClass
@@ -300,6 +301,7 @@ class ApplicationTest {
             barn = listOf(
                 Barn(
                     navn = "Barn Barnesen",
+                    type = TypeBarn.FRA_OPPSLAG,
                     fødselsdato = LocalDate.parse("2021-01-01"),
                     aktørId = "1000000000001",
                     identitetsnummer = null

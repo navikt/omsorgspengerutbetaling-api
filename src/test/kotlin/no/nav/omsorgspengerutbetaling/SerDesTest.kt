@@ -218,7 +218,8 @@ internal class SerDesTest {
                     "fødselsdato": "2021-01-01",
                     "aktørId": "1000000000001",
                     "utvidetRett": null,
-                    "identitetsnummer": "16012099359"
+                    "identitetsnummer": "16012099359",
+                    "type": "ANNET"
                   }
             ],
             "vedleggId": ["1", "2", "3"],
@@ -427,7 +428,8 @@ internal class SerDesTest {
                   "fødselsdato": "2021-01-01",
                   "aktørId": "1000000000001",
                   "utvidetRett": null,
-                  "identitetsnummer": "16012099359"
+                  "identitetsnummer": "16012099359",
+                  "type": "BARNET_BOR_I_UTLANDET"
                 }
             ],
             "vedlegg": [

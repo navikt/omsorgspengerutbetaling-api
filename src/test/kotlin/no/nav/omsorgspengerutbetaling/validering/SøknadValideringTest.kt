@@ -21,6 +21,7 @@ class SøknadValideringTest {
             barn = listOf(
                 Barn(
                     navn = "Barn Barnesen",
+                    type = TypeBarn.FOSTERBARN,
                     fødselsdato = LocalDate.now().minusYears(11),
                     aktørId = "1000000000001",
                     identitetsnummer = "16012099359"
@@ -46,13 +47,15 @@ class SøknadValideringTest {
                     navn = "Barn Barnesen",
                     utvidetRett = false,
                     fødselsdato = LocalDate.now().minusYears(13),
-                    identitetsnummer = "16012099359"
+                    identitetsnummer = "16012099359",
+                    type = TypeBarn.FOSTERBARN
                 ),
                 Barn(
                     navn = "Barn Barnesen",
                     utvidetRett = false,
                     fødselsdato = LocalDate.now().minusYears(15),
-                    identitetsnummer = "16012099359"
+                    identitetsnummer = "16012099359",
+                    type = TypeBarn.FOSTERBARN
                 )
             )
         )
@@ -137,12 +140,14 @@ class SøknadValideringTest {
                 Barn(
                     navn = "Barn Barnesen",
                     fødselsdato = LocalDate.now().minusYears(11),
-                    identitetsnummer = "UGYLDIG"
+                    identitetsnummer = "UGYLDIG",
+                    type = TypeBarn.FOSTERBARN
                 ),
                 Barn(
                     navn = "Barn Barnesen",
                     fødselsdato = LocalDate.now().minusYears(11),
-                    identitetsnummer = null
+                    identitetsnummer = null,
+                    type = TypeBarn.FOSTERBARN
                 )
             ),
             fosterbarn = listOf(
