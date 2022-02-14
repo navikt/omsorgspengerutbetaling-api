@@ -41,7 +41,7 @@ fun Søknad.tilK9Format(
 
 fun Søknad.byggK9Barn(): List<K9Barn> = mutableListOf<K9Barn>().apply {
     barn
-        .filterNot { it.type == TypeBarn.FRA_OPPSLAG }
+        .filter { it.type == TypeBarn.FOSTERBARN }
         .forEach { add(it.tilK9Barn()) }
 
     fosterbarn?.forEach { add(it.tilK9Barn()) }

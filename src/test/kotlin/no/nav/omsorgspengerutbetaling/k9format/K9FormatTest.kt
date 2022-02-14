@@ -11,7 +11,7 @@ import kotlin.test.Test
 class K9FormatTest {
 
     @Test
-    fun `Mapper ikke opp barn til K9 som kommer fra oppslag`(){
+    fun `Mapper kun opp fosterbarn til k9 format`(){
         val barn = listOf(
             Barn(
                 navn = "Barn1",
@@ -36,7 +36,13 @@ class K9FormatTest {
                 type = TypeBarn.FRA_OPPSLAG,
                 fødselsdato = LocalDate.parse("2021-01-01"),
                 identitetsnummer = "4"
-            )
+            ),
+            Barn(
+                navn = "Barn5",
+                type = TypeBarn.FOSTERBARN,
+                fødselsdato = LocalDate.parse("2021-01-01"),
+                identitetsnummer = "5"
+            ),
         )
         val søknad = SøknadUtils.hentGyldigSøknad().copy(
             barn = barn,
@@ -50,11 +56,7 @@ class K9FormatTest {
                 "fødselsdato": null
               },
               {
-                "norskIdentitetsnummer": "2",
-                "fødselsdato": null
-              },
-              {
-                "norskIdentitetsnummer": "3",
+                "norskIdentitetsnummer": "5",
                 "fødselsdato": null
               }
             ]

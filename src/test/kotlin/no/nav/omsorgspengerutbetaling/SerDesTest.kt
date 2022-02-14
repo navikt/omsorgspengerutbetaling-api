@@ -235,10 +235,6 @@ internal class SerDesTest {
                     "type": "OMP_UT",
                     "fosterbarn": [
                         {
-                          "norskIdentitetsnummer": "16012099359",
-                          "fødselsdato": null
-                        },
-                        {
                           "norskIdentitetsnummer": "02119970078",
                           "fødselsdato": null
                         }
