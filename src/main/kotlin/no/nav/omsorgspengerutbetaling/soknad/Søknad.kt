@@ -66,6 +66,5 @@ enum class Språk(@JsonValue val språk: String) {
 fun URL.vedleggId() = this.toString().substringAfterLast("/")
 
 fun List<no.nav.omsorgspengerutbetaling.barn.Barn>.hentIdentitetsnummerForBarn(aktørId: String?): String? {
-    val aktueltBarn = this.firstOrNull(){ it.aktørId == aktørId}
-    return if(aktueltBarn != null) aktueltBarn.identitetsnummer else null
+    return firstOrNull() { it.aktørId == aktørId }?.identitetsnummer
 }
