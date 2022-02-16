@@ -20,12 +20,6 @@ class K9FormatTest {
                 identitetsnummer = "1"
             ),
             Barn(
-                navn = "Barn2",
-                type = TypeBarn.BARNET_BOR_I_UTLANDET,
-                fødselsdato = LocalDate.parse("2021-01-01"),
-                identitetsnummer = "2"
-            ),
-            Barn(
                 navn = "Barn3",
                 type = TypeBarn.ANNET,
                 fødselsdato = LocalDate.parse("2021-01-01"),

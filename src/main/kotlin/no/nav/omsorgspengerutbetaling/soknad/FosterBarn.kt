@@ -29,7 +29,6 @@ data class Barn(
 
 enum class TypeBarn{
     FOSTERBARN,
-    BARNET_BOR_I_UTLANDET,
     ANNET,
     FRA_OPPSLAG
 }

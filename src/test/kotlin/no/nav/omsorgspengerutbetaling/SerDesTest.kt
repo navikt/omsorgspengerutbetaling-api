@@ -425,7 +425,7 @@ internal class SerDesTest {
                   "aktørId": "1000000000001",
                   "utvidetRett": null,
                   "identitetsnummer": "16012099359",
-                  "type": "BARNET_BOR_I_UTLANDET"
+                  "type": "ANNET"
                 }
             ],
             "vedlegg": [
