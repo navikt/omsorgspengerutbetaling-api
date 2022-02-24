@@ -207,11 +207,6 @@ internal class SerDesTest {
                 }
             },
             "erArbeidstakerOgså": true,
-            "fosterbarn": [
-              {
-                "fødselsnummer": "02119970078"
-              }
-            ],
             "barn" : [
                   {
                     "navn": "Barn Barnesen",
@@ -235,7 +230,7 @@ internal class SerDesTest {
                     "type": "OMP_UT",
                     "fosterbarn": [
                         {
-                          "norskIdentitetsnummer": "02119970078",
+                          "norskIdentitetsnummer": "16012099359",
                           "fødselsdato": null
                         }
                     ],
@@ -413,11 +408,6 @@ internal class SerDesTest {
                 }
             },
             "erArbeidstakerOgså": true,
-            "fosterbarn": [
-              {
-                "fødselsnummer": "02119970078"
-              }
-            ],
             "barn": [
                 {
                   "navn": "Barn Barnesen",
@@ -425,7 +415,7 @@ internal class SerDesTest {
                   "aktørId": "1000000000001",
                   "utvidetRett": null,
                   "identitetsnummer": "16012099359",
-                  "type": "ANNET"
+                  "type": "FOSTERBARN"
                 }
             ],
             "vedlegg": [

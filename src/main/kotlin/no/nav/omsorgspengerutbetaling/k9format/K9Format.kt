@@ -43,12 +43,9 @@ fun Søknad.byggK9Barn(): List<K9Barn> = mutableListOf<K9Barn>().apply {
     barn
         .filter { it.type == TypeBarn.FOSTERBARN }
         .forEach { add(it.tilK9Barn()) }
-
-    fosterbarn?.forEach { add(it.tilK9Barn()) }
 }
 
 fun Barn.tilK9Barn() = K9Barn().medNorskIdentitetsnummer(NorskIdentitetsnummer.of(identitetsnummer))
-fun FosterBarn.tilK9Barn() = K9Barn().medNorskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
 
 fun List<Opphold>.tilK9Utenlandsopphold(): Utenlandsopphold {
     val perioder = mutableMapOf<Periode, Utenlandsopphold.UtenlandsoppholdPeriodeInfo>()

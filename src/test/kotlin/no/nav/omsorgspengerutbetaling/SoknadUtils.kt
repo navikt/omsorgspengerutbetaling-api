@@ -113,15 +113,10 @@ internal object SøknadUtils {
 
         ),
         erArbeidstakerOgså = true,
-        fosterbarn = listOf(
-            FosterBarn(
-                fødselsnummer = "02119970078"
-            )
-        ),
         barn = listOf(
             Barn(
                 navn = "Barn Barnesen",
-                type = TypeBarn.ANNET,
+                type = TypeBarn.FOSTERBARN,
                 fødselsdato = LocalDate.parse("2021-01-01"),
                 aktørId = "1000000000001",
                 identitetsnummer = "16012099359"
@@ -230,11 +225,6 @@ internal object SøknadUtils {
 
         ),
         erArbeidstakerOgså = true,
-        fosterbarn = listOf(
-            FosterBarn(
-                fødselsnummer = "02119970078"
-            )
-        ),
         barn = listOf(
             Barn(
                 navn = "Barn Barnesen",

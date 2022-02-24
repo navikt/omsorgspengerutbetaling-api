@@ -149,18 +149,10 @@ class SøknadValideringTest {
                     identitetsnummer = null,
                     type = TypeBarn.FOSTERBARN
                 )
-            ),
-            fosterbarn = listOf(
-                FosterBarn("UGYLDIG")
             )
         )
         val forventetMangler = """
             [{
-              "reason": "Ugyldig fødselsnummer",
-              "name": "fosterbarn[0].fødselsnummer",
-              "invalid_value": null,
-              "type": "entity"
-            }, {
               "reason": "Ugyldig identitetsnummer",
               "name": "barn[0].identitetsnummer",
               "invalid_value": null,

@@ -71,8 +71,7 @@ internal class SøknadServiceTest{
                 søknadService.registrer(
                     søknad = SøknadUtils.hentGyldigSøknad().copy(
                         vedlegg = listOf(URL("https://www.vg.no/vedlegg")),
-                        barn = listOf(),
-                        fosterbarn = listOf()
+                        barn = listOf()
                     ),
                     metadata = Metadata(
                         version = 1,
