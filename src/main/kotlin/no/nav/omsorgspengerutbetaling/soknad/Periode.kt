@@ -22,7 +22,7 @@ internal data class Periode (
 // TODO: Godta overlapp?
 internal fun List<Periode>.valider(jsonPath: String) : Set<Violation> {
     val violations = mutableSetOf<Violation>()
-    mapIndexed { index, periode ->
+    forEachIndexed { index, periode ->
         violations.addAll(periode.valider("$jsonPath[$index]"))
     }
     return violations
@@ -35,7 +35,7 @@ internal fun Periode.valider(jsonPath: String = "tilOgMed") = mutableSetOf<Viola
                 parameterName = jsonPath,
                 parameterType = ParameterType.ENTITY,
                 reason = "Til og med må være etter eller lik fra og med",
-                invalidValue = tilOgMed
+                invalidValue = "fraOgMed=$fraOgMed, tilOgMed=$tilOgMed"
             )
         )
     }

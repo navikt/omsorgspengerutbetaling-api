@@ -2,9 +2,13 @@ package no.nav.omsorgspengerutbetaling
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.k9.søknad.felles.type.SøknadId
-import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
+import no.nav.omsorgspengerutbetaling.k9format.tilK9Format
 import no.nav.omsorgspengerutbetaling.soker.Søker
 import no.nav.omsorgspengerutbetaling.soknad.*
+import no.nav.omsorgspengerutbetaling.soknad.AktivitetFravær.FRILANSER
+import no.nav.omsorgspengerutbetaling.soknad.AktivitetFravær.SELVSTENDIG_VIRKSOMHET
+import no.nav.omsorgspengerutbetaling.soknad.AndreUtbetalinger.*
+import no.nav.omsorgspengerutbetaling.soknad.FraværÅrsak.*
 import no.nav.omsorgspengerutbetaling.soknad.Næringstyper.*
 import java.time.Duration
 import java.time.LocalDate
@@ -18,13 +22,14 @@ internal object SøknadUtils {
     private val start = LocalDate.parse("2020-01-01")
 
     fun hentGyldigSøknad() = Søknad(
+        mottatt = mottatt,
         språk = Språk.BOKMÅL,
         harDekketTiFørsteDagerSelv = true,
         bosteder = listOf(
             Bosted(
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
-                landkode = "GB",
+                landkode = "GBR",
                 landnavn = "Great Britain",
                 erEØSLand = JaNei.Ja
             )
@@ -35,31 +40,31 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(10),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE,
-                aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
+                årsak = STENGT_SKOLE_ELLER_BARNEHAGE,
+                aktivitetFravær = listOf(FRILANSER)
             ),
             Utbetalingsperiode(
                 fraOgMed = start.plusDays(20),
                 tilOgMed = start.plusDays(20),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.SMITTEVERNHENSYN,
-                aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
+                årsak = SMITTEVERNHENSYN,
+                aktivitetFravær = listOf(SELVSTENDIG_VIRKSOMHET)
             ),
             Utbetalingsperiode(
                 fraOgMed = start.plusDays(30),
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR,
-                aktivitetFravær = listOf(AktivitetFravær.FRILANSER, AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
+                årsak = ORDINÆRT_FRAVÆR,
+                aktivitetFravær = listOf(FRILANSER, SELVSTENDIG_VIRKSOMHET)
             )
         ),
         opphold = listOf(
             Opphold(
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
-                landkode = "GB",
+                landkode = "GBR",
                 landnavn = "Great Britain",
                 erEØSLand = JaNei.Ja
             )
@@ -112,6 +117,15 @@ internal object SøknadUtils {
             FosterBarn(
                 fødselsnummer = "02119970078"
             )
+        ),
+        barn = listOf(
+            Barn(
+                navn = "Barn Barnesen",
+                type = TypeBarn.ANNET,
+                fødselsdato = LocalDate.parse("2021-01-01"),
+                aktørId = "1000000000001",
+                identitetsnummer = "16012099359"
+            )
         )
     )
 
@@ -125,10 +139,7 @@ internal object SøknadUtils {
         myndig = true
     )
 
-    fun k9FormatSøknad(søknadId: SøknadId) = hentGyldigSøknad().copy(søknadId = søknadId).tilKOmsorgspengerUtbetalingSøknad(
-        mottatt = mottatt,
-        søker = søker
-    )
+    fun k9FormatSøknad(søknadId: SøknadId) = hentGyldigSøknad().copy(søknadId = søknadId).tilK9Format(søker = søker)
 
     internal fun defaultKomplettSøknad(søknadId: SøknadId) = KomplettSøknad(
         søknadId = søknadId,
@@ -140,7 +151,7 @@ internal object SøknadUtils {
             Bosted(
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
-                landkode = "GB",
+                landkode = "GBR",
                 landnavn = "Great Britain",
                 erEØSLand = JaNei.Ja
             )
@@ -149,7 +160,7 @@ internal object SøknadUtils {
             Opphold(
                 fraOgMed = start.minusDays(20),
                 tilOgMed = start.minusDays(10),
-                landkode = "GB",
+                landkode = "GBR",
                 landnavn = "Great Britain",
                 erEØSLand = JaNei.Ja
             )
@@ -166,24 +177,24 @@ internal object SøknadUtils {
                 tilOgMed = start.plusDays(10),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.STENGT_SKOLE_ELLER_BARNEHAGE,
-                aktivitetFravær = listOf(AktivitetFravær.FRILANSER)
+                årsak = STENGT_SKOLE_ELLER_BARNEHAGE,
+                aktivitetFravær = listOf(FRILANSER)
             ),
             Utbetalingsperiode(
                 fraOgMed = start.plusDays(20),
                 tilOgMed = start.plusDays(20),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.SMITTEVERNHENSYN,
-                aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
+                årsak = SMITTEVERNHENSYN,
+                aktivitetFravær = listOf(SELVSTENDIG_VIRKSOMHET)
             ),
             Utbetalingsperiode(
                 fraOgMed = start.plusDays(30),
                 tilOgMed = start.plusMonths(1).plusDays(4),
                 antallTimerPlanlagt = Duration.ofHours(5),
                 antallTimerBorte = Duration.ofHours(3),
-                årsak = FraværÅrsak.ORDINÆRT_FRAVÆR,
-                aktivitetFravær = listOf(AktivitetFravær.FRILANSER, AktivitetFravær.SELVSTENDIG_VIRKSOMHET)
+                årsak = ORDINÆRT_FRAVÆR,
+                aktivitetFravær = listOf(FRILANSER, SELVSTENDIG_VIRKSOMHET)
             )
         ),
         andreUtbetalinger = listOf(DAGPENGER, SYKEPENGER),
@@ -224,7 +235,16 @@ internal object SøknadUtils {
                 fødselsnummer = "02119970078"
             )
         ),
-        vedleggId = listOf(),
+        barn = listOf(
+            Barn(
+                navn = "Barn Barnesen",
+                type = TypeBarn.ANNET,
+                fødselsdato = LocalDate.parse("2021-01-01"),
+                aktørId = "1000000000001",
+                identitetsnummer = "16012099359"
+            )
+        ),
+        vedleggId = listOf("1", "2","3"),
         bekreftelser = Bekreftelser(
             harForståttRettigheterOgPlikter = JaNei.Ja,
             harBekreftetOpplysninger = JaNei.Ja

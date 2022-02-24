@@ -11,11 +11,16 @@ import io.ktor.server.testing.*
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.omsorgspengerutbetaling.SøknadUtils.hentGyldigSøknad
+import no.nav.omsorgspengerutbetaling.TestUtils.Companion.getAuthCookie
 import no.nav.omsorgspengerutbetaling.felles.BARN_URL
 import no.nav.omsorgspengerutbetaling.felles.SØKER_URL
 import no.nav.omsorgspengerutbetaling.felles.SØKNAD_URL
+import no.nav.omsorgspengerutbetaling.felles.somJson
 import no.nav.omsorgspengerutbetaling.mellomlagring.started
-import no.nav.omsorgspengerutbetaling.soknad.*
+import no.nav.omsorgspengerutbetaling.soknad.Barn
+import no.nav.omsorgspengerutbetaling.soknad.Bekreftelser
+import no.nav.omsorgspengerutbetaling.soknad.JaNei
+import no.nav.omsorgspengerutbetaling.soknad.TypeBarn
 import no.nav.omsorgspengerutbetaling.wiremock.*
 import org.json.JSONObject
 import org.junit.AfterClass
@@ -24,7 +29,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import testConsumer
 import java.net.URL
-import java.time.Duration
 import java.time.LocalDate
 import java.util.*
 import kotlin.test.Test
@@ -225,7 +229,7 @@ class ApplicationTest {
                 "barn": []
             }
             """.trimIndent(),
-            cookie = getAuthCookie(gyldigFodselsnummerA)
+            cookie = getAuthCookie("13106423495")
         )
         wireMockServer.stubK9OppslagBarn()
     }
@@ -289,24 +293,19 @@ class ApplicationTest {
     }
 
     @Test
-    fun `Sende søknad med selvstendigNæringsdrivende og ikke noe for selvstendigVirksomheter`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
+    fun `Sende søknad uten identitetsnummer på barn og verifisere at barn har fått identitetsnummer`() {
+        val cookie = getAuthCookie(fnr)
 
         val søknad = hentGyldigSøknad().copy(
             vedlegg = listOf(URL(engine.jpegUrl(cookie)), URL(engine.pdUrl(cookie))),
-            selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
-                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
-                fraOgMed = LocalDate.parse("2020-01-10"),
-                tilOgMed = LocalDate.parse("2021-01-10"),
-                næringsinntekt = 123123,
-                navnPåVirksomheten = "TullOgTøys",
-                registrertINorge = JaNei.Nei,
-                registrertIUtlandet = Land(
-                    landkode = "DEU",
-                    landnavn = "Tyskland"
-                ),
-                erNyoppstartet = true,
-                harFlereAktiveVirksomheter = false
+            barn = listOf(
+                Barn(
+                    navn = "Barn Barnesen",
+                    type = TypeBarn.FRA_OPPSLAG,
+                    fødselsdato = LocalDate.parse("2021-01-01"),
+                    aktørId = "1000000000001",
+                    identitetsnummer = null
+                )
             )
         )
 
@@ -320,6 +319,10 @@ class ApplicationTest {
         )
 
         hentOgAssertSøknad(JSONObject(søknad))
+
+        val hentetSøknad = kafkaKonsumer.hentSøknad(søknad.søknadId.id)
+
+        assertTrue(hentetSøknad.data.getJSONArray("barn").getJSONObject(0).getString("identitetsnummer") != null)
     }
 
     @Test
@@ -388,131 +391,6 @@ class ApplicationTest {
             cookie = cookie,
             requestEntity = hentGyldigSøknad().copy(
                 vedlegg = listOf(URL(jpegUrl), URL(finnesIkkeUrl))
-            ).somJson()
-        )
-    }
-
-    @Test
-    fun `Sende soknad hvor antallTimerPlanlagt er satt men ikke antallTimerBorte`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse =
-            //language=json
-            """
-            {
-              "type": "/problem-details/invalid-request-parameters",
-              "title": "invalid-request-parameters",
-              "status": 400,
-              "detail": "Requesten inneholder ugyldige paramtere.",
-              "instance": "about:blank",
-              "invalid_parameters": [
-                {
-                  "type": "entity",
-                  "name": "utbetalingsperioder[0]",
-                  "reason": "Dersom antallTimerPlanlagt er satt så kan ikke antallTimerBorte være tom",
-                  "invalid_value": "antallTimerBorte = null, antallTimerPlanlagt=PT7H"
-                }
-              ]
-            }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = SøknadUtils.hentGyldigSøknad().copy(
-                utbetalingsperioder = listOf(
-                    Utbetalingsperiode(
-                        fraOgMed = LocalDate.now(),
-                        tilOgMed = LocalDate.now().plusDays(1),
-                        antallTimerPlanlagt = Duration.ofHours(7),
-                        aktivitetFravær = listOf(AktivitetFravær.FRILANSER),
-                        årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
-                    )
-                )
-            ).somJson()
-        )
-    }
-
-    @Test
-    fun `Gitt at ingen aktivitetFravær er oppgitt på utbetalingsperiode, forvent valideringsfeil`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse =
-            //language=json
-            """
-            {
-              "type": "/problem-details/invalid-request-parameters",
-              "title": "invalid-request-parameters",
-              "status": 400,
-              "detail": "Requesten inneholder ugyldige paramtere.",
-              "instance": "about:blank",
-              "invalid_parameters": [
-                {
-                  "type": "entity",
-                  "name": "fraværsperioder[0]",
-                  "reason": "Aktivitet må være satt",
-                  "invalid_value": "k9-format feilkode: påkrevd"
-                }
-              ]
-            }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = SøknadUtils.hentGyldigSøknad().copy(
-                utbetalingsperioder = listOf(
-                    Utbetalingsperiode(
-                        fraOgMed = LocalDate.now(),
-                        tilOgMed = LocalDate.now().plusDays(1),
-                        årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
-                    )
-                )
-            ).somJson()
-        )
-    }
-
-    @Test
-    fun `Sende soknad hvor antallTimerPlanlagt er mindre enn antallTimerBorte`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse =
-            //language=json
-            """
-            {
-              "type": "/problem-details/invalid-request-parameters",
-              "title": "invalid-request-parameters",
-              "status": 400,
-              "detail": "Requesten inneholder ugyldige paramtere.",
-              "instance": "about:blank",
-              "invalid_parameters": [
-                {
-                  "type": "entity",
-                  "name": "utbetalingsperioder[0]",
-                  "reason": "Antall timer borte kan ikke være større enn antall timer planlagt jobbe",
-                  "invalid_value": "antallTimerBorte = PT8H, antallTimerPlanlagt=PT7H"
-                }
-              ]
-            }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = SøknadUtils.hentGyldigSøknad().copy(
-                utbetalingsperioder = listOf(
-                    Utbetalingsperiode(
-                        fraOgMed = LocalDate.now(),
-                        tilOgMed = LocalDate.now().plusDays(1),
-                        antallTimerPlanlagt = Duration.ofHours(7),
-                        antallTimerBorte = Duration.ofHours(8),
-                        aktivitetFravær = listOf(AktivitetFravær.SELVSTENDIG_VIRKSOMHET),
-                        årsak = FraværÅrsak.ORDINÆRT_FRAVÆR
-                    )
-                )
             ).somJson()
         )
     }
@@ -601,40 +479,6 @@ class ApplicationTest {
     }
 
     @Test
-    fun `Sende søknad med ugyldig andreUtbetalinger`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse =
-            //language=json
-            """
-                {
-                  "type": "/problem-details/invalid-request-parameters",
-                  "title": "invalid-request-parameters",
-                  "status": 400,
-                  "detail": "Requesten inneholder ugyldige paramtere.",
-                  "instance": "about:blank",
-                  "invalid_parameters": [
-                    {
-                      "type": "entity",
-                      "name": "andreUtbetalinger[1]",
-                      "reason": "Ugyldig verdi for annen utbetaling. Kun 'dagpenger', 'sykepenger' og 'midlertidigkompensasjonsnfri' er tillatt.",
-                      "invalid_value": "koronapenger"
-                    }
-                  ]
-                }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = hentGyldigSøknad().copy(
-                andreUtbetalinger = listOf("sykepenger", "koronapenger")
-            ).somJson()
-        )
-    }
-
-    @Test
     fun `Test opplasting av ikke støttet vedleggformat`() {
         engine.handleRequestUploadImage(
             cookie = getAuthCookie(gyldigFodselsnummerA),
@@ -688,280 +532,7 @@ class ApplicationTest {
         return respons
     }
 
-    @Test
-    fun `Sende søknad med selvstendig næringsvirksomhet som ikke er gyldig, mangler registrertIUtlandet`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse =
-            //language=json
-            """
-            {
-              "type": "/problem-details/invalid-request-parameters",
-              "title": "invalid-request-parameters",
-              "status": 400,
-              "detail": "Requesten inneholder ugyldige paramtere.",
-              "instance": "about:blank",
-              "invalid_parameters": [
-                {
-                  "type": "entity",
-                  "name": "selvstendigNæringsdrivende.perioder{2021-02-07-2021-02-08}.landkode",
-                  "reason": "landkode må være satt, og kan ikke være null, dersom virksomhet er registrert i utlandet.",
-                  "invalid_value": "k9-format feilkode: påkrevd"
-                }
-              ]
-            }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = hentGyldigSøknad().copy(
-                selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
-                    næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
-                    fraOgMed = LocalDate.parse("2021-02-07"),
-                    tilOgMed = LocalDate.parse("2021-02-08"),
-                    næringsinntekt = 1233123,
-                    navnPåVirksomheten = "TullOgTøys",
-                    registrertINorge = JaNei.Nei,
-                    registrertIUtlandet = null,
-                    organisasjonsnummer = "916974574",
-                    yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                    regnskapsfører = Regnskapsfører(
-                        navn = "Kjell",
-                        telefon = "84554"
-                    ),
-                    fiskerErPåBladB = JaNei.Nei,
-                    erNyoppstartet = true,
-                    harFlereAktiveVirksomheter = true
-                )
-            ).somJson()
-        )
-    }
-
-    @Test
-    fun `Sende søknad med selvstendig næringsvirksomhet med ugyldig registrertIUtlandet`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse =
-            //language=json
-            """
-            {
-              "type": "/problem-details/invalid-request-parameters",
-              "title": "invalid-request-parameters",
-              "status": 400,
-              "detail": "Requesten inneholder ugyldige paramtere.",
-              "instance": "about:blank",
-              "invalid_parameters": [
-                {
-                  "type": "entity",
-                  "name": "selvstendigNæringsdrivende.landkode",
-                  "reason": "Landkode er ikke en gyldig ISO 3166-1 alpha-3 kode.",
-                  "invalid_value": "ukjent"
-                }
-              ]
-            }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = hentGyldigSøknad().copy(
-                selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
-                    næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
-                    fraOgMed = LocalDate.parse("2021-02-07"),
-                    tilOgMed = LocalDate.parse("2021-02-08"),
-                    næringsinntekt = 1233123,
-                    navnPåVirksomheten = "TullOgTøys",
-                    registrertINorge = JaNei.Nei,
-                    registrertIUtlandet = Land(
-                        landkode = "ukjent",
-                        landnavn = "ukjent"
-                    ),
-                    organisasjonsnummer = "101010",
-                    yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                    regnskapsfører = Regnskapsfører(
-                        navn = "Kjell",
-                        telefon = "84554"
-                    ),
-                    fiskerErPåBladB = JaNei.Nei,
-                    erNyoppstartet = true,
-                    harFlereAktiveVirksomheter = true
-                )
-            ).somJson()
-        )
-    }
-
-    @Test
-    fun `Sende søknad med selvstendig næringsvirksomhet som ikke har gyldig organisasjonsnummer`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse =
-            //language=json
-            """
-            {
-              "type": "/problem-details/invalid-request-parameters",
-              "title": "invalid-request-parameters",
-              "status": 400,
-              "detail": "Requesten inneholder ugyldige paramtere.",
-              "instance": "about:blank",
-              "invalid_parameters": [
-                {
-                  "type": "entity",
-                  "name": "selvstendigNæringsdrivende.organisasjonsnummer",
-                  "reason": "Ugyldig organisasjonsnummer, inneholder noe annet enn tall.",
-                  "invalid_value": null
-                }
-              ]
-            }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = hentGyldigSøknad().copy(
-                selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
-                    næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
-                    fraOgMed = LocalDate.now().minusDays(1),
-                    tilOgMed = LocalDate.now(),
-                    næringsinntekt = 1233123,
-                    navnPåVirksomheten = "TullOgTøys",
-                    organisasjonsnummer = "123a",
-                    registrertINorge = JaNei.Ja,
-                    yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                    regnskapsfører = Regnskapsfører(
-                        navn = "Kjell",
-                        telefon = "84554"
-                    ),
-                    fiskerErPåBladB = JaNei.Nei,
-                    erNyoppstartet = true,
-                    harFlereAktiveVirksomheter = true
-                )
-
-            ).somJson()
-        )
-    }
-
-    @Test
-    fun `Sende søknad ugyldig fødselsnummer på fosterbarn, gir feilmelding`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse =
-            //language=json
-            """
-                {
-                  "type": "/problem-details/invalid-request-parameters",
-                  "title": "invalid-request-parameters",
-                  "status": 400,
-                  "detail": "Requesten inneholder ugyldige paramtere.",
-                  "instance": "about:blank",
-                  "invalid_parameters": [
-                    {
-                      "type": "entity",
-                      "name": "fosterbarn[1].fødselsnummer",
-                      "reason": "Ugyldig fødselsnummer",
-                      "invalid_value": null
-                    }
-                  ]
-                }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = hentGyldigSøknad().copy(
-                fosterbarn = listOf(
-                    FosterBarn(
-                        fødselsnummer = "02119970078"
-                    ),
-                    FosterBarn(
-                        fødselsnummer = "ugyldig fødselsnummer"
-                    )
-                )
-            ).somJson()
-        )
-    }
-
-    @Test
-    fun `Sende søknad med frilanser som har sluttet, uten sluttdato, gir feilmelding`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse =
-            //language=json
-            """
-                {
-                  "type": "/problem-details/invalid-request-parameters",
-                  "title": "invalid-request-parameters",
-                  "status": 400,
-                  "detail": "Requesten inneholder ugyldige paramtere.",
-                  "instance": "about:blank",
-                  "invalid_parameters": [
-                    {
-                      "type": "entity",
-                      "name": "frilans.sluttdato",
-                      "reason": "Sluttdato kan ikke være null dersom jobberFortsattSomFrilans=Nei",
-                      "invalid_value": "sluttdato=null,jobberFortsattSomFrilans=Nei "
-                    }
-                  ]
-                }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = hentGyldigSøknad().copy(
-                frilans = Frilans(
-                    startdato = LocalDate.now(),
-                    sluttdato = null,
-                    jobberFortsattSomFrilans = JaNei.Nei
-                )
-            ).somJson()
-        )
-    }
-
-    @Test
-    fun `Sende søknad med frilanser der startdato er etter sluttdato, gir feilmelding`() {
-        val cookie = getAuthCookie(gyldigFodselsnummerA)
-
-        requestAndAssert(
-            httpMethod = HttpMethod.Post,
-            path = SØKNAD_URL,
-            expectedResponse =
-            //language=json
-            """
-            {
-              "type": "/problem-details/invalid-request-parameters",
-              "title": "invalid-request-parameters",
-              "status": 400,
-              "detail": "Requesten inneholder ugyldige paramtere.",
-              "instance": "about:blank",
-              "invalid_parameters": [
-                {
-                  "type": "entity",
-                  "name": "frilans.sluttdato",
-                  "reason": "Sluttdato kan ikke være før startdato",
-                  "invalid_value": "startdato=2021-02-01, sluttdato=2021-01-01"
-                }
-              ]
-            }
-            """.trimIndent(),
-            expectedCode = HttpStatusCode.BadRequest,
-            cookie = cookie,
-            requestEntity = hentGyldigSøknad().copy(
-                frilans = Frilans(
-                    startdato = LocalDate.parse("2021-02-01"),
-                    sluttdato = LocalDate.parse("2021-01-01"),
-                    jobberFortsattSomFrilans = JaNei.Nei
-                )
-            ).somJson()
-        )
-    }
-
-    private fun hentOgAssertSøknad(søknad: JSONObject){
+    private fun hentOgAssertSøknad(søknad: JSONObject) {
         val hentet = kafkaKonsumer.hentSøknad(søknad.getJSONObject("søknadId").getString("id"))
         assertGyldigSøknad(søknad, hentet.data)
     }

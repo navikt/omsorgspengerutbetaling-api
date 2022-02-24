@@ -1,9 +1,10 @@
 package no.nav.omsorgspengerutbetaling.soknad
 
 import no.nav.helse.dusseldorf.ktor.auth.IdToken
+import no.nav.omsorgspengerutbetaling.barn.BarnService
 import no.nav.omsorgspengerutbetaling.felles.formaterStatuslogging
 import no.nav.omsorgspengerutbetaling.general.CallId
-import no.nav.omsorgspengerutbetaling.k9format.tilKOmsorgspengerUtbetalingSøknad
+import no.nav.omsorgspengerutbetaling.k9format.tilK9Format
 import no.nav.omsorgspengerutbetaling.kafka.KafkaProducer
 import no.nav.omsorgspengerutbetaling.kafka.Metadata
 import no.nav.omsorgspengerutbetaling.soker.SøkerService
@@ -12,12 +13,11 @@ import no.nav.omsorgspengerutbetaling.vedlegg.DokumentEier
 import no.nav.omsorgspengerutbetaling.vedlegg.VedleggService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
 
 internal class SøknadService(
     private val vedleggService: VedleggService,
     private val søkerService: SøkerService,
+    private val barnService: BarnService,
     private val kafkaProducer: KafkaProducer
 ) {
 
@@ -36,12 +36,13 @@ internal class SøknadService(
         val søker = søkerService.getSoker(idToken, callId)
         søker.validate()
 
-        logger.info("Mapper om søknad til K9-format.")
-        val k9FormatSøknad = søknad.tilKOmsorgspengerUtbetalingSøknad(
-            mottatt = ZonedDateTime.now(ZoneOffset.UTC),
-            søker = søker
-        )
-        søknad.valider(k9FormatSøknad)
+        val barnMedIdentitetsnummer = barnService.hentNåværendeBarn(idToken, callId)
+        søknad.oppdaterBarnMedFnr(barnMedIdentitetsnummer)
+
+        logger.info("Mapper om søknad til K9-format og validerer.")
+        val k9FormatSøknad = søknad.tilK9Format(søker = søker)
+        k9FormatSøknad.valider()
+        søknad.valider()
 
         if(søknad.vedlegg.isNotEmpty()){
             logger.info("Validerer ${søknad.vedlegg.size} vedlegg")

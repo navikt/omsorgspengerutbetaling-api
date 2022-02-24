@@ -5,6 +5,7 @@ import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetaling
 import no.nav.k9.søknad.ytelse.omsorgspenger.v1.OmsorgspengerUtbetalingValidator
 import no.nav.omsorgspengerutbetaling.vedlegg.Vedlegg
 import java.net.URL
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 private const val MAX_FRITEKST_TEGN = 1000
@@ -21,21 +22,20 @@ internal val VedleggTooLargeProblemDetails = DefaultProblemDetails(
     detail = "Totale størreslsen på alle vedlegg overstiger maks på 24 MB."
 )
 
-internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
+internal fun Søknad.valider() {
     val violations = mutableSetOf<Violation>().apply {
-        addAll(validerPåkrevdBoolean("harDekketTiFørsteDagerSelv", harDekketTiFørsteDagerSelv))
+        addAll(validerHarDekketTiFørsteDagerSelv())
+        addAll(validerUtvidetRett())
         addAll(utbetalingsperioder.valider())
-        addAll(andreUtbetalinger.valider())
         addAll(opphold.valider("opphold"))
         addAll(bosteder.valider("bosteder"))
         addAll(spørsmål.valider())
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
-        addAll(k9FormatSøknad.valider())
         frilans?.let { addAll(it.valider()) }
         fosterbarn?.let { addAll(it.valider()) }
+        addAll(barn.validerBarn())
         selvstendigNæringsdrivende?.let { addAll(selvstendigNæringsdrivende.validate()) }
-
     }.sortedBy { it.reason }.toSet()
 
     if (violations.isNotEmpty()) {
@@ -43,28 +43,53 @@ internal fun Søknad.valider(k9FormatSøknad: no.nav.k9.søknad.Søknad) {
     }
 }
 
-private fun validerPåkrevdBoolean(felt: String, verdi: Boolean?) = mutableSetOf<Violation>().apply {
-    if (verdi == null) {
-        add(
-            Violation(
-                parameterName = felt,
-                parameterType = ParameterType.ENTITY,
-                reason = "'${felt}' kan ikke være null.",
-                invalidValue = verdi
+
+internal fun Barn.alder() = LocalDate.now().year.minus(this.fødselsdato.year)
+
+private fun Søknad.validerUtvidetRett() = mutableSetOf<Violation>().apply {
+    if(barn.isNotEmpty() && barn.all { it.alder() >= 13 }){
+        if(barn.none { it.utvidetRett == true }){
+            add(
+                Violation(
+                    parameterName = "barn[?].utvidetRett",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "Hvis alle barn er 13 år eller eldre må minst et barn ha utvidet rett"
+                )
             )
-        )
+        }
     }
 }
 
-private fun no.nav.k9.søknad.Søknad.valider() =
-    OmsorgspengerUtbetalingValidator().valider(getYtelse<OmsorgspengerUtbetaling>()).map {
+private fun Søknad.validerHarDekketTiFørsteDagerSelv() = mutableSetOf<Violation>().apply {
+    if (barn.any { it.alder() <= 12 }) {
+        if (harDekketTiFørsteDagerSelv != true) {
+            add(
+                Violation(
+                    parameterName = "harDekketTiFørsteDagerSelv",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "harDekketTiFørsteDagerSelv må være true dersom et barn er 12 år eller yngre.",
+                    invalidValue = harDekketTiFørsteDagerSelv
+                )
+            )
+        }
+    }
+}
+
+fun no.nav.k9.søknad.Søknad.valider(){
+   val feil = OmsorgspengerUtbetalingValidator().valider(getYtelse<OmsorgspengerUtbetaling>()).map {
         Violation(
             parameterName = it.felt,
             parameterType = ParameterType.ENTITY,
             reason = it.feilmelding,
             invalidValue = "k9-format feilkode: ${it.feilkode}"
         )
+    }.toSet()
+
+    if (feil.isNotEmpty()) {
+        throw Throwblem(ValidationProblemDetails(feil))
     }
+}
+
 
 private fun List<FosterBarn>.valider(): MutableSet<Violation> {
     val feil = mutableSetOf<Violation>()
@@ -76,6 +101,34 @@ private fun List<FosterBarn>.valider(): MutableSet<Violation> {
                     parameterName = "fosterbarn[$index].fødselsnummer",
                     parameterType = ParameterType.ENTITY,
                     reason = "Ugyldig fødselsnummer"
+                )
+            )
+        }
+    }
+
+    return feil
+}
+
+private fun List<Barn>.validerBarn(): MutableSet<Violation> {
+    val feil = mutableSetOf<Violation>()
+
+    this.forEachIndexed { index, barn ->
+        if(barn.identitetsnummer == null){
+            feil.add(
+                Violation(
+                    parameterName = "barn[$index].identitetsnummer",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "identitetsnummer må være satt"
+                )
+            )
+        }
+
+        if(barn.identitetsnummer != null && !barn.identitetsnummer!!.erGyldigFodselsnummer()){
+            feil.add(
+                Violation(
+                    parameterName = "barn[$index].identitetsnummer",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "Ugyldig identitetsnummer"
                 )
             )
         }

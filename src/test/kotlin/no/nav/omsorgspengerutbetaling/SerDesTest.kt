@@ -2,22 +2,26 @@ package no.nav.omsorgspengerutbetaling
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.k9.søknad.felles.type.SøknadId
+import no.nav.omsorgspengerutbetaling.SøknadUtils.mottatt
 import no.nav.omsorgspengerutbetaling.soknad.*
 import org.skyscreamer.jsonassert.JSONAssert
 import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class SerDesTest {
+    val mottatt = ZonedDateTime.of(2018, 1, 2, 3, 4, 5, 6, ZoneId.of("UTC"))
 
     @Test
     internal fun `Test reserialisering av request`() {
         val søknadId = UUID.randomUUID().toString()
 
-        val søknad = søknad.copy(søknadId = SøknadId(søknadId))
+        val søknad = søknad.copy(søknadId = SøknadId(søknadId), mottatt = mottatt)
         val søknadJson = søknadJson(søknadId)
 
         JSONAssert.assertEquals(søknadJson, søknad.somJson(), true)
@@ -28,10 +32,9 @@ internal class SerDesTest {
     fun `Test serialisering av request til prosessering`() {
         val søknadId = UUID.randomUUID().toString()
 
-        val komplettSoknad = SøknadUtils.defaultKomplettSøknad(SøknadId(søknadId))
+        val komplettSoknad = SøknadUtils.defaultKomplettSøknad(SøknadId(søknadId)).copy(mottatt = mottatt)
         val komplettSøknadJson = komplettSøknadJson(søknadId)
 
-        println(komplettSoknad.somJson())
         JSONAssert.assertEquals(komplettSøknadJson, komplettSoknad.somJson(), true)
         //assertEquals(komplettSoknad, SøknadUtils.objectMapper.readValue(komplettSøknadJson)) // TODO: 05/02/2021  Må fikses før prodsetting.
     }
@@ -40,6 +43,7 @@ internal class SerDesTest {
         val start = LocalDate.parse("2020-01-01")
 
         val søknad = SøknadUtils.hentGyldigSøknad().copy(
+            mottatt = mottatt,
             utbetalingsperioder = listOf(
                 Utbetalingsperiode(
                     fraOgMed = start,
@@ -127,14 +131,14 @@ internal class SerDesTest {
             "bosteder": [{
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
-                "landkode": "GB",
+                "landkode": "GBR",
                 "landnavn": "Great Britain",
                 "erEØSLand": true
             }],
             "opphold": [{
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
-                "landkode": "GB",
+                "landkode": "GBR",
                 "landnavn": "Great Britain",
                 "erEØSLand": true
             }],
@@ -168,7 +172,7 @@ internal class SerDesTest {
                 "årsak": "ORDINÆRT_FRAVÆR",
                 "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
             }],
-            "andreUtbetalinger": ["dagpenger", "sykepenger"],
+            "andreUtbetalinger": ["DAGPENGER", "SYKEPENGER"],
             "frilans": {
                 "startdato": "2020-01-01",
                 "sluttdato": null,
@@ -203,10 +207,22 @@ internal class SerDesTest {
                 }
             },
             "erArbeidstakerOgså": true,
-            "fosterbarn": [{
+            "fosterbarn": [
+              {
                 "fødselsnummer": "02119970078"
-            }],
-            "vedleggId": [],
+              }
+            ],
+            "barn" : [
+                  {
+                    "navn": "Barn Barnesen",
+                    "fødselsdato": "2021-01-01",
+                    "aktørId": "1000000000001",
+                    "utvidetRett": null,
+                    "identitetsnummer": "16012099359",
+                    "type": "ANNET"
+                  }
+            ],
+            "vedleggId": ["1", "2", "3"],
             "k9FormatSøknad": {
                 "søknadId": "$søknadId",
                 "mottattDato": "2018-01-02T03:04:05.000Z",
@@ -218,10 +234,10 @@ internal class SerDesTest {
                 "ytelse": {
                     "type": "OMP_UT",
                     "fosterbarn": [
-                      {
-                        "norskIdentitetsnummer": "02119970078",
-                        "fødselsdato": null
-                      }
+                        {
+                          "norskIdentitetsnummer": "02119970078",
+                          "fødselsdato": null
+                        }
                     ],
                     "aktivitet": {
                       "selvstendigNæringsdrivende": [
@@ -288,7 +304,7 @@ internal class SerDesTest {
                     "bosteder": {
                       "perioder": {
                         "2019-12-12/2019-12-22": {
-                          "land": "GB"
+                          "land": "GBR"
                         }
                       },
                       "perioderSomSkalSlettes": {}
@@ -296,7 +312,7 @@ internal class SerDesTest {
                     "utenlandsopphold": {
                       "perioder": {
                         "2019-12-12/2019-12-22": {
-                          "land": "GB",
+                          "land": "GBR",
                           "årsak": null
                         }
                       },
@@ -315,19 +331,20 @@ internal class SerDesTest {
         fun søknadJson(søknadId: String) = """
         {
             "søknadId": "$søknadId",
+            "mottatt": "2018-01-02T03:04:05.000000006Z",
             "språk": "nb",
             "harDekketTiFørsteDagerSelv": true,
             "bosteder": [{
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
-                "landkode": "GB",
+                "landkode": "GBR",
                 "landnavn": "Great Britain",
                 "erEØSLand": true
             }],
             "opphold": [{
                 "fraOgMed": "2019-12-12",
                 "tilOgMed": "2019-12-22",
-                "landkode": "GB",
+                "landkode": "GBR",
                 "landnavn": "Great Britain",
                 "erEØSLand": true
             }],
@@ -361,7 +378,7 @@ internal class SerDesTest {
                 "årsak": "ORDINÆRT_FRAVÆR",
                 "aktivitetFravær": ["FRILANSER", "SELVSTENDIG_VIRKSOMHET"]
             }],
-            "andreUtbetalinger": ["dagpenger", "sykepenger", "midlertidigkompensasjonsnfri"],
+            "andreUtbetalinger": ["DAGPENGER", "SYKEPENGER", "MIDLERTIDIG_KOMPENSASJON_SN_FRI"],
             "frilans": {
                 "startdato": "2020-01-01",
                 "sluttdato": null,
@@ -396,9 +413,21 @@ internal class SerDesTest {
                 }
             },
             "erArbeidstakerOgså": true,
-            "fosterbarn": [{
+            "fosterbarn": [
+              {
                 "fødselsnummer": "02119970078"
-            }],
+              }
+            ],
+            "barn": [
+                {
+                  "navn": "Barn Barnesen",
+                  "fødselsdato": "2021-01-01",
+                  "aktørId": "1000000000001",
+                  "utvidetRett": null,
+                  "identitetsnummer": "16012099359",
+                  "type": "ANNET"
+                }
+            ],
             "vedlegg": [
               "http://localhost:8080/vedlegg/1",
               "http://localhost:8080/vedlegg/2",
@@ -406,7 +435,5 @@ internal class SerDesTest {
             ]
         }
         """.trimIndent()
-
-
     }
 }

@@ -50,7 +50,18 @@ internal fun List<Utbetalingsperiode>.valider() : Set<Violation> {
     val perioder = map { it.somPeriode() }
     violations.addAll(perioder.valider(JsonPath))
 
-    mapIndexed { utbetalingsperiodeIndex, utbetalingsperiode ->
+    forEachIndexed { utbetalingsperiodeIndex, utbetalingsperiode ->
+        if(utbetalingsperiode.aktivitetFravær.isEmpty()){
+            violations.add(
+                Violation(
+                    parameterName = "${JsonPath}[$utbetalingsperiodeIndex].aktivitetFravær",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "aktivitetFravær kan ikke være tom, må inneholde minst en aktivitet.",
+                    invalidValue = utbetalingsperiode.aktivitetFravær
+                )
+            )
+        }
+
         if(utbetalingsperiode.antallTimerPlanlagt != null && utbetalingsperiode.antallTimerBorte == null){
             violations.add(
                 Violation(
@@ -86,5 +97,6 @@ internal fun List<Utbetalingsperiode>.valider() : Set<Violation> {
             }
         }
     }
+
     return violations
 }

@@ -35,7 +35,7 @@ class BarnResponseTransformer : ResponseTransformer() {
 
 private fun getResponse(ident: String): String {
     when (ident) {
-        "290990123456" -> {
+        "290990123456", "02119970078" -> {
             return """
             {
                 "barn": [{
