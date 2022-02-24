@@ -39,8 +39,7 @@ class K9FormatTest {
             ),
         )
         val søknad = SøknadUtils.hentGyldigSøknad().copy(
-            barn = barn,
-            fosterbarn = listOf()
+            barn = barn
         )
         val k9Barn = søknad.byggK9Barn()
         val forventetK9Barn = """

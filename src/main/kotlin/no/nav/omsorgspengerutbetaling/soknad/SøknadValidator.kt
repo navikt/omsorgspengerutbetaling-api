@@ -32,9 +32,8 @@ internal fun Søknad.valider() {
         addAll(spørsmål.valider())
         addAll(bekreftelser.valider())
         addAll(validerInntektsopplysninger())
-        frilans?.let { addAll(it.valider()) }
-        fosterbarn?.let { addAll(it.valider()) }
         addAll(barn.validerBarn())
+        frilans?.let { addAll(it.valider()) }
         selvstendigNæringsdrivende?.let { addAll(selvstendigNæringsdrivende.validate()) }
     }.sortedBy { it.reason }.toSet()
 
@@ -88,25 +87,6 @@ fun no.nav.k9.søknad.Søknad.valider(){
     if (feil.isNotEmpty()) {
         throw Throwblem(ValidationProblemDetails(feil))
     }
-}
-
-
-private fun List<FosterBarn>.valider(): MutableSet<Violation> {
-    val feil = mutableSetOf<Violation>()
-
-    this.forEachIndexed { index, fosterBarn ->
-        if(!fosterBarn.fødselsnummer.erGyldigFodselsnummer()){
-            feil.add(
-                Violation(
-                    parameterName = "fosterbarn[$index].fødselsnummer",
-                    parameterType = ParameterType.ENTITY,
-                    reason = "Ugyldig fødselsnummer"
-                )
-            )
-        }
-    }
-
-    return feil
 }
 
 private fun List<Barn>.validerBarn(): MutableSet<Violation> {
