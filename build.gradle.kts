@@ -54,7 +54,7 @@ dependencies {
     }
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.skyscreamer:jsonassert:1.5.0")
-    testImplementation("org.awaitility:awaitility-kotlin:4.1.1")
+    testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
     testImplementation("no.nav:kafka-embedded-env:$kafkaEmbeddedEnvVersion")
     testImplementation("io.mockk:mockk:1.12.2")
 }
