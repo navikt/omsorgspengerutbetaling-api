@@ -1,11 +1,11 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "3.1.6.7-1288df6"
+val dusseldorfKtorVersion = "3.1.6.8-248832c"
 val ktorVersion = ext.get("ktorVersion").toString()
-val k9FormatVersion = "5.7.2"
+val k9FormatVersion = "5.8.3"
 val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
-val lettuceVersion = "5.3.5.RELEASE"
+val lettuceVersion = "6.1.8.RELEASE"
 val fuelVersion = "2.3.1"
 
 val kafkaEmbeddedEnvVersion = ext.get("kafkaEmbeddedEnvVersion").toString()
@@ -18,7 +18,7 @@ plugins {
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/1288df6f88f6fa07ab0007df2a36c10eb7a71402/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/248832c3f3f7518a5cfe51cbc0c063ca73a98f81/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -47,16 +47,16 @@ dependencies {
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 
     // Test
-    testImplementation("com.github.fppt:jedis-mock:1.0.0")
+    testImplementation("com.github.fppt:jedis-mock:1.0.1")
     testImplementation("no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
     }
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.skyscreamer:jsonassert:1.5.0")
-    testImplementation("org.awaitility:awaitility-kotlin:4.1.1")
+    testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
     testImplementation("no.nav:kafka-embedded-env:$kafkaEmbeddedEnvVersion")
-    testImplementation("io.mockk:mockk:1.12.2")
+    testImplementation("io.mockk:mockk:1.12.3")
 }
 
 repositories {
