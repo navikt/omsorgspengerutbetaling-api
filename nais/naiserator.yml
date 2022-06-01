@@ -48,6 +48,7 @@ spec:
       rules:
         - application: {{app}}-redis
         - application: k9-mellomlagring
+        - application: k9-selvbetjening-oppslag
       external:
       {{#each externalHosts as |host|}}
           - host: {{host}}
