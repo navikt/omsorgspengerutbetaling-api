@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "3.1.6.8-248832c"
+val dusseldorfKtorVersion = "3.2.0.2-db0f814"
 val ktorVersion = ext.get("ktorVersion").toString()
 val k9FormatVersion = "5.8.7"
 val mainClass = "no.nav.omsorgspengerutbetaling.AppKt"
