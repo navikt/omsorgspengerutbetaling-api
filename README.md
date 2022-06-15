@@ -1,3 +1,5 @@
+OBS; Erstattet av [k9-brukerdialog-api](https://github.com/navikt/k9-brukerdialog-api)
+
 # omsorgspengerutbetaling-api
 ![CI / CD](https://github.com/navikt/omsorgspengerutbetaling-api/workflows/CI%20/%20CD/badge.svg)
 ![NAIS Alerts](https://github.com/navikt/omsorgspengerutbetaling-api/workflows/Alerts/badge.svg)
